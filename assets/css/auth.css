@@ -1,6 +1,20 @@
+/* Variables - keeping consistent with main theme */
+:root {
+    --primary-orange: #FF8303;
+    --secondary-orange: #FF6000;
+    --light-orange: #FFE6C7;
+    --bg-light: #F8F9FA;
+    --white: #FFFFFF;
+    --text-dark: #2C3E50;
+    --gray-light: #F8F9FA;
+    --gray-medium: #E9ECEF;
+}
+
+/* Updated body background */
 body {
     min-height: 100vh;
-    background: linear-gradient(135deg, var(--gray-light), var(--white));
+    background: linear-gradient(135deg, var(--light-orange), var(--white));
+    color: var(--text-dark);
 }
 
 .auth-body {
@@ -17,13 +31,15 @@ body {
     max-width: 500px;
     margin: 120px auto 2rem;
     padding: 0 1.5rem;
+    position: relative;
 }
 
 .auth-box {
     background: var(--white);
     padding: 3rem;
     border-radius: 20px;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 15px 35px rgba(255, 131, 3, 0.1);
+    border: 1px solid rgba(255, 131, 3, 0.1);
 }
 
 .auth-header {
@@ -45,7 +61,8 @@ body {
 }
 
 .auth-header p {
-    color: #666;
+    color: var(--text-dark);
+    opacity: 0.8;
     font-size: 1rem;
 }
 
@@ -59,6 +76,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 0.7rem;
+    margin-bottom: 1.5rem;
 }
 
 .form-group label {
@@ -69,6 +87,7 @@ body {
 
 .form-group input {
     padding: 1rem 1.2rem;
+    background: var(--gray-light);
     border: 2px solid var(--gray-medium);
     border-radius: 10px;
     font-size: 1rem;
@@ -79,6 +98,7 @@ body {
 .form-group input:focus {
     outline: none;
     border-color: var(--primary-orange);
+    background: var(--white);
     box-shadow: 0 0 0 4px rgba(255, 131, 3, 0.1);
 }
 
@@ -93,10 +113,12 @@ body {
     font-size: 0.95rem;
     text-decoration: none;
     transition: color 0.3s ease;
+    display: inline-block;
+    margin-top: 0.5rem;
 }
 
 .forgot-password:hover {
-    color: var(--dark-orange);
+    color: var(--secondary-orange);
 }
 
 .auth-button {
@@ -109,20 +131,20 @@ body {
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    font-family: 'Poppins', sans-serif;
+    width: 100%;
     margin-top: 1rem;
 }
 
 .auth-button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 7px 15px rgba(255, 99, 0, 0.2);
+    box-shadow: 0 7px 15px rgba(255, 131, 3, 0.2);
 }
 
 .auth-footer {
     text-align: center;
     margin-top: 2rem;
-    font-size: 1rem;
-    color: var(--text-dark);
+    padding-top: 2rem;
+    border-top: 1px solid var(--gray-medium);
 }
 
 .auth-footer a {
@@ -133,10 +155,9 @@ body {
 }
 
 .auth-footer a:hover {
-    color: var(--dark-orange);
+    color: var(--secondary-orange);
 }
 
-/* Page footer styles */
 .page-footer {
     background-color: var(--white);
     text-align: center;
@@ -147,10 +168,17 @@ body {
 
 .page-footer p {
     color: var(--text-dark);
-    font-size: 0.95rem;
+    opacity: 0.8;
 }
 
-/* Responsive design */
+/* Glass morphism effect for cards */
+.feature-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive adjustments */
 @media (max-width: 768px) {
     .auth-container {
         margin-top: 160px;
@@ -169,26 +197,18 @@ body {
     .auth-container {
         padding: 0 1rem;
     }
-
-    .form-group input {
-        padding: 0.9rem 1rem;
-    }
-
-    .auth-button {
-        padding: 1rem;
-    }
 }
 
-/* Keep existing auth styles but update/add these header-specific styles */
+/* Header modifications for dark background */
 .header {
-    background-color: rgba(255, 255, 255, 0.98);
+    background-color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     padding: 1rem 2rem;
     position: fixed;
     width: 100%;
     top: 0;
     z-index: 1000;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(10px);
 }
 
 .nav-container {
