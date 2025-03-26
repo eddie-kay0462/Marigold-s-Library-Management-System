@@ -1,0 +1,243 @@
+/* Overdue Page Styles */
+.overdue-container {
+    padding: 2rem;
+}
+
+/* Header Section */
+.overdue-header {
+    margin-bottom: 2rem;
+}
+
+.overdue-header h1 {
+    font-size: 1.8rem;
+    color: var(--text-dark);
+    margin-bottom: 1.5rem;
+}
+
+.header-actions {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+/* Search and Filter */
+.search-bar {
+    flex: 1;
+    min-width: 300px;
+    position: relative;
+}
+
+.search-bar i {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-light);
+}
+
+.search-bar input {
+    width: 100%;
+    padding: 1rem 1rem 1rem 3rem;
+    border: 2px solid var(--gray-medium);
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.search-bar input:focus {
+    outline: none;
+    border-color: var(--primary-orange);
+    box-shadow: 0 0 0 4px rgba(255, 131, 3, 0.1);
+}
+
+.filter-select {
+    padding: 1rem 2rem;
+    border: 2px solid var(--gray-medium);
+    border-radius: 12px;
+    font-size: 1rem;
+    color: var(--text-dark);
+    background-color: var(--white);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.filter-select:hover {
+    border-color: var(--primary-orange);
+}
+
+/* Table Styles */
+.overdue-table-container {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow-md);
+    overflow-x: auto;
+}
+
+.overdue-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 0.8rem;
+}
+
+.overdue-table th {
+    padding: 1rem 1.5rem;
+    text-align: left;
+    color: var(--text-light);
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.overdue-table td {
+    padding: 1.2rem 1.5rem;
+    background: var(--bg-light);
+    vertical-align: middle;
+}
+
+/* Book Info */
+.book-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.book-info img {
+    width: 45px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 6px;
+    box-shadow: var(--shadow-sm);
+}
+
+.book-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.book-title {
+    font-weight: 500;
+    color: var(--text-dark);
+}
+
+.book-author {
+    font-size: 0.85rem;
+    color: var(--text-light);
+}
+
+/* Borrower Info */
+.borrower-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.borrower-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.borrower-info img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.borrower-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.borrower-name {
+    font-weight: 500;
+    color: var(--text-dark);
+}
+
+.borrower-id {
+    font-size: 0.85rem;
+    color: var(--text-light);
+}
+
+/* Due Date and Overdue Days */
+.due-date {
+    color: var(--text-dark);
+}
+
+.overdue-days {
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    display: inline-block;
+}
+
+.overdue-days.warning {
+    background: #FEF3C7;
+    color: #D97706;
+}
+
+/* Status Badge */
+.status-badge {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.status-badge.overdue {
+    background: #FEE2E2;
+    color: var(--danger-color);
+}
+
+/* Return Button */
+.return-btn {
+    padding: 0.8rem 1.5rem;
+    background: var(--success-color);
+    color: var(--white);
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.return-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.2);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .header-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .search-bar {
+        width: 100%;
+    }
+
+    .filter-select {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .overdue-container {
+        padding: 1rem;
+    }
+
+    .overdue-table-container {
+        padding: 1rem;
+    }
+
+    .book-info, .borrower-info {
+        flex-direction: column;
+        text-align: center;
+    }
+} 
