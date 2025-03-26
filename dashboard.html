@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Margold Library</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/dashboard.css">
+</head>
+<body class="dashboard-body">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <img src="assets/images/logo.png" alt="Library Logo" class="sidebar-logo">
+            <h2>Margold Library</h2>
+        </div>
+        
+        <ul class="sidebar-menu">
+            <li class="active">
+                <a href="dashboard.html">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="books.html">
+                    <i class="fas fa-book"></i>
+                    <span>Books</span>
+                </a>
+            </li>
+            <li>
+                <a href="students.html">
+                    <i class="fas fa-user-graduate"></i>
+                    <span>Students</span>
+                </a>
+            </li>
+            <li>
+                <a href="borrow.html">
+                    <i class="fas fa-exchange-alt"></i>
+                    <span>Borrow/Return</span>
+                </a>
+            </li>
+            <li>
+                <a href="overdue.html">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span>Overdue Books</span>
+                </a>
+            </li>
+            <li>
+                <a href="settings.html">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="dashboard-header">
+            <div class="header-search">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search...">
+            </div>
+            <div class="header-user">
+                <span class="notification-icon">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge">3</span>
+                </span>
+                <div class="user-profile">
+                    <img src="assets/images/user-avatar.png" alt="User Avatar">
+                    <span>Admin User</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="dashboard-content">
+            <h1>Dashboard Overview</h1>
+            
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon books">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <div class="stat-details">
+                        <h3>Total Books</h3>
+                        <p class="stat-number">1,234</p>
+                        <span class="stat-change positive">+12 this month</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon borrowed">
+                        <i class="fas fa-book-reader"></i>
+                    </div>
+                    <div class="stat-details">
+                        <h3>Borrowed Books</h3>
+                        <p class="stat-number">89</p>
+                        <span class="stat-change">Active loans</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon overdue">
+                        <i class="fas fa-exclamation-circle"></i>
+                    </div>
+                    <div class="stat-details">
+                        <h3>Overdue Books</h3>
+                        <p class="stat-number">23</p>
+                        <span class="stat-change negative">+5 this week</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon students">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <div class="stat-details">
+                        <h3>Total Students</h3>
+                        <p class="stat-number">567</p>
+                        <span class="stat-change positive">+3 this week</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="recent-activity">
+                <div class="section-header">
+                    <h2>Recent Activity</h2>
+                    <a href="borrow.html" class="view-more">View More</a>
+                </div>
+                <div class="activity-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Student</th>
+                                <th>Book</th>
+                                <th>Action</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="student-info">
+                                        <img src="assets/images/student1.png" alt="Student">
+                                        <span>John Doe</span>
+                                    </div>
+                                </td>
+                                <td>The Great Gatsby</td>
+                                <td>Borrowed</td>
+                                <td>2024-03-25</td>
+                                <td><span class="status-badge active">Active</span></td>
+                            </tr>
+                            <!-- Add more rows as needed -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html> 
