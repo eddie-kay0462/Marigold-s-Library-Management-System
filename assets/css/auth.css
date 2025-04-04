@@ -72,11 +72,26 @@ body {
     gap: 1.8rem;
 }
 
+/* Form row for side-by-side fields */
+.form-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    width: 100%;
+}
+
+.form-row .form-group {
+    flex: 1;
+    margin-bottom: 0;
+    width: 50%;
+}
+
 .form-group {
     display: flex;
     flex-direction: column;
     gap: 0.7rem;
     margin-bottom: 1.5rem;
+    width: 100%;
 }
 
 .form-group label {
@@ -93,6 +108,8 @@ body {
     font-size: 1rem;
     transition: all 0.3s ease;
     font-family: 'Poppins', sans-serif;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .form-group input:focus {
@@ -190,6 +207,16 @@ body {
 
     .auth-header h1 {
         font-size: 1.8rem;
+    }
+    
+    /* Stack form fields on mobile */
+    .form-row {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+    
+    .form-row .form-group {
+        width: 100%;
     }
 }
 
