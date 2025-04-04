@@ -17,6 +17,38 @@
             background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
         }
         
+        /* Hamburger menu styles */
+        .hamburger-menu {
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 30px;
+            height: 21px;
+            cursor: pointer;
+            z-index: 1001;
+        }
+        
+        .hamburger-menu span {
+            display: block;
+            height: 3px;
+            width: 100%;
+            background-color: #333;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+        
+        .hamburger-menu.active span:nth-child(1) {
+            transform: translateY(9px) rotate(45deg);
+        }
+        
+        .hamburger-menu.active span:nth-child(2) {
+            opacity: 0;
+        }
+        
+        .hamburger-menu.active span:nth-child(3) {
+            transform: translateY(-9px) rotate(-45deg);
+        }
+        
         .sidebar {
             width: 250px;
             background-color: #ffffff;
@@ -183,6 +215,7 @@
         .card h2 i {
             background: linear-gradient(45deg, #4CAF50, #45a049);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             font-size: 1.8rem;
         }
@@ -250,6 +283,7 @@
             transition: transform 0.3s ease;
             background: linear-gradient(45deg, #4CAF50, #45a049);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
         }
@@ -257,24 +291,28 @@
         .stat-card:nth-child(1) i {
             background: linear-gradient(45deg, #4CAF50, #45a049);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
         
         .stat-card:nth-child(2) i {
             background: linear-gradient(45deg, #2196F3, #1976D2);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
         
         .stat-card:nth-child(3) i {
             background: linear-gradient(45deg, #FF9800, #F57C00);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
         
         .stat-card:nth-child(4) i {
             background: linear-gradient(45deg, #f44336, #d32f2f);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
         
@@ -295,6 +333,7 @@
             margin: 10px 0;
             background: linear-gradient(45deg, #2c3e50, #34495e);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
         }
@@ -302,24 +341,28 @@
         .stat-card:nth-child(1) .number {
             background: linear-gradient(45deg, #4CAF50, #45a049);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
         
         .stat-card:nth-child(2) .number {
             background: linear-gradient(45deg, #2196F3, #1976D2);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
         
         .stat-card:nth-child(3) .number {
             background: linear-gradient(45deg, #FF9800, #F57C00);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
         
         .stat-card:nth-child(4) .number {
             background: linear-gradient(45deg, #f44336, #d32f2f);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
         
@@ -506,6 +549,48 @@
                 width: 90%;
                 margin: 20% auto;
             }
+            
+            /* Hamburger menu display on mobile */
+            .hamburger-menu {
+                display: flex;
+            }
+            
+            .main-nav {
+                position: fixed;
+                top: 80px;
+                left: -100%;
+                width: 80%;
+                height: calc(100vh - 80px);
+                background-color: white;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+                transition: left 0.3s ease;
+                z-index: 1000;
+                padding: 20px;
+            }
+            
+            .main-nav.active {
+                left: 0;
+            }
+            
+            .main-nav ul {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+            }
+            
+            .main-nav ul li {
+                width: 100%;
+            }
+            
+            .main-nav ul li a {
+                display: block;
+                padding: 10px 0;
+                width: 100%;
+            }
+            
+            .main-nav .ebook-link {
+                margin-top: 10px;
+            }
         }
         
         @media (max-width: 480px) {
@@ -674,6 +759,11 @@
         <div class="nav-container">
             <div class="logo">
                 <img src="../assets/images/logo.png" alt="Marigold Library Logo">
+            </div>
+            <div class="hamburger-menu">
+                <span></span>
+                <span></span>
+                <span></span>
             </div>
             <nav class="main-nav">
                 <ul>
@@ -1563,5 +1653,34 @@
     </div>
 
     <script src="../assets/js/dashboard.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Hamburger menu functionality
+            const hamburgerMenu = document.querySelector('.hamburger-menu');
+            const mainNav = document.querySelector('.main-nav');
+            
+            hamburgerMenu.addEventListener('click', function() {
+                this.classList.toggle('active');
+                mainNav.classList.toggle('active');
+            });
+            
+            // Close menu when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!hamburgerMenu.contains(event.target) && !mainNav.contains(event.target) && mainNav.classList.contains('active')) {
+                    hamburgerMenu.classList.remove('active');
+                    mainNav.classList.remove('active');
+                }
+            });
+            
+            // Close menu when clicking on a link
+            const navLinks = document.querySelectorAll('.main-nav a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    hamburgerMenu.classList.remove('active');
+                    mainNav.classList.remove('active');
+                });
+            });
+        });
+    </script>
 </body>
 </html>
