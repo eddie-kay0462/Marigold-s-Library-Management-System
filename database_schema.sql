@@ -57,13 +57,9 @@ CREATE TABLE books (
     author VARCHAR(100) NOT NULL,
     category_id INT NOT NULL,
     publisher VARCHAR(100),
-    publication_year INT,
-    edition VARCHAR(20),
     description TEXT,
-    cover_image VARCHAR(255),
     total_copies INT NOT NULL DEFAULT 0,
     available_copies INT NOT NULL DEFAULT 0,
-    location VARCHAR(50),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (category_id) REFERENCES categories(category_id) ON DELETE RESTRICT
