@@ -1,0 +1,5 @@
+/* Import all CSS files */
+@import 'base.css';
+@import 'components/header.css';
+@import 'components/sidebar.css';
+@import 'layout.css'; 
