@@ -79,6 +79,13 @@
             overflow: hidden;
         }
         
+        .sidebar-menu a i {
+            margin-right: 12px; /* Add margin to the right of icons */
+            font-size: 1.1rem; /* Slightly increase icon size */
+            width: 20px; /* Fixed width for icons to align them */
+            text-align: center; /* Center the icons */
+        }
+        
         .sidebar-menu a:before {
             content: '';
             position: absolute;
@@ -614,6 +621,52 @@
             background-color: #fff8e1;
             color: #f57c00;
         }
+        
+        /* Add styles for the E-books link in the header */
+        .main-nav .ebook-link {
+            background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .main-nav .ebook-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+            color: white; /* Ensure text stays white on hover */
+        }
+        
+        .main-nav .ebook-link i {
+            font-size: 1.1rem;
+        }
+        
+        /* Make the E-books link the first item in the navigation */
+        .main-nav ul {
+            display: flex;
+            align-items: center;
+        }
+        
+        .main-nav ul li:first-child {
+            order: 2;
+        }
+        
+        .main-nav ul li:nth-child(2) {
+            order: 3;
+        }
+        
+        .main-nav ul li:nth-child(3) {
+            order: 1;
+        }
+        
+        .main-nav ul li:nth-child(4) {
+            order: 4;
+        }
     </style>
 </head>
 <body>
@@ -626,6 +679,7 @@
                 <ul>
                     <li><a href="index.html">Home</a></li>
                     <li><a href="#catalog">Catalog</a></li>
+                    <li><a href="ebooks.html" class="ebook-link"><i class="fas fa-tablet-alt"></i> Access E-Books</a></li>
                     <li><a href="#contact">Contact</a></li>
                 </ul>
             </nav>
@@ -640,14 +694,13 @@
                 <h3>Library Management</h3>
             </div>
             <ul class="sidebar-menu">
-                <li><a href="#overview" class="nav-link active">Overview</a></li>
-                <li><a href="#books" class="nav-link">Books</a></li>
-                <li><a href="#students" class="nav-link">Students</a></li>
-                <li><a href="#loans" class="nav-link">Borrow & Return</a></li>
-                <li><a href="#returns" class="nav-link">Return History</a></li>
-                <li><a href="#users" class="nav-link">Users (Admin Only)</a></li>
-                <li><a href="#reports" class="nav-link">Reports</a></li>
-                <li><a href="#settings" class="nav-link">Settings</a></li>
+                <li><a href="#overview" class="active"><i class="fas fa-home"></i> Overview</a></li>
+                <li><a href="#books"><i class="fas fa-book"></i> Books</a></li>
+                <li><a href="#students"><i class="fas fa-user-graduate"></i> Students</a></li>
+                <li><a href="#loans"><i class="fas fa-exchange-alt"></i> Loans</a></li>
+                <li><a href="#reports"><i class="fas fa-chart-bar"></i> Reports</a></li>
+                <li><a href="#settings"><i class="fas fa-cog"></i> Settings</a></li>
+                <li><a href="#users"><i class="fas fa-users"></i> Users</a></li>
             </ul>
         </div>
 
@@ -1509,527 +1562,6 @@
         </div>
     </div>
 
-    <script>
-        // Set current date
-        const currentDateElement = document.getElementById('current-date');
-        const today = new Date();
-        currentDateElement.textContent = today.toLocaleDateString('en-US', { 
-            weekday: 'long', 
-            year: 'numeric', 
-            month: 'long', 
-            day: 'numeric' 
-        });
-
-        // Navigation functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            const navLinks = document.querySelectorAll('.nav-link');
-            const sections = document.querySelectorAll('.dashboard-section');
-            
-            navLinks.forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    
-                    // Remove active class from all links and sections
-                    navLinks.forEach(link => link.classList.remove('active'));
-                    sections.forEach(section => section.classList.remove('active'));
-                    
-                    // Add active class to clicked link
-                    this.classList.add('active');
-                    
-                    // Get the target section id from the href attribute
-                    const targetId = this.getAttribute('href').substring(1);
-                    
-                    // Add active class to the target section
-                    document.getElementById(targetId).classList.add('active');
-                });
-            });
-            
-            // Search functionality for books
-            document.getElementById('book-search').addEventListener('keyup', function() {
-                const searchTerm = this.value.toLowerCase();
-                const bookRows = document.querySelectorAll('#books tbody tr');
-                
-                bookRows.forEach(row => {
-                    const title = row.cells[2].textContent.toLowerCase();
-                    const author = row.cells[3].textContent.toLowerCase();
-                    const category = row.cells[4].textContent.toLowerCase();
-                    
-                    if (title.includes(searchTerm) || author.includes(searchTerm) || category.includes(searchTerm)) {
-                        row.style.display = '';
-                    } else {
-                        row.style.display = 'none';
-                    }
-                });
-            });
-            
-            // Search functionality for students
-            document.getElementById('student-search').addEventListener('keyup', function() {
-                const searchTerm = this.value.toLowerCase();
-                const studentRows = document.querySelectorAll('#students tbody tr');
-                
-                studentRows.forEach(row => {
-                    const id = row.cells[0].textContent.toLowerCase();
-                    const name = row.cells[1].textContent.toLowerCase();
-                    
-                    if (id.includes(searchTerm) || name.includes(searchTerm)) {
-                        row.style.display = '';
-                    } else {
-                        row.style.display = 'none';
-                    }
-                });
-            });
-            
-            // Search functionality for users
-            document.getElementById('user-search').addEventListener('keyup', function() {
-                const searchTerm = this.value.toLowerCase();
-                const userRows = document.querySelectorAll('#users tbody tr');
-                
-                userRows.forEach(row => {
-                    const id = row.cells[0].textContent.toLowerCase();
-                    const name = row.cells[1].textContent.toLowerCase();
-                    const role = row.cells[2].textContent.toLowerCase();
-                    const email = row.cells[3].textContent.toLowerCase();
-                    
-                    if (id.includes(searchTerm) || name.includes(searchTerm) || role.includes(searchTerm) || email.includes(searchTerm)) {
-                        row.style.display = '';
-                    } else {
-                        row.style.display = 'none';
-                    }
-                });
-            });
-            
-            // Search functionality for loans
-            document.getElementById('loan-search').addEventListener('keyup', function() {
-                const searchTerm = this.value.toLowerCase();
-                const loanRows = document.querySelectorAll('#loans tbody tr');
-                
-                loanRows.forEach(row => {
-                    const book = row.cells[1].textContent.toLowerCase();
-                    const member = row.cells[2].textContent.toLowerCase();
-                    
-                    if (book.includes(searchTerm) || member.includes(searchTerm)) {
-                        row.style.display = '';
-                    } else {
-                        row.style.display = 'none';
-                    }
-                });
-            });
-            
-            // Search functionality for returns
-            document.getElementById('return-search').addEventListener('keyup', function() {
-                const searchTerm = this.value.toLowerCase();
-                const returnRows = document.querySelectorAll('#returns tbody tr');
-                
-                returnRows.forEach(row => {
-                    const book = row.cells[1].textContent.toLowerCase();
-                    const member = row.cells[2].textContent.toLowerCase();
-                    
-                    if (book.includes(searchTerm) || member.includes(searchTerm)) {
-                        row.style.display = '';
-                    } else {
-                        row.style.display = 'none';
-                    }
-                });
-            });
-            
-            // Student form modal functionality
-            const studentModal = document.getElementById('student-form-modal');
-            const addStudentBtn = document.getElementById('add-student-btn');
-            const closeModalBtn = document.querySelector('.close-modal');
-            const studentForm = document.getElementById('student-form');
-            const studentFormTitle = document.getElementById('student-form-title');
-            
-            // Open modal for new student
-            addStudentBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                studentFormTitle.textContent = 'Register New Student';
-                studentForm.reset();
-                document.getElementById('student-id').value = 'S' + Math.floor(Math.random() * 1000).toString().padStart(3, '0');
-                studentModal.style.display = 'block';
-            });
-            
-            // Close modal
-            closeModalBtn.addEventListener('click', function() {
-                studentModal.style.display = 'none';
-            });
-            
-            // Close modal when clicking outside
-            window.addEventListener('click', function(e) {
-                if (e.target === studentModal) {
-                    studentModal.style.display = 'none';
-                }
-            });
-            
-            // Handle form submission
-            studentForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                // Here you would typically send the data to a server
-                alert('Student saved successfully!');
-                studentModal.style.display = 'none';
-            });
-            
-            // Edit student functionality
-            const editButtons = document.querySelectorAll('[id^="edit-student-"]');
-            editButtons.forEach(button => {
-                button.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const studentId = this.id.split('-')[2];
-                    const studentRow = document.querySelector(`#students tbody tr:nth-child(${studentId})`);
-                    
-                    // Populate form with student data
-                    document.getElementById('student-id').value = studentRow.cells[0].textContent;
-                    document.getElementById('student-name').value = studentRow.cells[1].textContent;
-                    
-                    // Set form title
-                    studentFormTitle.textContent = 'Edit Student';
-                    
-                    // Show modal
-                    studentModal.style.display = 'block';
-                });
-            });
-            
-            // Delete student functionality
-            const deleteButtons = document.querySelectorAll('[id^="delete-student-"]');
-            deleteButtons.forEach(button => {
-                button.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    if (confirm('Are you sure you want to delete this student?')) {
-                        // Here you would typically send a delete request to a server
-                        alert('Student deleted successfully!');
-                    }
-                });
-            });
-            
-            // Book form modal functionality
-            const bookModal = document.getElementById('book-form-modal');
-            const addBookBtn = document.getElementById('add-book-btn');
-            const bookForm = document.getElementById('book-form');
-            const bookFormTitle = document.getElementById('book-form-title');
-            
-            // Open modal for new book
-            addBookBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                bookFormTitle.textContent = 'Add New Book';
-                bookForm.reset();
-                document.getElementById('book-id').value = 'B' + Math.floor(Math.random() * 1000).toString().padStart(3, '0');
-                bookModal.style.display = 'block';
-            });
-            
-            // Close book modal
-            document.querySelectorAll('.close-modal').forEach(closeBtn => {
-                closeBtn.addEventListener('click', function() {
-                    if (this.closest('#book-form-modal')) {
-                        bookModal.style.display = 'none';
-                    }
-                });
-            });
-            
-            // Close book modal when clicking outside
-            window.addEventListener('click', function(e) {
-                if (e.target === bookModal) {
-                    bookModal.style.display = 'none';
-                }
-            });
-            
-            // Handle book form submission
-            bookForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                // Here you would typically send the data to a server
-                alert('Book saved successfully!');
-                bookModal.style.display = 'none';
-            });
-            
-            // Edit book functionality
-            const editBookButtons = document.querySelectorAll('[id^="edit-book-"]');
-            editBookButtons.forEach(button => {
-                button.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const bookId = this.id.split('-')[2];
-                    const bookRow = document.querySelector(`#books tbody tr:nth-child(${bookId})`);
-                    
-                    // Populate form with book data
-                    document.getElementById('book-id').value = bookRow.cells[0].textContent;
-                    document.getElementById('book-isbn').value = bookRow.cells[1].textContent;
-                    document.getElementById('book-title').value = bookRow.cells[2].textContent;
-                    document.getElementById('book-author').value = bookRow.cells[3].textContent;
-                    document.getElementById('book-category').value = bookRow.cells[4].textContent;
-                    document.getElementById('book-copies').value = bookRow.cells[5].textContent;
-                    
-                    // Set form title
-                    bookFormTitle.textContent = 'Edit Book';
-                    
-                    // Show modal
-                    bookModal.style.display = 'block';
-                });
-            });
-            
-            // Delete book functionality
-            const deleteBookButtons = document.querySelectorAll('[id^="delete-book-"]');
-            deleteBookButtons.forEach(button => {
-                button.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    if (confirm('Are you sure you want to delete this book?')) {
-                        // Here you would typically send a delete request to a server
-                        alert('Book deleted successfully!');
-                    }
-                });
-            });
-            
-            // User form modal functionality
-            const userModal = document.getElementById('user-form-modal');
-            const addUserBtn = document.getElementById('add-user-btn');
-            const userForm = document.getElementById('user-form');
-            const userFormTitle = document.getElementById('user-form-title');
-            
-            // Open modal for new user
-            addUserBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                userFormTitle.textContent = 'Add New User';
-                userForm.reset();
-                document.getElementById('user-id').value = 'U' + Math.floor(Math.random() * 1000).toString().padStart(3, '0');
-                userModal.style.display = 'block';
-            });
-            
-            // Close user modal
-            document.querySelectorAll('.close-modal').forEach(closeBtn => {
-                closeBtn.addEventListener('click', function() {
-                    if (this.closest('#user-form-modal')) {
-                        userModal.style.display = 'none';
-                    }
-                });
-            });
-            
-            // Close user modal when clicking outside
-            window.addEventListener('click', function(e) {
-                if (e.target === userModal) {
-                    userModal.style.display = 'none';
-                }
-            });
-            
-            // Handle user form submission
-            userForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const userId = document.getElementById('user-id').value;
-                const userName = document.getElementById('user-name').value;
-                const userRole = document.getElementById('user-role').value;
-                const userEmail = document.getElementById('user-email').value;
-                const userPassword = document.getElementById('user-password').value;
-                const userConfirmPassword = document.getElementById('user-confirm-password').value;
-                
-                // Validate password if adding new user or changing password
-                if (userFormTitle.textContent === 'Add New User' || userPassword) {
-                    if (userPassword !== userConfirmPassword) {
-                        alert('Passwords do not match!');
-                        return;
-                    }
-                    
-                    if (userPassword.length < 6) {
-                        alert('Password must be at least 6 characters long!');
-                        return;
-                    }
-                }
-                
-                // Here you would typically send the data to a server
-                alert('User saved successfully!');
-                userModal.style.display = 'none';
-            });
-            
-            // Edit user functionality
-            const editUserButtons = document.querySelectorAll('[id^="edit-user-"]');
-            editUserButtons.forEach(button => {
-                button.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const userId = this.id.split('-')[2];
-                    const userRow = document.querySelector(`#users tbody tr:nth-child(${userId})`);
-                    
-                    // Populate form with user data
-                    document.getElementById('user-id').value = userRow.cells[0].textContent;
-                    document.getElementById('user-name').value = userRow.cells[1].textContent;
-                    document.getElementById('user-role').value = userRow.cells[2].textContent;
-                    document.getElementById('user-email').value = userRow.cells[3].textContent;
-                    
-                    // Clear password fields
-                    document.getElementById('user-password').value = '';
-                    document.getElementById('user-confirm-password').value = '';
-                    
-                    // Set form title
-                    userFormTitle.textContent = 'Edit User';
-                    
-                    // Show modal
-                    userModal.style.display = 'block';
-                });
-            });
-            
-            // Delete user functionality
-            const deleteUserButtons = document.querySelectorAll('[id^="delete-user-"]');
-            deleteUserButtons.forEach(button => {
-                button.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const userId = this.id.split('-')[2];
-                    const userRow = document.querySelector(`#users tbody tr:nth-child(${userId})`);
-                    const userName = userRow.cells[1].textContent;
-                    
-                    if (confirm(`Are you sure you want to delete user "${userName}"?`)) {
-                        // Here you would typically send a delete request to a server
-                        alert('User deleted successfully!');
-                    }
-                });
-            });
-            
-            // Borrow functionality
-            const borrowForm = document.getElementById('borrow-form');
-            const borrowStudentInput = document.getElementById('borrow-student');
-            const borrowBookInput = document.getElementById('borrow-book');
-            const studentSearchResults = document.getElementById('student-search-results');
-            const bookSearchResults = document.getElementById('book-search-results');
-            const dueDateInput = document.getElementById('due-date');
-            
-            // Set default due date to 14 days from now
-            const defaultDueDate = new Date();
-            defaultDueDate.setDate(defaultDueDate.getDate() + 14);
-            dueDateInput.value = defaultDueDate.toISOString().split('T')[0];
-            
-            // Student search functionality
-            borrowStudentInput.addEventListener('keyup', function() {
-                const searchTerm = this.value.toLowerCase();
-                const studentRows = document.querySelectorAll('#students tbody tr');
-                let results = '';
-                
-                if (searchTerm.length > 0) {
-                    studentRows.forEach(row => {
-                        const id = row.cells[0].textContent.toLowerCase();
-                        const name = row.cells[1].textContent.toLowerCase();
-                        
-                        if (id.includes(searchTerm) || name.includes(searchTerm)) {
-                            results += `<div class="search-result-item" data-id="${row.cells[0].textContent}" data-name="${row.cells[1].textContent}">
-                                ${row.cells[0].textContent} - ${row.cells[1].textContent}
-                            </div>`;
-                        }
-                    });
-                }
-                
-                studentSearchResults.innerHTML = results;
-                studentSearchResults.style.display = results ? 'block' : 'none';
-                
-                // Add click event to search results
-                document.querySelectorAll('#student-search-results .search-result-item').forEach(item => {
-                    item.addEventListener('click', function() {
-                        borrowStudentInput.value = this.getAttribute('data-name');
-                        studentSearchResults.style.display = 'none';
-                    });
-                });
-            });
-            
-            // Book search functionality
-            borrowBookInput.addEventListener('keyup', function() {
-                const searchTerm = this.value.toLowerCase();
-                const bookRows = document.querySelectorAll('#books tbody tr');
-                let results = '';
-                
-                if (searchTerm.length > 0) {
-                    bookRows.forEach(row => {
-                        const title = row.cells[2].textContent.toLowerCase();
-                        const author = row.cells[3].textContent.toLowerCase();
-                        const isbn = row.cells[1].textContent.toLowerCase();
-                        
-                        if (title.includes(searchTerm) || author.includes(searchTerm) || isbn.includes(searchTerm)) {
-                            results += `<div class="search-result-item" data-id="${row.cells[0].textContent}" data-title="${row.cells[2].textContent}">
-                                ${row.cells[2].textContent} by ${row.cells[3].textContent}
-                            </div>`;
-                        }
-                    });
-                }
-                
-                bookSearchResults.innerHTML = results;
-                bookSearchResults.style.display = results ? 'block' : 'none';
-                
-                // Add click event to search results
-                document.querySelectorAll('#book-search-results .search-result-item').forEach(item => {
-                    item.addEventListener('click', function() {
-                        borrowBookInput.value = this.getAttribute('data-title');
-                        bookSearchResults.style.display = 'none';
-                    });
-                });
-            });
-            
-            // Handle borrow form submission
-            borrowForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const student = borrowStudentInput.value;
-                const book = borrowBookInput.value;
-                const dueDate = dueDateInput.value;
-                
-                if (!student || !book || !dueDate) {
-                    alert('Please fill in all fields');
-                    return;
-                }
-                
-                // Here you would typically send the data to a server
-                alert(`Book "${book}" has been borrowed by "${student}" and is due on ${dueDate}`);
-                
-                // Reset form
-                borrowForm.reset();
-                dueDateInput.value = defaultDueDate.toISOString().split('T')[0];
-            });
-            
-            // Return book functionality
-            const returnButtons = document.querySelectorAll('[id^="return-book-"]');
-            returnButtons.forEach(button => {
-                button.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const bookId = this.id.split('-')[2];
-                    const bookRow = document.querySelector(`#loans .card:last-child tbody tr:nth-child(${bookId})`);
-                    
-                    const bookTitle = bookRow.cells[1].textContent;
-                    const studentName = bookRow.cells[2].textContent;
-                    
-                    if (confirm(`Are you sure you want to return "${bookTitle}" borrowed by "${studentName}"?`)) {
-                        // Here you would typically send a return request to a server
-                        alert('Book returned successfully!');
-                        
-                        // Move the book to return history
-                        const returnHistoryTable = document.querySelector('#returns tbody');
-                        const newRow = document.createElement('tr');
-                        
-                        // Generate a random return ID
-                        const returnId = 'R' + Math.floor(Math.random() * 1000).toString().padStart(3, '0');
-                        
-                        // Get current date for return date
-                        const returnDate = new Date().toISOString().split('T')[0];
-                        
-                        // Determine if return is on time or late
-                        const dueDate = new Date(bookRow.cells[4].textContent);
-                        const today = new Date();
-                        const isLate = today > dueDate;
-                        
-                        newRow.innerHTML = `
-                            <td>${returnId}</td>
-                            <td>${bookTitle}</td>
-                            <td>${studentName}</td>
-                            <td>${bookRow.cells[3].textContent}</td>
-                            <td>${returnDate}</td>
-                            <td><span class="status-badge ${isLate ? 'status-warning' : 'status-success'}">${isLate ? 'Late' : 'On Time'}</span></td>
-                        `;
-                        
-                        // Add the new row to the return history table
-                        returnHistoryTable.insertBefore(newRow, returnHistoryTable.firstChild);
-                        
-                        // Remove the book from the borrowed books table
-                        bookRow.remove();
-                    }
-                });
-            });
-            
-            // Close search results when clicking outside
-            document.addEventListener('click', function(e) {
-                if (!e.target.closest('.search-container')) {
-                    studentSearchResults.style.display = 'none';
-                    bookSearchResults.style.display = 'none';
-                }
-            });
-        });
-    </script>
+    <script src="assets/js/dashboard.js"></script>
 </body>
 </html>
