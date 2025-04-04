@@ -6,13 +6,15 @@
     <title>Marigold's Library Management System</title>
     <link rel="stylesheet" href="assets/css/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         /* Additional styles for the dashboard */
         .dashboard-container {
             display: flex;
-            min-height: calc(100vh - 80px); /* Adjusted to account for header height */
-            margin-top: 80px; /* Add margin to push content below header */
-            flex-direction: row; /* Default to row layout */
+            min-height: calc(100vh - 80px);
+            margin-top: 80px;
+            flex-direction: row;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
         }
         
         .sidebar {
@@ -129,101 +131,322 @@
         }
         
         .card {
-            background-color: #fff;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            padding: 20px;
+            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+            padding: 25px;
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #4CAF50, #45a049, #4CAF50);
+            background-size: 200% 100%;
+            animation: gradientMove 3s linear infinite;
+        }
+        
+        @keyframes gradientMove {
+            0% { background-position: 100% 0; }
+            100% { background-position: -100% 0; }
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card h2 {
+            color: #2c3e50;
+            font-size: 1.5rem;
             margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .card h2 i {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 1.8rem;
         }
         
         .stats-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
+            gap: 25px;
             margin-bottom: 30px;
         }
         
         .stat-card {
-            background-color: #fff;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            padding: 20px;
+            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+            padding: 25px;
             text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card:nth-child(1) {
+            background: linear-gradient(135deg, #ffffff 0%, #e8f5e9 100%);
+        }
+        
+        .stat-card:nth-child(2) {
+            background: linear-gradient(135deg, #ffffff 0%, #e3f2fd 100%);
+        }
+        
+        .stat-card:nth-child(3) {
+            background: linear-gradient(135deg, #ffffff 0%, #fff3e0 100%);
+        }
+        
+        .stat-card:nth-child(4) {
+            background: linear-gradient(135deg, #ffffff 0%, #ffebee 100%);
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.3));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-card:hover::before {
+            opacity: 1;
+        }
+        
+        .stat-card i {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            display: inline-block;
+            transition: transform 0.3s ease;
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+        }
+        
+        .stat-card:nth-child(1) i {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .stat-card:nth-child(2) i {
+            background: linear-gradient(45deg, #2196F3, #1976D2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .stat-card:nth-child(3) i {
+            background: linear-gradient(45deg, #FF9800, #F57C00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .stat-card:nth-child(4) i {
+            background: linear-gradient(45deg, #f44336, #d32f2f);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .stat-card:hover i {
+            transform: scale(1.1) rotate(5deg);
         }
         
         .stat-card h3 {
-            margin-top: 0;
-            color: #666;
+            color: #2c3e50;
+            font-size: 1.1rem;
+            margin: 15px 0;
+            font-weight: 500;
         }
         
         .stat-card .number {
             font-size: 2.5rem;
             font-weight: bold;
-            color: #4CAF50;
             margin: 10px 0;
+            background: linear-gradient(45deg, #2c3e50, #34495e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+        }
+        
+        .stat-card:nth-child(1) .number {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .stat-card:nth-child(2) .number {
+            background: linear-gradient(45deg, #2196F3, #1976D2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .stat-card:nth-child(3) .number {
+            background: linear-gradient(45deg, #FF9800, #F57C00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .stat-card:nth-child(4) .number {
+            background: linear-gradient(45deg, #f44336, #d32f2f);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         
         table {
             width: 100%;
-            border-collapse: collapse;
-        }
-        
-        table th, table td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 20px;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
         }
         
         table th {
-            background-color: #f8f8f8;
+            background: linear-gradient(145deg, #f8f9fa, #ffffff);
+            color: #2c3e50;
+            font-weight: 600;
+            padding: 15px;
+            text-align: left;
+            border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        table td {
+            padding: 15px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            color: #555;
+            transition: all 0.3s ease;
+        }
+        
+        table tr:hover td {
+            background: linear-gradient(90deg, rgba(76, 175, 80, 0.05), rgba(76, 175, 80, 0.1));
         }
         
         .btn {
-            display: inline-block;
-            padding: 8px 15px;
-            background-color: #4CAF50;
-            color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 12px;
+            padding: 12px 25px;
+            font-weight: 500;
             cursor: pointer;
-            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+            color: white;
+            margin: 10px 0;
         }
         
-        .btn:hover {
-            background-color: #45a049;
+        /* Primary action buttons (Add, Save, Confirm) */
+        .btn-primary {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.2);
         }
         
-        .btn-secondary {
-            background-color: #2196F3;
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.3);
         }
         
-        .btn-secondary:hover {
-            background-color: #0b7dda;
-        }
-        
+        /* Delete/Remove buttons */
         .btn-danger {
-            background-color: #f44336;
+            background: linear-gradient(45deg, #f44336, #d32f2f);
+            box-shadow: 0 4px 15px rgba(244, 67, 54, 0.2);
         }
         
         .btn-danger:hover {
-            background-color: #d32f2f;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(244, 67, 54, 0.3);
         }
         
-        .form-group {
-            margin-bottom: 15px;
+        /* Edit/Update buttons */
+        .btn-warning {
+            background: linear-gradient(45deg, #FF9800, #F57C00);
+            box-shadow: 0 4px 15px rgba(255, 152, 0, 0.2);
         }
         
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
+        .btn-warning:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 152, 0, 0.3);
+        }
+        
+        /* View/Details buttons */
+        .btn-info {
+            background: linear-gradient(45deg, #2196F3, #1976D2);
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.2);
+        }
+        
+        .btn-info:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(33, 150, 243, 0.3);
+        }
+        
+        /* Return/Back buttons */
+        .btn-secondary {
+            background: linear-gradient(45deg, #607D8B, #455A64);
+            box-shadow: 0 4px 15px rgba(96, 125, 139, 0.2);
+        }
+        
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(96, 125, 139, 0.3);
+        }
+        
+        /* Shine effect for all buttons */
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+        
+        .btn:hover::before {
+            left: 100%;
         }
         
         .form-group input, .form-group select, .form-group textarea {
             width: 100%;
-            padding: 8px 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            padding: 12px 15px;
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            background-color: #fff;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
         }
         
         /* Responsive styles */
@@ -441,32 +664,36 @@
                 
                 <div class="stats-container">
                     <div class="stat-card">
+                        <i class="fas fa-book-open fa-2x" style="color: #4CAF50; margin-bottom: 15px;"></i>
                         <h3>Total Books</h3>
                         <div class="number">1,245</div>
                     </div>
                     <div class="stat-card">
+                        <i class="fas fa-users fa-2x" style="color: #2196F3; margin-bottom: 15px;"></i>
                         <h3>Active Members</h3>
                         <div class="number">328</div>
                     </div>
                     <div class="stat-card">
+                        <i class="fas fa-hand-holding-book fa-2x" style="color: #FF9800; margin-bottom: 15px;"></i>
                         <h3>Books Loaned</h3>
                         <div class="number">87</div>
                     </div>
                     <div class="stat-card">
+                        <i class="fas fa-exclamation-circle fa-2x" style="color: #f44336; margin-bottom: 15px;"></i>
                         <h3>Overdue</h3>
                         <div class="number">12</div>
                     </div>
                 </div>
                 
                 <div class="card">
-                    <h2>Recent Activities</h2>
+                    <h2><i class="fas fa-history" style="color: #4CAF50; margin-right: 10px;"></i>Recent Activities</h2>
                     <table>
                         <thead>
                             <tr>
-                                <th>Date</th>
-                                <th>Activity</th>
-                                <th>Member</th>
-                                <th>Book</th>
+                                <th><i class="far fa-calendar-alt" style="margin-right: 5px;"></i>Date</th>
+                                <th><i class="fas fa-tasks" style="margin-right: 5px;"></i>Activity</th>
+                                <th><i class="fas fa-user" style="margin-right: 5px;"></i>Member</th>
+                                <th><i class="fas fa-book" style="margin-right: 5px;"></i>Book</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -510,7 +737,7 @@
                 <div class="dashboard-header">
                     <h1>Books Management</h1>
                     <div>
-                        <a href="#" class="btn" id="add-book-btn"><i class="material-icons-round">add</i> Add Book</a>
+                        <a href="#" class="btn btn-primary" id="add-book-btn"><i class="material-icons-round">add</i> Add Book</a>
                     </div>
                 </div>
                 
@@ -522,13 +749,13 @@
                     <table>
                         <thead>
                             <tr>
-                                <th>✅ Book ID</th>
-                                <th>ISBN</th>
-                                <th>📖 Title</th>
-                                <th>✍ Author</th>
-                                <th>📂 Category</th>
-                                <th>📚 Available Copies</th>
-                                <th>⚙ Actions</th>
+                                <th><i class="fas fa-fingerprint" style="margin-right: 5px;"></i>Book ID</th>
+                                <th><i class="fas fa-barcode" style="margin-right: 5px;"></i>ISBN</th>
+                                <th><i class="fas fa-book-open" style="margin-right: 5px;"></i>Title</th>
+                                <th><i class="fas fa-pen-fancy" style="margin-right: 5px;"></i>Author</th>
+                                <th><i class="fas fa-folder" style="margin-right: 5px;"></i>Category</th>
+                                <th><i class="fas fa-book-reader" style="margin-right: 5px;"></i>Available Copies</th>
+                                <th><i class="fas fa-cogs" style="margin-right: 5px;"></i>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -540,8 +767,15 @@
                                 <td>Fiction</td>
                                 <td>3</td>
                                 <td>
-                                    <a href="#" class="btn btn-secondary" id="edit-book-1">Edit</a>
-                                    <a href="#" class="btn btn-danger" id="delete-book-1">Delete</a>
+                                    <button type="button" class="btn btn-secondary" onclick="editBook('${book.id}')">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger" onclick="deleteBook('${book.id}')">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-info" onclick="viewBook('${book.id}')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
                                 </td>
                             </tr>
                             <tr>
@@ -552,8 +786,15 @@
                                 <td>Fiction</td>
                                 <td>2</td>
                                 <td>
-                                    <a href="#" class="btn btn-secondary" id="edit-book-2">Edit</a>
-                                    <a href="#" class="btn btn-danger" id="delete-book-2">Delete</a>
+                                    <button type="button" class="btn btn-secondary" onclick="editBook('${book.id}')">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger" onclick="deleteBook('${book.id}')">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-info" onclick="viewBook('${book.id}')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
                                 </td>
                             </tr>
                             <tr>
@@ -564,8 +805,15 @@
                                 <td>Science Fiction</td>
                                 <td>4</td>
                                 <td>
-                                    <a href="#" class="btn btn-secondary" id="edit-book-3">Edit</a>
-                                    <a href="#" class="btn btn-danger" id="delete-book-3">Delete</a>
+                                    <button type="button" class="btn btn-secondary" onclick="editBook('${book.id}')">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger" onclick="deleteBook('${book.id}')">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-info" onclick="viewBook('${book.id}')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
                                 </td>
                             </tr>
                             <tr>
@@ -576,8 +824,15 @@
                                 <td>Romance</td>
                                 <td>1</td>
                                 <td>
-                                    <a href="#" class="btn btn-secondary" id="edit-book-4">Edit</a>
-                                    <a href="#" class="btn btn-danger" id="delete-book-4">Delete</a>
+                                    <button type="button" class="btn btn-secondary" onclick="editBook('${book.id}')">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger" onclick="deleteBook('${book.id}')">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-info" onclick="viewBook('${book.id}')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
                                 </td>
                             </tr>
                             <tr>
@@ -588,8 +843,15 @@
                                 <td>Fantasy</td>
                                 <td>5</td>
                                 <td>
-                                    <a href="#" class="btn btn-secondary" id="edit-book-5">Edit</a>
-                                    <a href="#" class="btn btn-danger" id="delete-book-5">Delete</a>
+                                    <button type="button" class="btn btn-secondary" onclick="editBook('${book.id}')">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger" onclick="deleteBook('${book.id}')">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-info" onclick="viewBook('${book.id}')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
                                 </td>
                             </tr>
                         </tbody>
@@ -642,7 +904,9 @@
                                 <label for="book-description">Description</label>
                                 <textarea id="book-description" rows="3"></textarea>
                             </div>
-                            <button type="submit" class="btn">Save Book</button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save" style="margin-right: 5px;"></i>Save Changes
+                            </button>
                         </form>
                     </div>
                 </div>
@@ -653,7 +917,7 @@
                 <div class="dashboard-header">
                     <h1>Student Management</h1>
                     <div>
-                        <a href="#" class="btn" id="add-student-btn"><i class="material-icons-round">add</i> Register New Student</a>
+                        <a href="#" class="btn btn-primary" id="add-student-btn"><i class="material-icons-round">add</i> Register New Student</a>
                     </div>
                 </div>
                 
@@ -677,8 +941,15 @@
                                 <td>John Smith</td>
                                 <td>2</td>
                                 <td>
-                                    <a href="#" class="btn btn-secondary" id="edit-student-1">Edit</a>
-                                    <a href="#" class="btn btn-danger" id="delete-student-1">Delete</a>
+                                    <button type="button" class="btn btn-secondary" onclick="editStudent('${student.id}')">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger" onclick="deleteStudent('${student.id}')">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-info" onclick="viewStudent('${student.id}')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
                                 </td>
                             </tr>
                             <tr>
@@ -686,8 +957,15 @@
                                 <td>Emily Johnson</td>
                                 <td>1</td>
                                 <td>
-                                    <a href="#" class="btn btn-secondary" id="edit-student-2">Edit</a>
-                                    <a href="#" class="btn btn-danger" id="delete-student-2">Delete</a>
+                                    <button type="button" class="btn btn-secondary" onclick="editStudent('${student.id}')">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger" onclick="deleteStudent('${student.id}')">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-info" onclick="viewStudent('${student.id}')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
                                 </td>
                             </tr>
                             <tr>
@@ -695,8 +973,15 @@
                                 <td>Michael Brown</td>
                                 <td>0</td>
                                 <td>
-                                    <a href="#" class="btn btn-secondary" id="edit-student-3">Edit</a>
-                                    <a href="#" class="btn btn-danger" id="delete-student-3">Delete</a>
+                                    <button type="button" class="btn btn-secondary" onclick="editStudent('${student.id}')">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger" onclick="deleteStudent('${student.id}')">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-info" onclick="viewStudent('${student.id}')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
                                 </td>
                             </tr>
                             <tr>
@@ -704,8 +989,15 @@
                                 <td>Sarah Wilson</td>
                                 <td>3</td>
                                 <td>
-                                    <a href="#" class="btn btn-secondary" id="edit-student-4">Edit</a>
-                                    <a href="#" class="btn btn-danger" id="delete-student-4">Delete</a>
+                                    <button type="button" class="btn btn-secondary" onclick="editStudent('${student.id}')">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger" onclick="deleteStudent('${student.id}')">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-info" onclick="viewStudent('${student.id}')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
                                 </td>
                             </tr>
                             <tr>
@@ -713,8 +1005,15 @@
                                 <td>David Lee</td>
                                 <td>1</td>
                                 <td>
-                                    <a href="#" class="btn btn-secondary" id="edit-student-5">Edit</a>
-                                    <a href="#" class="btn btn-danger" id="delete-student-5">Delete</a>
+                                    <button type="button" class="btn btn-secondary" onclick="editStudent('${student.id}')">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger" onclick="deleteStudent('${student.id}')">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-info" onclick="viewStudent('${student.id}')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
                                 </td>
                             </tr>
                         </tbody>
@@ -745,9 +1044,11 @@
                             </div>
                             <div class="form-group">
                                 <label for="student-address">Address</label>
-                                <textarea id="student-address" rows="3"></textarea>
+                                <textarea id="student-address" rows="2"></textarea>
                             </div>
-                            <button type="submit" class="btn">Save Student</button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save" style="margin-right: 5px;"></i>Save Changes
+                            </button>
                         </form>
                     </div>
                 </div>
@@ -784,7 +1085,9 @@
                             <input type="date" id="due-date" required>
                         </div>
                         
-                        <button type="submit" class="btn" id="confirm-borrow-btn">Confirm Borrow</button>
+                        <button type="submit" class="btn btn-primary" id="confirm-borrow-btn">
+                            <i class="fas fa-check" style="margin-right: 5px;"></i>Confirm Borrow
+                        </button>
                     </form>
                 </div>
                 
@@ -816,7 +1119,9 @@
                                 <td>2023-06-29</td>
                                 <td><span class="status-badge status-active">Active</span></td>
                                 <td>
-                                    <a href="#" class="btn" id="return-book-1">Return</a>
+                                    <button type="button" class="btn btn-primary" onclick="returnBook('${book.id}')">
+                                        <i class="fas fa-check"></i>
+                                    </button>
                                 </td>
                             </tr>
                             <tr>
@@ -827,7 +1132,9 @@
                                 <td>2023-06-26</td>
                                 <td><span class="status-badge status-active">Active</span></td>
                                 <td>
-                                    <a href="#" class="btn" id="return-book-2">Return</a>
+                                    <button type="button" class="btn btn-primary" onclick="returnBook('${book.id}')">
+                                        <i class="fas fa-check"></i>
+                                    </button>
                                 </td>
                             </tr>
                             <tr>
@@ -838,7 +1145,9 @@
                                 <td>2023-06-24</td>
                                 <td><span class="status-badge status-overdue">Overdue</span></td>
                                 <td>
-                                    <a href="#" class="btn" id="return-book-3">Return</a>
+                                    <button type="button" class="btn btn-primary" onclick="returnBook('${book.id}')">
+                                        <i class="fas fa-check"></i>
+                                    </button>
                                 </td>
                             </tr>
                             <tr>
@@ -849,7 +1158,9 @@
                                 <td>2023-06-19</td>
                                 <td><span class="status-badge status-overdue">Overdue</span></td>
                                 <td>
-                                    <a href="#" class="btn" id="return-book-4">Return</a>
+                                    <button type="button" class="btn btn-primary" onclick="returnBook('${book.id}')">
+                                        <i class="fas fa-check"></i>
+                                    </button>
                                 </td>
                             </tr>
                         </tbody>
@@ -924,14 +1235,14 @@
                 </div>
                 
                 <div class="stats-container">
-                    <div class="stat-card">
-                        <h3>Books by Category</h3>
+                    <div class="card">
+                        <h2><i class="fas fa-chart-pie" style="color: #4CAF50; margin-right: 10px;"></i>Books by Category</h2>
                         <div style="height: 200px; background-color: #f5f5f5; display: flex; align-items: center; justify-content: center;">
                             Chart Placeholder
                         </div>
                     </div>
                     <div class="stat-card">
-                        <h3>Monthly Loans</h3>
+                        <h2><i class="fas fa-chart-line" style="color: #4CAF50; margin-right: 10px;"></i>Monthly Loans</h2>
                         <div style="height: 200px; background-color: #f5f5f5; display: flex; align-items: center; justify-content: center;">
                             Chart Placeholder
                         </div>
@@ -939,7 +1250,7 @@
                 </div>
                 
                 <div class="card">
-                    <h2>Popular Books</h2>
+                    <h2><i class="fas fa-star" style="color: #4CAF50; margin-right: 10px;"></i>Popular Books</h2>
                     <table>
                         <thead>
                             <tr>
@@ -1015,7 +1326,7 @@
                 </div>
                 
                 <div class="card">
-                    <h2>Loan Settings</h2>
+                    <h2><i class="fas fa-cog" style="color: #4CAF50; margin-right: 10px;"></i>Loan Settings</h2>
                     <form>
                         <div class="form-group">
                             <label for="loan-duration">Default Loan Duration (days)</label>
@@ -1029,7 +1340,9 @@
                             <label for="late-fee">Late Fee (per day)</label>
                             <input type="text" id="late-fee" value="$0.50">
                         </div>
-                        <button type="submit" class="btn">Save Changes</button>
+                        <button type="submit" class="btn btn-primary" style="margin-top: 20px;">
+                            <i class="fas fa-save" style="margin-right: 5px;"></i>Save Changes
+                        </button>
                     </form>
                 </div>
             </section>
@@ -1039,7 +1352,7 @@
                 <div class="dashboard-header">
                     <h1>User Management</h1>
                     <div>
-                        <a href="#" class="btn" id="add-user-btn"><i class="material-icons-round">add</i> Add New User</a>
+                        <a href="#" class="btn btn-primary" id="add-user-btn"><i class="material-icons-round">add</i> Add New User</a>
                     </div>
                 </div>
                 
@@ -1065,8 +1378,15 @@
                                 <td>Administrator</td>
                                 <td>admin@marigoldlibrary.com</td>
                                 <td>
-                                    <a href="#" class="btn btn-secondary" id="edit-user-1">Edit</a>
-                                    <a href="#" class="btn btn-danger" id="delete-user-1">Delete</a>
+                                    <button type="button" class="btn btn-secondary" onclick="editUser('${user.id}')">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger" onclick="deleteUser('${user.id}')">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-info" onclick="viewUser('${user.id}')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
                                 </td>
                             </tr>
                             <tr>
@@ -1075,8 +1395,15 @@
                                 <td>Librarian</td>
                                 <td>jane@marigoldlibrary.com</td>
                                 <td>
-                                    <a href="#" class="btn btn-secondary" id="edit-user-2">Edit</a>
-                                    <a href="#" class="btn btn-danger" id="delete-user-2">Delete</a>
+                                    <button type="button" class="btn btn-secondary" onclick="editUser('${user.id}')">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger" onclick="deleteUser('${user.id}')">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-info" onclick="viewUser('${user.id}')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
                                 </td>
                             </tr>
                             <tr>
@@ -1085,8 +1412,15 @@
                                 <td>Assistant</td>
                                 <td>john@marigoldlibrary.com</td>
                                 <td>
-                                    <a href="#" class="btn btn-secondary" id="edit-user-3">Edit</a>
-                                    <a href="#" class="btn btn-danger" id="delete-user-3">Delete</a>
+                                    <button type="button" class="btn btn-secondary" onclick="editUser('${user.id}')">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger" onclick="deleteUser('${user.id}')">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-info" onclick="viewUser('${user.id}')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
                                 </td>
                             </tr>
                             <tr>
@@ -1095,8 +1429,15 @@
                                 <td>Manager</td>
                                 <td>sarah@marigoldlibrary.com</td>
                                 <td>
-                                    <a href="#" class="btn btn-secondary" id="edit-user-4">Edit</a>
-                                    <a href="#" class="btn btn-danger" id="delete-user-4">Delete</a>
+                                    <button type="button" class="btn btn-secondary" onclick="editUser('${user.id}')">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger" onclick="deleteUser('${user.id}')">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-info" onclick="viewUser('${user.id}')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
                                 </td>
                             </tr>
                             <tr>
@@ -1105,8 +1446,15 @@
                                 <td>Staff</td>
                                 <td>michael@marigoldlibrary.com</td>
                                 <td>
-                                    <a href="#" class="btn btn-secondary" id="edit-user-5">Edit</a>
-                                    <a href="#" class="btn btn-danger" id="delete-user-5">Delete</a>
+                                    <button type="button" class="btn btn-secondary" onclick="editUser('${user.id}')">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger" onclick="deleteUser('${user.id}')">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-info" onclick="viewUser('${user.id}')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
                                 </td>
                             </tr>
                         </tbody>
@@ -1151,7 +1499,9 @@
                                 <label for="user-confirm-password">Confirm Password</label>
                                 <input type="password" id="user-confirm-password">
                             </div>
-                            <button type="submit" class="btn">Save User</button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save" style="margin-right: 5px;"></i>Save Changes
+                            </button>
                         </form>
                     </div>
                 </div>
