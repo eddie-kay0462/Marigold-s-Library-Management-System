@@ -11,9 +11,14 @@ class Book {
     public $title;
     public $author;
     public $category_id;
+    public $publisher;
+    public $publication_year;
+    public $edition;
     public $description;
+    public $cover_image;
     public $available_copies;
     public $total_copies;
+    public $location;
 
     public function __construct($db) {
         $this->conn = $db;
@@ -43,9 +48,11 @@ class Book {
     // Create book
     public function create() {
         $query = "INSERT INTO {$this->table} 
-                  (isbn, title, author, category_id, description, available_copies, total_copies) 
+                  (isbn, title, author, category_id, publisher, publication_year, 
+                   edition, description, cover_image, available_copies, total_copies, location) 
                   VALUES 
-                  (:isbn, :title, :author, :category_id, :description, :available_copies, :total_copies)";
+                  (:isbn, :title, :author, :category_id, :publisher, :publication_year, 
+                   :edition, :description, :cover_image, :available_copies, :total_copies, :location)";
         $stmt = $this->conn->prepare($query);
         
         // Set default values if not provided
@@ -57,9 +64,14 @@ class Book {
         $stmt->bindParam(':title', $this->title);
         $stmt->bindParam(':author', $this->author);
         $stmt->bindParam(':category_id', $this->category_id);
+        $stmt->bindParam(':publisher', $this->publisher);
+        $stmt->bindParam(':publication_year', $this->publication_year);
+        $stmt->bindParam(':edition', $this->edition);
         $stmt->bindParam(':description', $this->description);
+        $stmt->bindParam(':cover_image', $this->cover_image);
         $stmt->bindParam(':available_copies', $this->available_copies);
         $stmt->bindParam(':total_copies', $this->total_copies);
+        $stmt->bindParam(':location', $this->location);
         
         if($stmt->execute()) {
             return true;
