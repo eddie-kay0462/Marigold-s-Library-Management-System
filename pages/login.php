@@ -12,14 +12,14 @@
     <header class="header">
         <div class="nav-container">
             <div class="logo">
-                <a href="index.html">
+                <a href="index.php">
                     <img src="../assets/images/logo.png" alt="Margold Library Logo">
                 </a>
             </div>
             <nav class="main-nav">
                 <ul>
-                    <li><a href="../index.html">Home</a></li>
-                    <li><a href="../pages/dashboard.html">Dashboard</a></li>
+                    <li><a href="../index.php">Home</a></li>
+                    <li><a href="dashboard.php">Dashboard</a></li>
                     <li><a href="../pages/about.html">About</a></li>
                     <li><a href="../pages/contact.html">Contact</a></li>
                 </ul>
@@ -34,7 +34,9 @@
                 <p>Login to access your library account</p>
             </div>
 
-            <form class="auth-form">
+            <form class="auth-form" action="../api/auth.php" method="POST">
+                <input type="hidden" name="login" value="1">
+
                 <div class="form-group">
                     <label for="username">Username</label>
                     <input type="text" id="username" name="username" required>
@@ -52,14 +54,14 @@
                 <button type="submit" class="auth-button">Login</button>
 
                 <div class="auth-footer">
-                    <p>Don't have an account? <a href="signup.html">Sign up</a></p>
+                    <p>Don't have an account? <a href="signup.php">Sign up</a></p>
                 </div>
             </form>
         </div>
     </div>
 
     <footer class="page-footer">
-        <p>© 2024 Margold Montessori School Library. All rights reserved.</p>
+        <p>© 2025 Margold Montessori School Library. All rights reserved.</p>
     </footer>
 </body>
 </html> 

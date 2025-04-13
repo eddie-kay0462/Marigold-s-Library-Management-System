@@ -1,3 +1,16 @@
+<?php
+require_once 'config/config.php';
+
+// Redirect to login page if not logged in (for protected pages)
+if (basename($_SERVER['PHP_SELF']) !== 'login.php' && 
+    basename($_SERVER['PHP_SELF']) !== 'signup.php' && 
+    basename($_SERVER['PHP_SELF']) !== 'index.php' && 
+    !isLoggedIn()) {
+    redirect('pages/login.php');
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -56,7 +69,7 @@
         </div>
 
         <div class="cta-section">
-            <a href="pages/login.html" class="cta-button">Login to Library</a>
+            <a href="pages/login.php" class="cta-button">Login to Library</a>
             <a href="#" class="cta-button secondary">Browse Catalog</a>
         </div>
 

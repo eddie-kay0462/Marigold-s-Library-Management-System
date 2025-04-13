@@ -34,7 +34,9 @@
                 <p>Join our library community</p>
             </div>
 
-            <form class="auth-form">
+            <form class="auth-form" action="../api/auth.php" method="POST">
+                <input type="hidden" name="register" value="1">
+                
                 <div class="form-row">
                     <div class="form-group">
                         <label for="firstname">First Name</label>
@@ -77,7 +79,7 @@
     </div>
 
     <footer class="page-footer">
-        <p>© 2024 Margold Montessori School Library. All rights reserved.</p>
+        <p>© 2025 Margold Montessori School Library. All rights reserved.</p>
     </footer>
 </body>
 </html> 

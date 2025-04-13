@@ -1,3 +1,11 @@
+<?php
+session_start();
+if (!isset($_SESSION['user_id'])) {
+    header('Location: login.html');
+    exit;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -519,5 +527,7 @@
             <p>&copy; 2023 Marigold's Library. All rights reserved.</p>
         </div>
     </footer>
+    
+    <script src="../assets/js/ebooks.js"></script>
 </body>
 </html> 
