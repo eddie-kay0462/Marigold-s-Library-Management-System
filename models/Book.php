@@ -11,6 +11,7 @@ class Book {
     public $title;
     public $author;
     public $category_id;
+    public $description;
     public $available_copies;
     public $total_copies;
 
@@ -41,15 +42,22 @@ class Book {
 
     // Create book
     public function create() {
-        $query = "INSERT INTO {$this->table} (isbn, title, author, category_id, available_copies, total_copies) 
-                  VALUES (:isbn, :title, :author, :category_id, :available_copies, :total_copies)";
+        $query = "INSERT INTO {$this->table} 
+                  (isbn, title, author, category_id, description, available_copies, total_copies) 
+                  VALUES 
+                  (:isbn, :title, :author, :category_id, :description, :available_copies, :total_copies)";
         $stmt = $this->conn->prepare($query);
+        
+        // Set default values if not provided
+        $this->available_copies = $this->available_copies ?? 0;
+        $this->total_copies = $this->total_copies ?? 0;
         
         // Bind parameters
         $stmt->bindParam(':isbn', $this->isbn);
         $stmt->bindParam(':title', $this->title);
         $stmt->bindParam(':author', $this->author);
         $stmt->bindParam(':category_id', $this->category_id);
+        $stmt->bindParam(':description', $this->description);
         $stmt->bindParam(':available_copies', $this->available_copies);
         $stmt->bindParam(':total_copies', $this->total_copies);
         
