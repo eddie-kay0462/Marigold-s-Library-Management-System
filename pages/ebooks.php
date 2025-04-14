@@ -1,8 +1,8 @@
 <?php
 session_start();
 if (!isset($_SESSION['user_id'])) {
-    header('Location: login.html');
-    exit;
+    header('Location: login.php');
+    exit();
 }
 ?>
 
@@ -11,9 +11,10 @@ if (!isset($_SESSION['user_id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E-Books - Marigold's Library Management System</title>
-    <link rel="stylesheet" href="../assets/css/styles.css">
+    <title>E-Books - Margold Montessori Library</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="stylesheet" href="../assets/css/ebooks.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         :root {
@@ -366,167 +367,182 @@ if (!isset($_SESSION['user_id'])) {
                 padding: 20px;
             }
         }
+
+        .page-wrapper {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .content-wrapper {
+            flex: 1;
+            padding: 20px;
+        }
+
+        .page-footer {
+            background-color: var(--white);
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: auto;
+            border-top: 1px solid var(--gray-medium);
+            width: 100%;
+            position: relative;
+            bottom: 0;
+        }
+
+        .page-footer p {
+            color: var(--text-dark);
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        main {
+            flex: 1 0 auto;
+        }
     </style>
 </head>
 <body>
-    <header>
-        <div class="header-content">
-            <div class="logo">
-                <img src="../assets/images/logo.png" alt="Marigold's Library Logo">
-                <h1>Marigold's Library</h1>
+    <div class="page-wrapper">
+        <header class="header">
+            <div class="nav-container">
+                <div class="logo">
+                    <a href="../index.php">
+                        <img src="../assets/images/logo.png" alt="Margold Library Logo">
+                    </a>
+                </div>
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="../index.php">Home</a></li>
+                        <li><a href="../pages/dashboard.php">Dashboard</a></li>
+                        <li><a href="../pages/about.php">About</a></li>
+                        <li><a href="../pages/contact.php">Contact</a></li>
+                    </ul>
+                </nav>
             </div>
-            <nav>
-                <ul>
-                    <li><a href="../index.html">Home</a></li>
-                    <li><a href="../pages/dashboard.html">Dashboard</a></li>
-                    <li><a href="../pages/about.html">About</a></li>
-                    <li><a href="../pages/contact.html">Contact</a></li>
-                </ul>
-            </nav>
+        </header>
+
+        <div class="content-wrapper">
+            <div class="ebooks-container">
+                <a href="../pages/dashboard.php" class="back-to-dashboard">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+
+                <div class="ebooks-header">
+                    <h1><i class="fas fa-tablet-alt"></i> Digital Library</h1>
+                    <p>Access our collection of e-books and digital resources</p>
+                </div>
+
+                <div class="category-section">
+                    <div class="category-header">
+                        <i class="fas fa-book-open"></i>
+                        <h2>Academic Books</h2>
+                    </div>
+                    <div class="ebooks-grid">
+                        <a href="https://drive.google.com/file/d/your-file-id/view" target="_blank" class="ebook-card">
+                            <div class="ebook-icon">
+                                <i class="fas fa-graduation-cap"></i>
+                            </div>
+                            <h3 class="ebook-title">Introduction to Computer Science</h3>
+                            <p class="ebook-description">A comprehensive guide to computer science fundamentals, algorithms, and programming concepts.</p>
+                            <span class="ebook-link">Access Book <i class="fas fa-external-link-alt"></i></span>
+                        </a>
+
+                        <a href="https://drive.google.com/file/d/your-file-id/view" target="_blank" class="ebook-card">
+                            <div class="ebook-icon">
+                                <i class="fas fa-flask"></i>
+                            </div>
+                            <h3 class="ebook-title">Physics Principles</h3>
+                            <p class="ebook-description">Explore the fundamental principles of physics with detailed explanations and examples.</p>
+                            <span class="ebook-link">Access Book <i class="fas fa-external-link-alt"></i></span>
+                        </a>
+
+                        <a href="https://drive.google.com/file/d/your-file-id/view" target="_blank" class="ebook-card">
+                            <div class="ebook-icon">
+                                <i class="fas fa-calculator"></i>
+                            </div>
+                            <h3 class="ebook-title">Advanced Mathematics</h3>
+                            <p class="ebook-description">A comprehensive guide to advanced mathematical concepts and problem-solving techniques.</p>
+                            <span class="ebook-link">Access Book <i class="fas fa-external-link-alt"></i></span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="category-section">
+                    <div class="category-header">
+                        <i class="fas fa-book"></i>
+                        <h2>Literature</h2>
+                    </div>
+                    <div class="ebooks-grid">
+                        <a href="https://drive.google.com/file/d/your-file-id/view" target="_blank" class="ebook-card">
+                            <div class="ebook-icon">
+                                <i class="fas fa-feather-alt"></i>
+                            </div>
+                            <h3 class="ebook-title">Classic Novels Collection</h3>
+                            <p class="ebook-description">A collection of timeless literary masterpieces from renowned authors around the world.</p>
+                            <span class="ebook-link">Access Book <i class="fas fa-external-link-alt"></i></span>
+                        </a>
+
+                        <a href="https://drive.google.com/file/d/your-file-id/view" target="_blank" class="ebook-card">
+                            <div class="ebook-icon">
+                                <i class="fas fa-pen"></i>
+                            </div>
+                            <h3 class="ebook-title">Poetry Anthology</h3>
+                            <p class="ebook-description">A beautiful collection of poems from various poets and literary movements.</p>
+                            <span class="ebook-link">Access Book <i class="fas fa-external-link-alt"></i></span>
+                        </a>
+
+                        <a href="https://drive.google.com/file/d/your-file-id/view" target="_blank" class="ebook-card">
+                            <div class="ebook-icon">
+                                <i class="fas fa-theater-masks"></i>
+                            </div>
+                            <h3 class="ebook-title">Drama Collection</h3>
+                            <p class="ebook-description">A collection of classic plays and dramatic works from renowned playwrights.</p>
+                            <span class="ebook-link">Access Book <i class="fas fa-external-link-alt"></i></span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="category-section">
+                    <div class="category-header">
+                        <i class="fas fa-laptop-code"></i>
+                        <h2>Technology</h2>
+                    </div>
+                    <div class="ebooks-grid">
+                        <a href="https://drive.google.com/file/d/your-file-id/view" target="_blank" class="ebook-card">
+                            <div class="ebook-icon">
+                                <i class="fas fa-code"></i>
+                            </div>
+                            <h3 class="ebook-title">Web Development Guide</h3>
+                            <p class="ebook-description">Learn modern web development techniques and best practices.</p>
+                            <span class="ebook-link">Access Book <i class="fas fa-external-link-alt"></i></span>
+                        </a>
+
+                        <a href="https://drive.google.com/file/d/your-file-id/view" target="_blank" class="ebook-card">
+                            <div class="ebook-icon">
+                                <i class="fas fa-mobile-alt"></i>
+                            </div>
+                            <h3 class="ebook-title">Mobile App Development</h3>
+                            <p class="ebook-description">A comprehensive guide to developing mobile applications for iOS and Android.</p>
+                            <span class="ebook-link">Access Book <i class="fas fa-external-link-alt"></i></span>
+                        </a>
+
+                        <a href="https://drive.google.com/file/d/your-file-id/view" target="_blank" class="ebook-card">
+                            <div class="ebook-icon">
+                                <i class="fas fa-database"></i>
+                            </div>
+                            <h3 class="ebook-title">Database Management</h3>
+                            <p class="ebook-description">Learn about database design, SQL, and database management systems.</p>
+                            <span class="ebook-link">Access Book <i class="fas fa-external-link-alt"></i></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
-    </header>
 
-    <div class="ebooks-container">
-        <a href="../pages/dashboard.html" class="back-to-dashboard">
-            <i class="fas fa-arrow-left"></i> Back to Dashboard
-        </a>
-
-        <div class="ebooks-header">
-            <h1><i class="fas fa-tablet-alt"></i> Digital Library</h1>
-            <p>Access our collection of e-books and digital resources</p>
-        </div>
-
-        <div class="category-section">
-            <div class="category-header">
-                <i class="fas fa-book-open"></i>
-                <h2>Academic Books</h2>
-            </div>
-            <div class="ebooks-grid">
-                <a href="https://drive.google.com/file/d/your-file-id/view" target="_blank" class="ebook-card">
-                    <div class="ebook-icon">
-                        <i class="fas fa-graduation-cap"></i>
-                    </div>
-                    <h3 class="ebook-title">Introduction to Computer Science</h3>
-                    <p class="ebook-description">A comprehensive guide to computer science fundamentals, algorithms, and programming concepts.</p>
-                    <span class="ebook-link">Access Book <i class="fas fa-external-link-alt"></i></span>
-                </a>
-
-                <a href="https://drive.google.com/file/d/your-file-id/view" target="_blank" class="ebook-card">
-                    <div class="ebook-icon">
-                        <i class="fas fa-flask"></i>
-                    </div>
-                    <h3 class="ebook-title">Physics Principles</h3>
-                    <p class="ebook-description">Explore the fundamental principles of physics with detailed explanations and examples.</p>
-                    <span class="ebook-link">Access Book <i class="fas fa-external-link-alt"></i></span>
-                </a>
-
-                <a href="https://drive.google.com/file/d/your-file-id/view" target="_blank" class="ebook-card">
-                    <div class="ebook-icon">
-                        <i class="fas fa-calculator"></i>
-                    </div>
-                    <h3 class="ebook-title">Advanced Mathematics</h3>
-                    <p class="ebook-description">A comprehensive guide to advanced mathematical concepts and problem-solving techniques.</p>
-                    <span class="ebook-link">Access Book <i class="fas fa-external-link-alt"></i></span>
-                </a>
-            </div>
-        </div>
-
-        <div class="category-section">
-            <div class="category-header">
-                <i class="fas fa-book"></i>
-                <h2>Literature</h2>
-            </div>
-            <div class="ebooks-grid">
-                <a href="https://drive.google.com/file/d/your-file-id/view" target="_blank" class="ebook-card">
-                    <div class="ebook-icon">
-                        <i class="fas fa-feather-alt"></i>
-                    </div>
-                    <h3 class="ebook-title">Classic Novels Collection</h3>
-                    <p class="ebook-description">A collection of timeless literary masterpieces from renowned authors around the world.</p>
-                    <span class="ebook-link">Access Book <i class="fas fa-external-link-alt"></i></span>
-                </a>
-
-                <a href="https://drive.google.com/file/d/your-file-id/view" target="_blank" class="ebook-card">
-                    <div class="ebook-icon">
-                        <i class="fas fa-pen"></i>
-                    </div>
-                    <h3 class="ebook-title">Poetry Anthology</h3>
-                    <p class="ebook-description">A beautiful collection of poems from various poets and literary movements.</p>
-                    <span class="ebook-link">Access Book <i class="fas fa-external-link-alt"></i></span>
-                </a>
-
-                <a href="https://drive.google.com/file/d/your-file-id/view" target="_blank" class="ebook-card">
-                    <div class="ebook-icon">
-                        <i class="fas fa-theater-masks"></i>
-                    </div>
-                    <h3 class="ebook-title">Drama Collection</h3>
-                    <p class="ebook-description">A collection of classic plays and dramatic works from renowned playwrights.</p>
-                    <span class="ebook-link">Access Book <i class="fas fa-external-link-alt"></i></span>
-                </a>
-            </div>
-        </div>
-
-        <div class="category-section">
-            <div class="category-header">
-                <i class="fas fa-laptop-code"></i>
-                <h2>Technology</h2>
-            </div>
-            <div class="ebooks-grid">
-                <a href="https://drive.google.com/file/d/your-file-id/view" target="_blank" class="ebook-card">
-                    <div class="ebook-icon">
-                        <i class="fas fa-code"></i>
-                    </div>
-                    <h3 class="ebook-title">Web Development Guide</h3>
-                    <p class="ebook-description">Learn modern web development techniques and best practices.</p>
-                    <span class="ebook-link">Access Book <i class="fas fa-external-link-alt"></i></span>
-                </a>
-
-                <a href="https://drive.google.com/file/d/your-file-id/view" target="_blank" class="ebook-card">
-                    <div class="ebook-icon">
-                        <i class="fas fa-mobile-alt"></i>
-                    </div>
-                    <h3 class="ebook-title">Mobile App Development</h3>
-                    <p class="ebook-description">A comprehensive guide to developing mobile applications for iOS and Android.</p>
-                    <span class="ebook-link">Access Book <i class="fas fa-external-link-alt"></i></span>
-                </a>
-
-                <a href="https://drive.google.com/file/d/your-file-id/view" target="_blank" class="ebook-card">
-                    <div class="ebook-icon">
-                        <i class="fas fa-database"></i>
-                    </div>
-                    <h3 class="ebook-title">Database Management</h3>
-                    <p class="ebook-description">Learn about database design, SQL, and database management systems.</p>
-                    <span class="ebook-link">Access Book <i class="fas fa-external-link-alt"></i></span>
-                </a>
-            </div>
-        </div>
+        <footer class="page-footer">
+            <p>© 2025 Margold Montessori School Library. All rights reserved.</p>
+        </footer>
     </div>
-
-    <footer>
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>Marigold's Library</h3>
-                <p>Your trusted source for knowledge and learning.</p>
-            </div>
-            <div class="footer-section">
-                <h3>Quick Links</h3>
-                <ul>
-                    <li><a href="../index.html">Home</a></li>
-                    <li><a href="../pages/dashboard.html">Dashboard</a></li>
-                    <li><a href="../pages/about.html">About</a></li>
-                    <li><a href="../pages/contact.html">Contact</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h3>Contact Us</h3>
-                <p>Email: info@marigoldlibrary.com</p>
-                <p>Phone: (123) 456-7890</p>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2023 Marigold's Library. All rights reserved.</p>
-        </div>
-    </footer>
     
     <script src="../assets/js/ebooks.js"></script>
 </body>

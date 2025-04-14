@@ -5,7 +5,7 @@ require_once '../config/database.php';
 
 // Check if user is logged in
 if (!isLoggedIn()) {
-    redirect('pages/login.html');
+    redirect('pages/login.php');
 }
 
 // Get all students

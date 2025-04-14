@@ -685,10 +685,10 @@ if (!isset($_SESSION['user_id'])) {
             </div>
             <nav class="main-nav">
                 <ul>
-                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="../index.php">Home</a></li>
                     <li><a href="#catalog">Catalog</a></li>
-                    <li><a href="../pages/ebooks.html" class="ebook-link"><i class="fas fa-tablet-alt"></i> Access E-Books</a></li>
-                    <li><a href="../pages/contact.html">Contact</a></li>
+                    <li><a href="../pages/ebooks.php" class="ebook-link"><i class="fas fa-tablet-alt"></i> Access E-Books</a></li>
+                    <li><a href="../pages/contact.php">Contact</a></li>
                 </ul>
             </nav>
         </div>

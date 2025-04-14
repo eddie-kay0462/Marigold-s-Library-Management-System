@@ -44,24 +44,49 @@ class User {
 
     // Create user
     public function create() {
-        $query = "INSERT INTO {$this->table} (username, password, first_name, last_name, email, role_id) 
-                  VALUES (:username, :password, :first_name, :last_name, :email, :role_id)";
-        $stmt = $this->conn->prepare($query);
-        
-        // Hash password
-        $hashed_password = password_hash($this->password, PASSWORD_DEFAULT);
-        
-        // Bind parameters
-        $stmt->bindParam(':username', $this->username);
-        $stmt->bindParam(':password', $hashed_password);
-        $stmt->bindParam(':first_name', $this->first_name);
-        $stmt->bindParam(':last_name', $this->last_name);
-        $stmt->bindParam(':email', $this->email);
-        $stmt->bindParam(':role_id', $this->role_id);
-        
-        if($stmt->execute()) {
-            return true;
+        try {
+            // Check if username already exists
+            $check_query = "SELECT user_id FROM users WHERE username = ?";
+            $check_stmt = $this->conn->prepare($check_query);
+            $check_stmt->execute([$this->username]);
+            
+            if ($check_stmt->rowCount() > 0) {
+                throw new Exception('Username already exists');
+            }
+
+            // Check if email already exists
+            $check_query = "SELECT user_id FROM users WHERE email = ?";
+            $check_stmt = $this->conn->prepare($check_query);
+            $check_stmt->execute([$this->email]);
+            
+            if ($check_stmt->rowCount() > 0) {
+                throw new Exception('Email already exists');
+            }
+
+            // Insert new user
+            $query = "INSERT INTO users (username, password, first_name, last_name, email, role_id) 
+                      VALUES (:username, :password, :first_name, :last_name, :email, :role_id)";
+            
+            $stmt = $this->conn->prepare($query);
+            
+            // Hash password
+            $hashed_password = password_hash($this->password, PASSWORD_DEFAULT);
+            
+            // Bind parameters
+            $stmt->bindParam(':username', $this->username);
+            $stmt->bindParam(':password', $hashed_password);
+            $stmt->bindParam(':first_name', $this->first_name);
+            $stmt->bindParam(':last_name', $this->last_name);
+            $stmt->bindParam(':email', $this->email);
+            $stmt->bindParam(':role_id', $this->role_id);
+            
+            if($stmt->execute()) {
+                return true;
+            }
+            
+            throw new Exception('Failed to create account');
+        } catch (PDOException $e) {
+            throw new Exception('Database error: ' . $e->getMessage());
         }
-        return false;
     }
 }

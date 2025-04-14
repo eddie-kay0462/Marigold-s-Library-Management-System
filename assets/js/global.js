@@ -2,16 +2,16 @@
 
 // Check if user is logged in
 function checkAuth() {
-    fetch('../api/auth.php?check=1')
+    fetch('../api/auth.php')
         .then(response => response.json())
         .then(data => {
-            if (!data.authenticated) {
-                window.location.href = '../pages/login.html';
+            if (!data.loggedIn) {
+                window.location.href = '../pages/login.php';
             }
         })
         .catch(error => {
-            console.error('Auth check error:', error);
-            window.location.href = '../pages/login.html';
+            console.error('Error checking auth:', error);
+            window.location.href = '../pages/login.php';
         });
 }
 
@@ -66,10 +66,10 @@ function logout() {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                window.location.href = '../index.html';
+                window.location.href = '../index.php';
             }
         })
-        .catch(error => console.error('Logout error:', error));
+        .catch(error => console.error('Error during logout:', error));
 }
 
 // Display current user info

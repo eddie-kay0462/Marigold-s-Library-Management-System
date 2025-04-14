@@ -1,7 +1,7 @@
 <?php
 class Database {
     private $host = "localhost";
-    private $db_name = "marigold_library";
+    private $db_name = "marigold_db";
     private $username = "root";
     private $password = "";
     private $conn;

@@ -3,6 +3,11 @@ require_once '../config/config.php';
 require_once '../models/User.php';
 require_once '../config/database.php';
 
+// Start the session if not already started
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 // Handle login form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
     $database = new Database();
@@ -19,10 +24,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
         $_SESSION['name'] = $user->first_name . ' ' . $user->last_name;
         $_SESSION['role_id'] = $user->role_id;
         
-        redirect('pages/dashboard.html');
+        redirect('pages/dashboard.php');
     } else {
         $_SESSION['error'] = 'Invalid username or password';
-        redirect('pages/login.html');
+        redirect('pages/login.php');
     }
 }
 
@@ -41,15 +46,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register'])) {
     
     if ($user->create()) {
         $_SESSION['success'] = 'Account created successfully. Please login.';
-        redirect('pages/login.html');
+        redirect('pages/login.php');
     } else {
         $_SESSION['error'] = 'Failed to create account';
-        redirect('pages/signup.html');
+        redirect('pages/signup.php');
     }
 }
 
 // Handle logout
 if (isset($_GET['logout'])) {
     session_destroy();
-    redirect('index.html');
+    redirect('index.php');
 }
