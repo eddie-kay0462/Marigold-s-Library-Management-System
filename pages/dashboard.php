@@ -18,7 +18,7 @@ $bookCount = 0;
 
 try {
     // Count staff (users who are not students)
-    $staffQuery = "SELECT COUNT(*) as count FROM users WHERE role_id != 5 AND is_active = 1";
+    $staffQuery = "SELECT COUNT(*) as count FROM users WHERE is_active = 1";
     $staffStmt = $conn->query($staffQuery);
     $staffCount = $staffStmt->fetch(PDO::FETCH_ASSOC)['count'];
 
