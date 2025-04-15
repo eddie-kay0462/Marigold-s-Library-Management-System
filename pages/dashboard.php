@@ -53,6 +53,7 @@ try {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-material-ui/material-ui.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="../assets/js/dashboard.js"></script>
+    <script src="../assets/js/bookSearch.js"></script>
     <style>
         /* Additional styles for the dashboard */
         .dashboard-container {

@@ -40,6 +40,144 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+// Global function to filter books
+function filterBooks() {
+    const searchInput = document.getElementById('book-search');
+    const searchTerm = searchInput.value.toLowerCase().trim();
+    const tbody = document.querySelector('#books table tbody');
+    
+    if (!tbody || !searchInput) return;
+    
+    const rows = tbody.getElementsByTagName('tr');
+    let found = false;
+
+    // Remove any existing "no results" message
+    const noResults = tbody.querySelector('.no-results');
+    if (noResults) {
+        noResults.remove();
+    }
+
+    // If search is empty, show all rows
+    if (searchTerm === '') {
+        Array.from(rows).forEach(row => {
+            if (!row.classList.contains('no-results')) {
+                row.style.display = '';
+            }
+        });
+        return;
+    }
+
+    // Loop through all rows
+    Array.from(rows).forEach(row => {
+        if (row.classList.contains('no-results')) return;
+
+        const cells = row.getElementsByTagName('td');
+        if (cells.length === 0) return;
+
+        // Check each column separately for better matching
+        const bookId = cells[0].textContent.toLowerCase();
+        const isbn = cells[1].textContent.toLowerCase();
+        const title = cells[2].textContent.toLowerCase();
+        const author = cells[3].textContent.toLowerCase();
+        const category = cells[4].textContent.toLowerCase();
+
+        // Determine if this row should be shown
+        const showRow = 
+            (searchTerm.length >= 2 && ( // Only search if at least 2 characters
+                bookId.includes(searchTerm) ||
+                isbn.includes(searchTerm) ||
+                title.includes(searchTerm) ||
+                author.includes(searchTerm) ||
+                category.includes(searchTerm)
+            )) || 
+            (searchTerm.length >= 3 && ( // More thorough search for 3+ characters
+                title.split(' ').some(word => word.startsWith(searchTerm)) ||
+                author.split(' ').some(word => word.startsWith(searchTerm)) ||
+                category.split(' ').some(word => word.startsWith(searchTerm))
+            ));
+
+        if (showRow) {
+            row.style.display = '';
+            found = true;
+            
+            // Highlight matching text
+            highlightText(cells[2], searchTerm); // Highlight title
+            highlightText(cells[3], searchTerm); // Highlight author
+            highlightText(cells[4], searchTerm); // Highlight category
+        } else {
+            row.style.display = 'none';
+            
+            // Remove any existing highlights
+            cells[2].innerHTML = cells[2].textContent;
+            cells[3].innerHTML = cells[3].textContent;
+            cells[4].innerHTML = cells[4].textContent;
+        }
+    });
+
+    // Show no results message if nothing found
+    if (!found && searchTerm !== '') {
+        const noResultsRow = document.createElement('tr');
+        noResultsRow.className = 'no-results';
+        noResultsRow.innerHTML = `
+            <td colspan="7" class="text-center">
+                <div class="no-results-message">
+                    <i class="fas fa-search" style="margin-right: 10px;"></i>
+                    No books found matching "${searchTerm}"
+                </div>
+            </td>`;
+        tbody.appendChild(noResultsRow);
+    }
+}
+
+// Helper function to highlight matching text
+function highlightText(cell, searchTerm) {
+    if (!cell || !searchTerm) return;
+    
+    const text = cell.textContent;
+    const searchTermLower = searchTerm.toLowerCase();
+    const textLower = text.toLowerCase();
+    
+    if (textLower.includes(searchTermLower)) {
+        const startIndex = textLower.indexOf(searchTermLower);
+        const endIndex = startIndex + searchTerm.length;
+        
+        cell.innerHTML = 
+            text.substring(0, startIndex) +
+            '<span class="highlight">' +
+            text.substring(startIndex, endIndex) +
+            '</span>' +
+            text.substring(endIndex);
+    }
+}
+
+// Add this CSS to your stylesheet or add it inline
+const style = document.createElement('style');
+style.textContent = `
+    .highlight {
+        background-color: #ffd700;
+        padding: 2px;
+        border-radius: 3px;
+    }
+    .no-results-message {
+        padding: 20px;
+        color: #666;
+        font-size: 1.1em;
+    }
+    #book-search {
+        width: 100%;
+        padding: 10px;
+        border: 2px solid #ddd;
+        border-radius: 5px;
+        font-size: 16px;
+        transition: border-color 0.3s ease;
+    }
+    #book-search:focus {
+        border-color: #4CAF50;
+        outline: none;
+    }
+`;
+document.head.appendChild(style);
+
 // Load users
 function loadUsers() {
     fetch('../api/users.php')
@@ -311,6 +449,9 @@ function loadBooks() {
                     `;
                     tableBody.appendChild(row);
                 });
+                
+                // Apply any existing search filter
+                filterBooks();
             } else {
                 tableBody.innerHTML = '<tr><td colspan="7" class="text-center">No books found</td></tr>';
             }
