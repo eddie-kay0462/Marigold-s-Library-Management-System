@@ -151,8 +151,8 @@ function highlightText(cell, searchTerm) {
 }
 
 // Add this CSS to your stylesheet or add it inline
-const style = document.createElement('style');
-style.textContent = `
+const dashboardStyle = document.createElement('style');
+dashboardStyle.textContent = `
     .highlight {
         background-color: #ffd700;
         padding: 2px;
@@ -176,7 +176,7 @@ style.textContent = `
         outline: none;
     }
 `;
-document.head.appendChild(style);
+document.head.appendChild(dashboardStyle);
 
 // Load users
 function loadUsers() {

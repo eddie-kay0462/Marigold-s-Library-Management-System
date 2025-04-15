@@ -121,8 +121,8 @@ class StudentSearch {
     }
 
     setupStyles() {
-        const style = document.createElement('style');
-        style.textContent = `
+        const studentSearchStyle = document.createElement('style');
+        studentSearchStyle.textContent = `
             .highlight {
                 background-color: #ffd700;
                 padding: 2px;
@@ -146,7 +146,7 @@ class StudentSearch {
                 outline: none;
             }
         `;
-        document.head.appendChild(style);
+        document.head.appendChild(studentSearchStyle);
     }
 }
 
