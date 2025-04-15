@@ -20,26 +20,31 @@ class User {
 
     // Login user
     public function login() {
-        $query = "SELECT * FROM {$this->table} WHERE username = :username";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':username', $this->username);
-        $stmt->execute();
+        try {
+            $query = "SELECT * FROM {$this->table} WHERE username = :username";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':username', $this->username);
+            $stmt->execute();
 
-        if($stmt->rowCount() > 0) {
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            $this->user_id = $row['user_id'];
-            $this->first_name = $row['first_name'];
-            $this->last_name = $row['last_name'];
-            $this->email = $row['email'];
-            $this->role_id = $row['role_id'];
-            $hashed_password = $row['password'];
+            if($stmt->rowCount() > 0) {
+                $row = $stmt->fetch(PDO::FETCH_ASSOC);
+                $this->user_id = $row['user_id'];
+                $this->first_name = $row['first_name'];
+                $this->last_name = $row['last_name'];
+                $this->email = $row['email'];
+                $this->role_id = $row['role_id'];
+                $hashed_password = $row['password'];
 
-            // Verify password
-            if(password_verify($this->password, $hashed_password)) {
-                return true;
+                // Verify password
+                if(password_verify($this->password, $hashed_password)) {
+                    return true;
+                }
             }
+            return false;
+        } catch (PDOException $e) {
+            error_log("Login error: " . $e->getMessage());
+            throw new Exception("Database error during login");
         }
-        return false;
     }
 
     // Create user

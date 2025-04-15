@@ -4,6 +4,41 @@ if (!isset($_SESSION['user_id'])) {
     header('Location: login.html');
     exit;
 }
+
+// Database connection
+require_once('../config/database.php');
+$database = new Database();
+$conn = $database->getConnection();
+
+// Get counts from database
+$staffCount = 0;
+$studentCount = 0;
+$activeCount = 0;
+$bookCount = 0;
+
+try {
+    // Count staff (users who are not students)
+    $staffQuery = "SELECT COUNT(*) as count FROM users WHERE role_id != 5 AND is_active = 1";
+    $staffStmt = $conn->query($staffQuery);
+    $staffCount = $staffStmt->fetch(PDO::FETCH_ASSOC)['count'];
+
+    // Count students
+    $studentQuery = "SELECT COUNT(*) as count FROM students WHERE is_active = 1";
+    $studentStmt = $conn->query($studentQuery);
+    $studentCount = $studentStmt->fetch(PDO::FETCH_ASSOC)['count'];
+
+    // Count books
+    $bookQuery = "SELECT COUNT(*) as count FROM books";
+    $bookStmt = $conn->query($bookQuery);
+    $bookCount = $bookStmt->fetch(PDO::FETCH_ASSOC)['count'];
+
+    // Count all active members (staff + students)
+    $activeCount = $staffCount + $studentCount;
+
+} catch (Exception $e) {
+    // Log error silently
+    error_log("Error fetching dashboard counts: " . $e->getMessage());
+}
 ?>
 
 <!DOCTYPE html>
@@ -15,6 +50,9 @@ if (!isset($_SESSION['user_id'])) {
     <link rel="stylesheet" href="../assets/css/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-material-ui/material-ui.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../assets/js/dashboard.js"></script>
     <style>
         /* Additional styles for the dashboard */
         .dashboard-container {
@@ -725,24 +763,24 @@ if (!isset($_SESSION['user_id'])) {
                 
                 <div class="stats-container">
                     <div class="stat-card">
-                        <i class="fas fa-book-open fa-2x" style="color: #4CAF50; margin-bottom: 15px;"></i>
-                        <h3>Total Books</h3>
-                        <div class="number">1,245</div>
-                    </div>
-                    <div class="stat-card">
                         <i class="fas fa-users fa-2x" style="color: #2196F3; margin-bottom: 15px;"></i>
                         <h3>Active Members</h3>
-                        <div class="number">328</div>
+                        <div class="number"><?php echo $activeCount; ?></div>
                     </div>
                     <div class="stat-card">
-                        <i class="fas fa-hand-holding-book fa-2x" style="color: #FF9800; margin-bottom: 15px;"></i>
-                        <h3>Books Loaned</h3>
-                        <div class="number">87</div>
+                        <i class="fas fa-user-graduate fa-2x" style="color: #FF9800; margin-bottom: 15px;"></i>
+                        <h3>Students</h3>
+                        <div class="number"><?php echo $studentCount; ?></div>
                     </div>
                     <div class="stat-card">
-                        <i class="fas fa-exclamation-circle fa-2x" style="color: #f44336; margin-bottom: 15px;"></i>
-                        <h3>Overdue</h3>
-                        <div class="number">12</div>
+                        <i class="fas fa-users-cog fa-2x" style="color: #4CAF50; margin-bottom: 15px;"></i>
+                        <h3>Staff</h3>
+                        <div class="number"><?php echo $staffCount; ?></div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-book fa-2x" style="color: #f44336; margin-bottom: 15px;"></i>
+                        <h3>Total Books</h3>
+                        <div class="number"><?php echo $bookCount; ?></div>
                     </div>
                 </div>
                 
@@ -798,7 +836,9 @@ if (!isset($_SESSION['user_id'])) {
                 <div class="dashboard-header">
                     <h1>Books Management</h1>
                     <div>
-                        <a href="#" class="btn btn-primary" id="add-book-btn"><i class="material-icons-round">add</i> Add Book</a>
+                        <a href="#" class="btn btn-primary" id="add-book-btn">
+                            <i class="fas fa-plus"></i> Add Book
+                        </a>
                     </div>
                 </div>
                 
@@ -828,13 +868,13 @@ if (!isset($_SESSION['user_id'])) {
                                 <td>Fiction</td>
                                 <td>3</td>
                                 <td>
-                                    <button type="button" class="btn btn-secondary" onclick="editBook('${book.id}')">
+                                    <button type="button" class="btn btn-sm btn-warning" onclick="editBook('B001')">
                                         <i class="fas fa-edit"></i>
                                     </button>
-                                    <button type="button" class="btn btn-danger" onclick="deleteBook('${book.id}')">
-                                        <i class="fas fa-trash-alt"></i>
+                                    <button type="button" class="btn btn-sm btn-danger" onclick="deleteBook('B001')">
+                                        <i class="fas fa-trash"></i>
                                     </button>
-                                    <button type="button" class="btn btn-info" onclick="viewBook('${book.id}')">
+                                    <button type="button" class="btn btn-sm btn-info" onclick="viewBook('B001')">
                                         <i class="fas fa-eye"></i>
                                     </button>
                                 </td>
@@ -847,13 +887,13 @@ if (!isset($_SESSION['user_id'])) {
                                 <td>Fiction</td>
                                 <td>2</td>
                                 <td>
-                                    <button type="button" class="btn btn-secondary" onclick="editBook('${book.id}')">
+                                    <button type="button" class="btn btn-sm btn-warning" onclick="editBook('B002')">
                                         <i class="fas fa-edit"></i>
                                     </button>
-                                    <button type="button" class="btn btn-danger" onclick="deleteBook('${book.id}')">
-                                        <i class="fas fa-trash-alt"></i>
+                                    <button type="button" class="btn btn-sm btn-danger" onclick="deleteBook('B002')">
+                                        <i class="fas fa-trash"></i>
                                     </button>
-                                    <button type="button" class="btn btn-info" onclick="viewBook('${book.id}')">
+                                    <button type="button" class="btn btn-sm btn-info" onclick="viewBook('B002')">
                                         <i class="fas fa-eye"></i>
                                     </button>
                                 </td>
@@ -866,51 +906,13 @@ if (!isset($_SESSION['user_id'])) {
                                 <td>Science Fiction</td>
                                 <td>4</td>
                                 <td>
-                                    <button type="button" class="btn btn-secondary" onclick="editBook('${book.id}')">
+                                    <button type="button" class="btn btn-sm btn-warning" onclick="editBook('B003')">
                                         <i class="fas fa-edit"></i>
                                     </button>
-                                    <button type="button" class="btn btn-danger" onclick="deleteBook('${book.id}')">
-                                        <i class="fas fa-trash-alt"></i>
+                                    <button type="button" class="btn btn-sm btn-danger" onclick="deleteBook('B003')">
+                                        <i class="fas fa-trash"></i>
                                     </button>
-                                    <button type="button" class="btn btn-info" onclick="viewBook('${book.id}')">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>B004</td>
-                                <td>978-0141439518</td>
-                                <td>Pride and Prejudice</td>
-                                <td>Jane Austen</td>
-                                <td>Romance</td>
-                                <td>1</td>
-                                <td>
-                                    <button type="button" class="btn btn-secondary" onclick="editBook('${book.id}')">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-danger" onclick="deleteBook('${book.id}')">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-info" onclick="viewBook('${book.id}')">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>B005</td>
-                                <td>978-0547928227</td>
-                                <td>The Hobbit</td>
-                                <td>J.R.R. Tolkien</td>
-                                <td>Fantasy</td>
-                                <td>5</td>
-                                <td>
-                                    <button type="button" class="btn btn-secondary" onclick="editBook('${book.id}')">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-danger" onclick="deleteBook('${book.id}')">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-info" onclick="viewBook('${book.id}')">
+                                    <button type="button" class="btn btn-sm btn-info" onclick="viewBook('B003')">
                                         <i class="fas fa-eye"></i>
                                     </button>
                                 </td>
@@ -918,62 +920,9 @@ if (!isset($_SESSION['user_id'])) {
                         </tbody>
                     </table>
                 </div>
-                
-                <!-- Book Form Modal (Hidden by default) -->
-                <div id="book-form-modal" class="modal" style="display: none;">
-                    <div class="modal-content">
-                        <span class="close-modal">&times;</span>
-                        <h2 id="book-form-title">Add New Book</h2>
-                        <form id="book-form">
-                            <div class="form-group">
-                                <label for="book-id">Book ID</label>
-                                <input type="text" id="book-id" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="book-isbn">ISBN</label>
-                                <input type="text" id="book-isbn" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="book-title">Title</label>
-                                <input type="text" id="book-title" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="book-author">Author</label>
-                                <input type="text" id="book-author" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="book-category">Category</label>
-                                <select id="book-category" required>
-                                    <option value="">Select Category</option>
-                                    <option value="Fiction">Fiction</option>
-                                    <option value="Non-Fiction">Non-Fiction</option>
-                                    <option value="Science Fiction">Science Fiction</option>
-                                    <option value="Fantasy">Fantasy</option>
-                                    <option value="Romance">Romance</option>
-                                    <option value="Mystery">Mystery</option>
-                                    <option value="Biography">Biography</option>
-                                    <option value="History">History</option>
-                                    <option value="Science">Science</option>
-                                    <option value="Technology">Technology</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="book-copies">Available Copies</label>
-                                <input type="number" id="book-copies" min="0" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="book-description">Description</label>
-                                <textarea id="book-description" rows="3"></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save" style="margin-right: 5px;"></i>Save Changes
-                            </button>
-                        </form>
-                    </div>
-                </div>
             </section>
 
-            <!-- Members Section -->
+            <!-- Students Section -->
             <section id="students" class="dashboard-section">
                 <div class="dashboard-header">
                     <h1>Student Management</h1>
@@ -1079,39 +1028,6 @@ if (!isset($_SESSION['user_id'])) {
                             </tr>
                         </tbody>
                     </table>
-                </div>
-                
-                <!-- Student Registration Form (Hidden by default) -->
-                <div id="student-form-modal" class="modal" style="display: none;">
-                    <div class="modal-content">
-                        <span class="close-modal">&times;</span>
-                        <h2 id="student-form-title">Register New Student</h2>
-                        <form id="student-form">
-                            <div class="form-group">
-                                <label for="student-id">Student ID</label>
-                                <input type="text" id="student-id" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="student-name">Name</label>
-                                <input type="text" id="student-name" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="student-email">Email</label>
-                                <input type="email" id="student-email" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="student-phone">Phone</label>
-                                <input type="text" id="student-phone">
-                            </div>
-                            <div class="form-group">
-                                <label for="student-address">Address</label>
-                                <textarea id="student-address" rows="2"></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save" style="margin-right: 5px;"></i>Save Changes
-                            </button>
-                        </form>
-                    </div>
                 </div>
             </section>
 
@@ -1413,7 +1329,6 @@ if (!isset($_SESSION['user_id'])) {
                 <div class="dashboard-header">
                     <h1>User Management</h1>
                     <div>
-                        <a href="#" class="btn btn-primary" id="add-user-btn"><i class="material-icons-round">add</i> Add New User</a>
                     </div>
                 </div>
                 
@@ -1521,55 +1436,87 @@ if (!isset($_SESSION['user_id'])) {
                         </tbody>
                     </table>
                 </div>
-                
-                <!-- User Form Modal (Hidden by default) -->
-                <div id="user-form-modal" class="modal" style="display: none;">
-                    <div class="modal-content">
-                        <span class="close-modal">&times;</span>
-                        <h2 id="user-form-title">Add New User</h2>
-                        <form id="user-form">
-                            <div class="form-group">
-                                <label for="user-id">User ID</label>
-                                <input type="text" id="user-id" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="user-name">Name</label>
-                                <input type="text" id="user-name" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="user-role">Role</label>
-                                <select id="user-role" required>
-                                    <option value="">Select Role</option>
-                                    <option value="Administrator">Administrator</option>
-                                    <option value="Librarian">Librarian</option>
-                                    <option value="Manager">Manager</option>
-                                    <option value="Assistant">Assistant</option>
-                                    <option value="Staff">Staff</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="user-email">Email</label>
-                                <input type="email" id="user-email" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="user-password">Password</label>
-                                <input type="password" id="user-password">
-                                <small>Leave blank to keep existing password when editing</small>
-                            </div>
-                            <div class="form-group">
-                                <label for="user-confirm-password">Confirm Password</label>
-                                <input type="password" id="user-confirm-password">
-                            </div>
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save" style="margin-right: 5px;"></i>Save Changes
-                            </button>
-                        </form>
-                    </div>
-                </div>
             </section>
         </div>
     </div>
 
+    <!-- Book Form Modal -->
+    <div class="modal fade" id="bookFormModal" tabindex="-1" aria-labelledby="bookFormModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="bookFormModalLabel">Add New Book</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="bookForm" class="needs-validation" novalidate>
+                        <div class="form-group mb-3">
+                            <label for="book_id" class="form-label">Book ID</label>
+                            <input type="text" class="form-control" id="book_id" name="book_id" required>
+                            <div class="invalid-feedback">Please enter a book ID.</div>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="isbn" class="form-label">ISBN</label>
+                            <input type="text" class="form-control" id="isbn" name="isbn" required>
+                            <div class="invalid-feedback">Please enter an ISBN.</div>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="title" class="form-label">Title</label>
+                            <input type="text" class="form-control" id="title" name="title" required>
+                            <div class="invalid-feedback">Please enter a title.</div>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="author" class="form-label">Author</label>
+                            <input type="text" class="form-control" id="author" name="author" required>
+                            <div class="invalid-feedback">Please enter an author.</div>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="category" class="form-label">Category</label>
+                            <select class="form-control" id="category" name="category" required>
+                                <option value="">Select Category</option>
+                                <option value="Fiction">Fiction</option>
+                                <option value="Non-Fiction">Non-Fiction</option>
+                                <option value="Science Fiction">Science Fiction</option>
+                                <option value="Fantasy">Fantasy</option>
+                                <option value="Mystery">Mystery</option>
+                                <option value="Romance">Romance</option>
+                                <option value="Thriller">Thriller</option>
+                                <option value="Horror">Horror</option>
+                                <option value="Biography">Biography</option>
+                                <option value="History">History</option>
+                                <option value="Science">Science</option>
+                                <option value="Technology">Technology</option>
+                            </select>
+                            <div class="invalid-feedback">Please select a category.</div>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="copies" class="form-label">Available Copies</label>
+                            <input type="number" class="form-control" id="copies" name="copies" min="0" required>
+                            <div class="invalid-feedback">Please enter the number of copies.</div>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="saveBookBtn">Save Book</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="../assets/js/dashboard.js"></script>
 </body>
 </html>

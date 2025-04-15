@@ -84,22 +84,49 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Get form data
             const formData = new FormData(loginForm);
+            formData.append('login', '1'); // Add login flag
 
             // Send request
             fetch('../api/auth.php', {
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.text().then(text => {
+                    try {
+                        return JSON.parse(text);
+                    } catch (e) {
+                        console.error('Server response:', text);
+                        throw new Error('Invalid server response');
+                    }
+                });
+            })
             .then(data => {
                 if (data.success) {
-                    window.location.href = data.redirect || '../pages/dashboard.php';
+                    // Show success message and redirect
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: data.message || 'Login successful',
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => {
+                        window.location.href = data.redirect || '../pages/dashboard.php';
+                    });
                 } else {
                     throw new Error(data.message || 'Login failed');
                 }
             })
             .catch(error => {
-                showAlert('error', error.message || 'An error occurred during login');
+                // Show error message
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Login Failed',
+                    text: error.message || 'An error occurred during login'
+                });
             })
             .finally(() => {
                 // Reset button state
