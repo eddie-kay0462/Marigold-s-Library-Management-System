@@ -554,11 +554,11 @@ function addBook() {
                     
                     // Send request
                     return fetch('../api/books.php', {
-                        method: 'POST',
-                        body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
                         if (!data.success) {
                             throw new Error(data.message || 'Failed to add book');
                         }
@@ -574,7 +574,7 @@ function addBook() {
                         timer: 1500,
                         showConfirmButton: false
                     }).then(() => {
-                        loadBooks();
+                    loadBooks();
                         updateDashboardStats();
                     });
                 }

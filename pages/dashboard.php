@@ -54,6 +54,8 @@ try {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="../assets/js/dashboard.js"></script>
     <script src="../assets/js/bookSearch.js"></script>
+    <script src="../assets/js/studentSearch.js"></script>
+    <script src="../assets/js/studentManagement.js"></script>
     <style>
         /* Additional styles for the dashboard */
         .dashboard-container {
@@ -928,107 +930,32 @@ try {
                 <div class="dashboard-header">
                     <h1>Student Management</h1>
                     <div>
-                        <a href="#" class="btn btn-primary" id="add-student-btn"><i class="material-icons-round">add</i> Register New Student</a>
+                        <button type="button" class="btn btn-primary" id="add-student-btn">
+                            <i class="fas fa-plus"></i> Register New Student
+                        </button>
                     </div>
                 </div>
                 
                 <div class="card">
                     <div class="form-group">
-                        <input type="text" id="student-search" placeholder="Search students...">
+                        <input type="text" id="student-search" placeholder="Search students by ID or name...">
                     </div>
                     
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>🎓 Student ID</th>
-                                <th>🏫 Name</th>
-                                <th>📚 Borrowed Books</th>
-                                <th>✏ Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>S001</td>
-                                <td>John Smith</td>
-                                <td>2</td>
-                                <td>
-                                    <button type="button" class="btn btn-secondary" onclick="editStudent('${student.id}')">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-danger" onclick="deleteStudent('${student.id}')">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-info" onclick="viewStudent('${student.id}')">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>S002</td>
-                                <td>Emily Johnson</td>
-                                <td>1</td>
-                                <td>
-                                    <button type="button" class="btn btn-secondary" onclick="editStudent('${student.id}')">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-danger" onclick="deleteStudent('${student.id}')">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-info" onclick="viewStudent('${student.id}')">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>S003</td>
-                                <td>Michael Brown</td>
-                                <td>0</td>
-                                <td>
-                                    <button type="button" class="btn btn-secondary" onclick="editStudent('${student.id}')">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-danger" onclick="deleteStudent('${student.id}')">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-info" onclick="viewStudent('${student.id}')">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>S004</td>
-                                <td>Sarah Wilson</td>
-                                <td>3</td>
-                                <td>
-                                    <button type="button" class="btn btn-secondary" onclick="editStudent('${student.id}')">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-danger" onclick="deleteStudent('${student.id}')">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-info" onclick="viewStudent('${student.id}')">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>S005</td>
-                                <td>David Lee</td>
-                                <td>1</td>
-                                <td>
-                                    <button type="button" class="btn btn-secondary" onclick="editStudent('${student.id}')">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-danger" onclick="deleteStudent('${student.id}')">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-info" onclick="viewStudent('${student.id}')">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Student Number</th>
+                                    <th>Name</th>
+                                    <th>Borrowed Books</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Student data will be loaded here dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </section>
 
