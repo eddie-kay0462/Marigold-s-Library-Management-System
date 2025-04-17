@@ -1,3 +1,13 @@
+<?php
+session_start();
+
+// Check if user is not logged in
+if (!isset($_SESSION['user_id'])) {
+    $_SESSION['error'] = "Please login to access the dashboard.";
+    header("Location: login.php");
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -667,6 +677,81 @@
         .main-nav ul li:nth-child(4) {
             order: 4;
         }
+        
+        /* Add styles for the logout link */
+        .main-nav .logout-link {
+            background: linear-gradient(45deg, #f44336, #d32f2f);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(244, 67, 54, 0.3);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .main-nav .logout-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(244, 67, 54, 0.4);
+            color: white;
+        }
+        
+        .main-nav .logout-link i {
+            font-size: 1.1rem;
+        }
+
+        /* Success message styles */
+        .success-message-container {
+            position: fixed;
+            top: 80px;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 0 20px;
+        }
+
+        .success-message {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            max-width: 600px;
+            margin: 0 auto;
+            animation: slideDown 0.5s ease-out;
+        }
+
+        .success-message i {
+            font-size: 1.2rem;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .success-message-container {
+                top: 60px;
+                padding: 0 10px;
+            }
+            
+            .success-message {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -677,16 +762,27 @@
             </div>
             <nav class="main-nav">
                 <ul>
-                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="../index.php">Home</a></li>
                     <li><a href="#catalog">Catalog</a></li>
-                    <li><a href="../pages/ebooks.html" class="ebook-link"><i class="fas fa-tablet-alt"></i> Access E-Books</a></li>
-                    <li><a href="../pages/contact.html">Contact</a></li>
+                    <li><a href="../pages/ebooks.php" class="ebook-link"><i class="fas fa-tablet-alt"></i> Access E-Books</a></li>
+                    <li><a href="../pages/contact.php">Contact</a></li>
+                    <li><a href="auth/logout_handler.php" class="logout-link"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
     <div class="dashboard-container">
+        <!-- Success Message -->
+        <?php if(isset($_SESSION['success'])): ?>
+            <div class="success-message-container">
+                <div class="success-message">
+                    <i class="fas fa-check-circle"></i>
+                    <span><?php echo $_SESSION['success']; unset($_SESSION['success']); ?></span>
+                </div>
+            </div>
+        <?php endif; ?>
+
         <!-- Sidebar -->
         <div class="sidebar">
             <div class="sidebar-header">
@@ -1440,8 +1536,8 @@
                                     <button type="button" class="btn btn-info" onclick="viewUser('${user.id}')">
                                         <i class="fas fa-eye"></i>
                                     </button>
-                                </td>
-                            </tr>
+                                </td>       
+                            </tr>   
                             <tr>
                                 <td>U002</td>
                                 <td>Jane Librarian</td>
@@ -1563,5 +1659,7 @@
     </div>
 
     <script src="../assets/js/dashboard.js"></script>
+    <script src="../assets/js/validation.js"></script>
+    <script src="../assets/js/messages.js"></script>
 </body>
 </html>

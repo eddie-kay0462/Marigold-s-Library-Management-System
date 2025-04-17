@@ -369,17 +369,17 @@
             </div>
             <nav>
                 <ul>
-                    <li><a href="../index.html">Home</a></li>
-                    <li><a href="../pages/dashboard.html">Dashboard</a></li>
-                    <li><a href="../pages/about.html">About</a></li>
-                    <li><a href="../pages/contact.html">Contact</a></li>
+                    <li><a href="../index.php">Home</a></li>
+                    <li><a href="../pages/dashboard.php">Dashboard</a></li>
+                    <li><a href="../pages/about.php">About</a></li>
+                    <li><a href="../pages/contact.php">Contact</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
     <div class="ebooks-container">
-        <a href="../pages/dashboard.html" class="back-to-dashboard">
+        <a href="../pages/dashboard.php" class="back-to-dashboard">
             <i class="fas fa-arrow-left"></i> Back to Dashboard
         </a>
 
