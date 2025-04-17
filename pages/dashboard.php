@@ -822,142 +822,83 @@ if (!isset($_SESSION['user_id'])) {
                 </div>
             </section>
 
-            <!-- Members Section -->
+            <!-- Students Section -->
             <section id="students" class="dashboard-section">
                 <div class="dashboard-header">
                     <h1>Student Management</h1>
                     <div>
-                        <a href="#" class="btn btn-primary" id="add-student-btn"><i class="material-icons-round">add</i> Register New Student</a>
+                        <button class="btn btn-primary" id="add-student-btn">
+                            <i class="fas fa-user-plus"></i> Register New Student
+                        </button>
                     </div>
                 </div>
                 
                 <div class="card">
                     <div class="form-group">
-                        <input type="text" id="student-search" placeholder="Search students...">
+                        <input type="text" id="student-search" placeholder="Search students by name, email, or student number...">
                     </div>
                     
                     <table>
                         <thead>
                             <tr>
-                                <th>🎓 Student ID</th>
-                                <th>🏫 Name</th>
-                                <th>📚 Borrowed Books</th>
-                                <th>✏ Actions</th>
+                                <th>Student Number</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>S001</td>
-                                <td>John Smith</td>
-                                <td>2</td>
-                                <td>
-                                    <button type="button" class="btn btn-secondary" onclick="editStudent('${student.id}')">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-danger" onclick="deleteStudent('${student.id}')">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-info" onclick="viewStudent('${student.id}')">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>S002</td>
-                                <td>Emily Johnson</td>
-                                <td>1</td>
-                                <td>
-                                    <button type="button" class="btn btn-secondary" onclick="editStudent('${student.id}')">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-danger" onclick="deleteStudent('${student.id}')">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-info" onclick="viewStudent('${student.id}')">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>S003</td>
-                                <td>Michael Brown</td>
-                                <td>0</td>
-                                <td>
-                                    <button type="button" class="btn btn-secondary" onclick="editStudent('${student.id}')">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-danger" onclick="deleteStudent('${student.id}')">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-info" onclick="viewStudent('${student.id}')">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>S004</td>
-                                <td>Sarah Wilson</td>
-                                <td>3</td>
-                                <td>
-                                    <button type="button" class="btn btn-secondary" onclick="editStudent('${student.id}')">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-danger" onclick="deleteStudent('${student.id}')">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-info" onclick="viewStudent('${student.id}')">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>S005</td>
-                                <td>David Lee</td>
-                                <td>1</td>
-                                <td>
-                                    <button type="button" class="btn btn-secondary" onclick="editStudent('${student.id}')">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-danger" onclick="deleteStudent('${student.id}')">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-info" onclick="viewStudent('${student.id}')">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                </td>
-                            </tr>
+                            <!-- Students will be loaded dynamically via JavaScript -->
                         </tbody>
                     </table>
                 </div>
                 
-                <!-- Student Registration Form (Hidden by default) -->
-                <div id="student-form-modal" class="modal" style="display: none;">
+                <!-- Student Form Modal -->
+                <div id="student-form-modal" class="modal">
                     <div class="modal-content">
                         <span class="close-modal">&times;</span>
                         <h2 id="student-form-title">Register New Student</h2>
                         <form id="student-form">
+                            <input type="hidden" id="student-id" name="student_id">
+                            
                             <div class="form-group">
-                                <label for="student-id">Student ID</label>
-                                <input type="text" id="student-id" required>
+                                <label for="student-number">Student Number</label>
+                                <input type="text" id="student-number" name="student_number" required>
+                                <span class="error-message" id="student-number-error"></span>
                             </div>
+                            
                             <div class="form-group">
-                                <label for="student-name">Name</label>
-                                <input type="text" id="student-name" required>
+                                <label for="first-name">First Name</label>
+                                <input type="text" id="first-name" name="first_name" required>
+                                <span class="error-message" id="first-name-error"></span>
                             </div>
+                            
                             <div class="form-group">
-                                <label for="student-email">Email</label>
-                                <input type="email" id="student-email" required>
+                                <label for="last-name">Last Name</label>
+                                <input type="text" id="last-name" name="last_name" required>
+                                <span class="error-message" id="last-name-error"></span>
                             </div>
+                            
                             <div class="form-group">
-                                <label for="student-phone">Phone</label>
-                                <input type="text" id="student-phone">
+                                <label for="email">Email</label>
+                                <input type="email" id="email" name="email" required>
+                                <span class="error-message" id="email-error"></span>
                             </div>
+                            
                             <div class="form-group">
-                                <label for="student-address">Address</label>
-                                <textarea id="student-address" rows="2"></textarea>
+                                <label for="date-of-birth">Date of Birth</label>
+                                <input type="date" id="date-of-birth" name="date_of_birth" required>
+                                <span class="error-message" id="date-of-birth-error"></span>
                             </div>
+                            
+                            <div class="form-group">
+                                <label for="registration-date">Registration Date</label>
+                                <input type="date" id="registration-date" name="registration_date" required>
+                                <span class="error-message" id="registration-date-error"></span>
+                            </div>
+                            
                             <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save" style="margin-right: 5px;"></i>Save Changes
+                                <i class="fas fa-save"></i> Save Student
                             </button>
                         </form>
                     </div>
@@ -1423,5 +1364,6 @@ if (!isset($_SESSION['user_id'])) {
     <script src="../assets/js/validation.js"></script>
     <script src="../assets/js/messages.js"></script>
     <script src="../assets/js/books.js"></script>
+    <script src="../assets/js/students.js"></script>
 </body>
 </html>
