@@ -220,14 +220,17 @@ if(isset($_SESSION['user_id'])) {
                     <p>Welcome back to our library community</p>
                 </div>
 
-                <?php if(isset($_SESSION['success'])): ?>
-                    <div class="success-message">
-                        <?php 
-                            echo $_SESSION['success'];
-                            unset($_SESSION['success']);
-                        ?>
-                    </div>
-                <?php endif; ?>
+                <?php 
+                if(isset($_SESSION['success'])) {
+                    $successMessage = $_SESSION['success'];
+                    unset($_SESSION['success']);
+                    echo "<script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            showSuccess('" . htmlspecialchars($successMessage, ENT_QUOTES) . "');
+                        });
+                    </script>";
+                }
+                ?>
 
                 <?php if(isset($_SESSION['error'])): ?>
                     <div class="error-message">
@@ -264,5 +267,87 @@ if(isset($_SESSION['user_id'])) {
     </div>
     <script src="../assets/js/validation.js"></script>
     <script src="../assets/js/messages.js"></script>
+    <script>
+    // Add success message functionality
+    function showSuccess(message) {
+        // Create success message container if it doesn't exist
+        let successContainer = document.querySelector('.success-message-container');
+        if (!successContainer) {
+            successContainer = document.createElement('div');
+            successContainer.className = 'success-message-container';
+            document.body.appendChild(successContainer);
+        }
+
+        // Create the success message element
+        const successDiv = document.createElement('div');
+        successDiv.className = 'success-message';
+        successDiv.innerHTML = `
+            <i class="fas fa-check-circle"></i>
+            <span>${message}</span>
+        `;
+        
+        // Add the message to the container
+        successContainer.appendChild(successDiv);
+
+        // Add animation class
+        setTimeout(() => {
+            successDiv.classList.add('show');
+        }, 10);
+
+        // Remove the message after 3 seconds
+        setTimeout(() => {
+            successDiv.classList.add('hide');
+            setTimeout(() => {
+                successDiv.remove();
+                // Remove container if no more messages
+                if (successContainer.children.length === 0) {
+                    successContainer.remove();
+                }
+            }, 300); // Wait for fade out animation
+        }, 3000);
+    }
+
+    // Add the success message styles
+    const style = document.createElement('style');
+    style.textContent = `
+        .success-message-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+
+        .success-message {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateX(120%);
+            transition: transform 0.3s ease-out;
+            opacity: 0;
+        }
+
+        .success-message i {
+            font-size: 1.2rem;
+        }
+
+        .success-message.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .success-message.hide {
+            transform: translateX(120%);
+            opacity: 0;
+        }
+    `;
+    document.head.appendChild(style);
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </body>
 </html> 

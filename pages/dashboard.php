@@ -701,57 +701,6 @@ if (!isset($_SESSION['user_id'])) {
         .main-nav .logout-link i {
             font-size: 1.1rem;
         }
-
-        /* Success message styles */
-        .success-message-container {
-            position: fixed;
-            top: 80px;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            padding: 0 20px;
-        }
-
-        .success-message {
-            background: linear-gradient(135deg, #4CAF50, #45a049);
-            color: white;
-            padding: 15px 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            max-width: 600px;
-            margin: 0 auto;
-            animation: slideDown 0.5s ease-out;
-        }
-
-        .success-message i {
-            font-size: 1.2rem;
-        }
-
-        @keyframes slideDown {
-            from {
-                transform: translateY(-100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .success-message-container {
-                top: 60px;
-                padding: 0 10px;
-            }
-            
-            .success-message {
-                padding: 10px 15px;
-                font-size: 0.9rem;
-            }
-        }
     </style>
 </head>
 <body>
@@ -773,15 +722,17 @@ if (!isset($_SESSION['user_id'])) {
     </header>
 
     <div class="dashboard-container">
-        <!-- Success Message -->
-        <?php if(isset($_SESSION['success'])): ?>
-            <div class="success-message-container">
-                <div class="success-message">
-                    <i class="fas fa-check-circle"></i>
-                    <span><?php echo $_SESSION['success']; unset($_SESSION['success']); ?></span>
-                </div>
-            </div>
-        <?php endif; ?>
+        <?php 
+        if(isset($_SESSION['success'])) {
+            $successMessage = $_SESSION['success'];
+            unset($_SESSION['success']);
+            echo "<script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    showSuccess('" . htmlspecialchars($successMessage, ENT_QUOTES) . "');
+                });
+            </script>";
+        }
+        ?>
 
         <!-- Sidebar -->
         <div class="sidebar">
@@ -833,52 +784,6 @@ if (!isset($_SESSION['user_id'])) {
                         <div class="number">12</div>
                     </div>
                 </div>
-                
-                <div class="card">
-                    <h2><i class="fas fa-history" style="color: #4CAF50; margin-right: 10px;"></i>Recent Activities</h2>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th><i class="far fa-calendar-alt" style="margin-right: 5px;"></i>Date</th>
-                                <th><i class="fas fa-tasks" style="margin-right: 5px;"></i>Activity</th>
-                                <th><i class="fas fa-user" style="margin-right: 5px;"></i>Member</th>
-                                <th><i class="fas fa-book" style="margin-right: 5px;"></i>Book</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>2023-06-15</td>
-                                <td>Book Borrowed</td>
-                                <td>John Smith</td>
-                                <td>The Great Gatsby</td>
-                            </tr>
-                            <tr>
-                                <td>2023-06-14</td>
-                                <td>Book Returned</td>
-                                <td>Emily Johnson</td>
-                                <td>To Kill a Mockingbird</td>
-                            </tr>
-                            <tr>
-                                <td>2023-06-14</td>
-                                <td>New Member</td>
-                                <td>Michael Brown</td>
-                                <td>-</td>
-                            </tr>
-                            <tr>
-                                <td>2023-06-13</td>
-                                <td>Book Added</td>
-                                <td>-</td>
-                                <td>The Hobbit</td>
-                            </tr>
-                            <tr>
-                                <td>2023-06-12</td>
-                                <td>Book Borrowed</td>
-                                <td>Sarah Wilson</td>
-                                <td>Pride and Prejudice</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
             </section>
 
             <!-- Books Section -->
@@ -886,7 +791,9 @@ if (!isset($_SESSION['user_id'])) {
                 <div class="dashboard-header">
                     <h1>Books Management</h1>
                     <div>
-                        <a href="#" class="btn btn-primary" id="add-book-btn"><i class="material-icons-round">add</i> Add Book</a>
+                        <a href="books/add_book.php" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Add Book
+                        </a>
                     </div>
                 </div>
                 
@@ -904,160 +811,14 @@ if (!isset($_SESSION['user_id'])) {
                                 <th><i class="fas fa-pen-fancy" style="margin-right: 5px;"></i>Author</th>
                                 <th><i class="fas fa-folder" style="margin-right: 5px;"></i>Category</th>
                                 <th><i class="fas fa-book-reader" style="margin-right: 5px;"></i>Available Copies</th>
+                                <th><i class="fas fa-book-reader" style="margin-right: 5px;"></i>Total Copies</th>
                                 <th><i class="fas fa-cogs" style="margin-right: 5px;"></i>Actions</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>B001</td>
-                                <td>978-0743273565</td>
-                                <td>The Great Gatsby</td>
-                                <td>F. Scott Fitzgerald</td>
-                                <td>Fiction</td>
-                                <td>3</td>
-                                <td>
-                                    <button type="button" class="btn btn-secondary" onclick="editBook('${book.id}')">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-danger" onclick="deleteBook('${book.id}')">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-info" onclick="viewBook('${book.id}')">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>B002</td>
-                                <td>978-0446310789</td>
-                                <td>To Kill a Mockingbird</td>
-                                <td>Harper Lee</td>
-                                <td>Fiction</td>
-                                <td>2</td>
-                                <td>
-                                    <button type="button" class="btn btn-secondary" onclick="editBook('${book.id}')">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-danger" onclick="deleteBook('${book.id}')">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-info" onclick="viewBook('${book.id}')">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>B003</td>
-                                <td>978-0451524935</td>
-                                <td>1984</td>
-                                <td>George Orwell</td>
-                                <td>Science Fiction</td>
-                                <td>4</td>
-                                <td>
-                                    <button type="button" class="btn btn-secondary" onclick="editBook('${book.id}')">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-danger" onclick="deleteBook('${book.id}')">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-info" onclick="viewBook('${book.id}')">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>B004</td>
-                                <td>978-0141439518</td>
-                                <td>Pride and Prejudice</td>
-                                <td>Jane Austen</td>
-                                <td>Romance</td>
-                                <td>1</td>
-                                <td>
-                                    <button type="button" class="btn btn-secondary" onclick="editBook('${book.id}')">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-danger" onclick="deleteBook('${book.id}')">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-info" onclick="viewBook('${book.id}')">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>B005</td>
-                                <td>978-0547928227</td>
-                                <td>The Hobbit</td>
-                                <td>J.R.R. Tolkien</td>
-                                <td>Fantasy</td>
-                                <td>5</td>
-                                <td>
-                                    <button type="button" class="btn btn-secondary" onclick="editBook('${book.id}')">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-danger" onclick="deleteBook('${book.id}')">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-info" onclick="viewBook('${book.id}')">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                </td>
-                            </tr>
+                        <tbody id="books-table-body">
+                            <!-- Books will be loaded dynamically via JavaScript -->
                         </tbody>
                     </table>
-                </div>
-                
-                <!-- Book Form Modal (Hidden by default) -->
-                <div id="book-form-modal" class="modal" style="display: none;">
-                    <div class="modal-content">
-                        <span class="close-modal">&times;</span>
-                        <h2 id="book-form-title">Add New Book</h2>
-                        <form id="book-form">
-                            <div class="form-group">
-                                <label for="book-id">Book ID</label>
-                                <input type="text" id="book-id" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="book-isbn">ISBN</label>
-                                <input type="text" id="book-isbn" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="book-title">Title</label>
-                                <input type="text" id="book-title" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="book-author">Author</label>
-                                <input type="text" id="book-author" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="book-category">Category</label>
-                                <select id="book-category" required>
-                                    <option value="">Select Category</option>
-                                    <option value="Fiction">Fiction</option>
-                                    <option value="Non-Fiction">Non-Fiction</option>
-                                    <option value="Science Fiction">Science Fiction</option>
-                                    <option value="Fantasy">Fantasy</option>
-                                    <option value="Romance">Romance</option>
-                                    <option value="Mystery">Mystery</option>
-                                    <option value="Biography">Biography</option>
-                                    <option value="History">History</option>
-                                    <option value="Science">Science</option>
-                                    <option value="Technology">Technology</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="book-copies">Available Copies</label>
-                                <input type="number" id="book-copies" min="0" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="book-description">Description</label>
-                                <textarea id="book-description" rows="3"></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save" style="margin-right: 5px;"></i>Save Changes
-                            </button>
-                        </form>
-                    </div>
                 </div>
             </section>
 
@@ -1661,5 +1422,6 @@ if (!isset($_SESSION['user_id'])) {
     <script src="../assets/js/dashboard.js"></script>
     <script src="../assets/js/validation.js"></script>
     <script src="../assets/js/messages.js"></script>
+    <script src="../assets/js/books.js"></script>
 </body>
 </html>
