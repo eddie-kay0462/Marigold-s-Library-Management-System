@@ -1,0 +1,327 @@
+document.addEventListener('DOMContentLoaded', function() {
+    loadBooks();
+
+    // Search functionality
+    const searchInput = document.querySelector('#searchBooks');
+    if (searchInput) {
+        searchInput.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            filterBooks(searchTerm);
+        });
+    }
+});
+
+function loadBooks() {
+    fetch('books/load_books.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                displayBooks(data.data);
+            } else {
+                showError(data.error || 'Error loading books');
+            }
+        })
+        .catch(error => {
+            showError('Failed to load books. Please try again later.');
+            console.error('Error:', error);
+        });
+}
+
+function displayBooks(books) {
+    const tableBody = document.getElementById('books-table-body');
+    if (!tableBody) return;
+
+    tableBody.innerHTML = '';
+
+    if (books.length === 0) {
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="7" class="text-center">No books found</td>
+            </tr>
+        `;
+        return;
+    }
+
+    books.forEach(book => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${book.book_id}</td>
+            <td>${book.isbn}</td>
+            <td>${book.title}</td>
+            <td>${book.author}</td>
+            <td>${book.category_name}</td>
+            <td>${book.total_copies}</td>
+            <td>${book.available_copies}</td>
+            <td>
+                <button type="button" class="btn btn-secondary" onclick="editBook('${book.book_id}')">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button type="button" class="btn btn-danger" onclick="deleteBook('${book.book_id}')">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+                <button type="button" class="btn btn-info" onclick="viewBook('${book.book_id}')">
+                    <i class="fas fa-eye"></i>
+                </button>
+            </td>
+        `;
+        tableBody.appendChild(row);
+    });
+}
+
+function filterBooks(searchTerm) {
+    const rows = document.querySelectorAll('#booksTable tbody tr');
+    
+    rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(searchTerm) ? '' : 'none';
+    });
+}
+
+function viewBook(bookId) {
+    fetch(`books/get_book.php?book_id=${bookId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showBookDetails(data.data);
+            } else {
+                showError(data.error || 'Error loading book details');
+            }
+        })
+        .catch(error => {
+            showError('Failed to load book details');
+            console.error('Error:', error);
+        });
+}
+
+function showBookDetails(book) {
+    const modal = document.createElement('div');
+    modal.className = 'modal';
+    modal.style.display = 'block';
+    
+    modal.innerHTML = `
+        <div class="modal-content">
+            <span class="close-modal" onclick="this.parentElement.parentElement.remove()">&times;</span>
+            <h2>Book Details</h2>
+            <div class="book-details">
+                <p><strong>Book ID:</strong> ${book.book_id}</p>
+                <p><strong>ISBN:</strong> ${book.isbn}</p>
+                <p><strong>Title:</strong> ${book.title}</p>
+                <p><strong>Author:</strong> ${book.author}</p>
+                <p><strong>Category:</strong> ${book.category_name}</p>
+                <p><strong>Available Copies:</strong> ${book.available_copies}</p>
+                <p><strong>Total Copies:</strong> ${book.total_copies}</p>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+}
+
+function editBook(bookId) {
+    fetch(`books/get_book.php?book_id=${bookId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showEditForm(data.data);
+            } else {
+                showError(data.error || 'Error loading book details');
+            }
+        })
+        .catch(error => {
+            showError('Failed to load book details');
+            console.error('Error:', error);
+        });
+}
+
+function showEditForm(book) {
+    const modal = document.createElement('div');
+    modal.className = 'modal';
+    modal.style.display = 'block';
+    
+    modal.innerHTML = `
+        <div class="modal-content">
+            <span class="close-modal" onclick="this.parentElement.parentElement.remove()">&times;</span>
+            <h2>Edit Book</h2>
+            <form id="edit-book-form" onsubmit="updateBook(event, '${book.book_id}')">
+                <div class="form-group">
+                    <label for="isbn">ISBN</label>
+                    <input type="text" id="isbn" name="isbn" value="${book.isbn}" required>
+                </div>
+                <div class="form-group">
+                    <label for="title">Title</label>
+                    <input type="text" id="title" name="title" value="${book.title}" required>
+                </div>
+                <div class="form-group">
+                    <label for="author">Author</label>
+                    <input type="text" id="author" name="author" value="${book.author}" required>
+                </div>
+                <div class="form-group">
+                    <label for="category_id">Category</label>
+                    <input type="text" id="category_id" name="category_id" value="${book.category_id}" required>
+                </div>
+                <div class="form-group">
+                    <label for="available_copies">Available Copies</label>
+                    <input type="number" id="available_copies" name="available_copies" value="${book.available_copies}" required min="0">
+                </div>
+                <div class="form-group">
+                    <label for="total_copies">Total Copies</label>
+                    <input type="number" id="total_copies" name="total_copies" value="${book.total_copies}" required min="0">
+                </div>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+            </form>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+}
+
+function showSuccess(message) {
+    // Create success message container if it doesn't exist
+    let successContainer = document.querySelector('.success-message-container');
+    if (!successContainer) {
+        successContainer = document.createElement('div');
+        successContainer.className = 'success-message-container';
+        document.body.appendChild(successContainer);
+    }
+
+    // Create the success message element
+    const successDiv = document.createElement('div');
+    successDiv.className = 'success-message';
+    successDiv.innerHTML = `
+        <i class="fas fa-check-circle"></i>
+        <span>${message}</span>
+    `;
+    
+    // Add the message to the container
+    successContainer.appendChild(successDiv);
+
+    // Add animation class
+    setTimeout(() => {
+        successDiv.classList.add('show');
+    }, 10);
+
+    // Remove the message after 3 seconds
+    setTimeout(() => {
+        successDiv.classList.add('hide');
+        setTimeout(() => {
+            successDiv.remove();
+            // Remove container if no more messages
+            if (successContainer.children.length === 0) {
+                successContainer.remove();
+            }
+        }, 300); // Wait for fade out animation
+    }, 3000);
+}
+
+// Add this CSS to the page
+const style = document.createElement('style');
+style.textContent = `
+    .success-message-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+    }
+
+    .success-message {
+        background: linear-gradient(135deg, #4CAF50, #45a049);
+        color: white;
+        padding: 15px 25px;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transform: translateX(120%);
+        transition: transform 0.3s ease-out;
+        opacity: 0;
+    }
+
+    .success-message i {
+        font-size: 1.2rem;
+    }
+
+    .success-message.show {
+        transform: translateX(0);
+        opacity: 1;
+    }
+
+    .success-message.hide {
+        transform: translateX(120%);
+        opacity: 0;
+    }
+`;
+document.head.appendChild(style);
+
+function updateBook(event, bookId) {
+    event.preventDefault();
+    const form = event.target;
+    const formData = new FormData(form);
+    formData.append('book_id', bookId);
+
+    fetch('books/update_book.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            form.closest('.modal').remove();
+            showSuccess('Book updated successfully');
+            // Delay the reload to allow the success message to be visible
+            setTimeout(() => {
+                loadBooks();
+            }, 3300); // Wait for success message (3000ms) plus animation (300ms)
+        } else {
+            showError(data.error || 'Error updating book');
+        }
+    })
+    .catch(error => {
+        showError('Failed to update book');
+        console.error('Error:', error);
+    });
+}
+
+function deleteBook(bookId) {
+    if (!confirm('Are you sure you want to delete this book?')) {
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('book_id', bookId);
+
+    fetch('books/delete_book.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showSuccess('Book deleted successfully');
+            // Delay the reload to allow the success message to be visible
+            setTimeout(() => {
+                loadBooks();
+            }, 3300); // Wait for success message (3000ms) plus animation (300ms)
+        } else {
+            showError(data.error || 'Error deleting book');
+        }
+    })
+    .catch(error => {
+        showError('Failed to delete book');
+        console.error('Error:', error);
+    });
+}
+
+function showError(message) {
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'alert alert-danger';
+    errorDiv.textContent = message;
+    
+    const container = document.querySelector('.main-content');
+    if (container) {
+        container.insertBefore(errorDiv, container.firstChild);
+        
+        setTimeout(() => errorDiv.remove(), 5000);
+    }
+} 
