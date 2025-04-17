@@ -78,44 +78,156 @@ function filterBooks(searchTerm) {
 }
 
 function viewBook(bookId) {
-    fetch(`books/get_book.php?book_id=${bookId}`)
+    fetch(`../pages/books/book_handler.php?action=get&book_id=${bookId}`)
         .then(response => response.json())
         .then(data => {
-            if (data.success) {
-                showBookDetails(data.data);
+            if (data.status === 'success') {
+                const book = data.data;
+                
+                // Create modal if it doesn't exist
+                let viewModal = document.getElementById('view-book-modal');
+                if (!viewModal) {
+                    viewModal = document.createElement('div');
+                    viewModal.id = 'view-book-modal';
+                    viewModal.className = 'modal';
+                    document.body.appendChild(viewModal);
+                }
+
+                // Update modal content
+                viewModal.innerHTML = `
+                    <div class="modal-content" style="background: white; padding: 20px; border-radius: 8px; width: 500px; max-width: 90%; position: relative; margin: 10% auto;">
+                        <span class="close-modal" onclick="closeBookViewModal()" style="position: absolute; right: 20px; top: 10px; font-size: 24px; cursor: pointer; color: #666;">&times;</span>
+                        <div class="book-details">
+                            <h2 style="color: #2C3E50; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                                <i class="fas fa-book" style="color: #FF8303;"></i> 
+                                Book Details
+                            </h2>
+                            <div class="detail-row" style="display: flex; margin-bottom: 15px; padding: 10px; background: #f8f9fa; border-radius: 8px; transition: all 0.3s ease;">
+                                <label style="font-weight: 600; width: 150px; color: #2C3E50;">ISBN:</label>
+                                <span style="color: #2C3E50;">${book.isbn}</span>
+                            </div>
+                            <div class="detail-row" style="display: flex; margin-bottom: 15px; padding: 10px; background: #f8f9fa; border-radius: 8px; transition: all 0.3s ease;">
+                                <label style="font-weight: 600; width: 150px; color: #2C3E50;">Title:</label>
+                                <span style="color: #2C3E50;">${book.title}</span>
+                            </div>
+                            <div class="detail-row" style="display: flex; margin-bottom: 15px; padding: 10px; background: #f8f9fa; border-radius: 8px; transition: all 0.3s ease;">
+                                <label style="font-weight: 600; width: 150px; color: #2C3E50;">Author:</label>
+                                <span style="color: #2C3E50;">${book.author}</span>
+                            </div>
+                            <div class="detail-row" style="display: flex; margin-bottom: 15px; padding: 10px; background: #f8f9fa; border-radius: 8px; transition: all 0.3s ease;">
+                                <label style="font-weight: 600; width: 150px; color: #2C3E50;">Category:</label>
+                                <span style="color: #2C3E50;">${book.category_name}</span>
+                            </div>
+                            <div class="detail-row" style="display: flex; margin-bottom: 15px; padding: 10px; background: #f8f9fa; border-radius: 8px; transition: all 0.3s ease;">
+                                <label style="font-weight: 600; width: 150px; color: #2C3E50;">Available Copies:</label>
+                                <span style="color: #2C3E50;">${book.available_copies}</span>
+                            </div>
+                            <div class="detail-row" style="display: flex; margin-bottom: 15px; padding: 10px; background: #f8f9fa; border-radius: 8px; transition: all 0.3s ease;">
+                                <label style="font-weight: 600; width: 150px; color: #2C3E50;">Total Copies:</label>
+                                <span style="color: #2C3E50;">${book.total_copies}</span>
+                            </div>
+                            <div class="detail-row" style="display: flex; margin-bottom: 15px; padding: 10px; background: #f8f9fa; border-radius: 8px; transition: all 0.3s ease;">
+                                <label style="font-weight: 600; width: 150px; color: #2C3E50;">Status:</label>
+                                <span style="color: #2C3E50;">${book.available_copies > 0 ? 
+                                    '<span class="status-badge status-active">Available</span>' : 
+                                    '<span class="status-badge status-overdue">Not Available</span>'}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // Add modal styles if not already present
+                if (!document.getElementById('modal-styles')) {
+                    const style = document.createElement('style');
+                    style.id = 'modal-styles';
+                    style.textContent = `
+                        .modal {
+                            display: none;
+                            position: fixed;
+                            z-index: 1000;
+                            left: 0;
+                            top: 0;
+                            width: 100%;
+                            height: 100%;
+                            background-color: rgba(0, 0, 0, 0.5);
+                            animation: fadeIn 0.3s ease;
+                        }
+
+                        @keyframes fadeIn {
+                            from { opacity: 0; }
+                            to { opacity: 1; }
+                        }
+
+                        .modal-content {
+                            animation: slideIn 0.3s ease;
+                        }
+
+                        @keyframes slideIn {
+                            from {
+                                transform: translateY(-20px);
+                                opacity: 0;
+                            }
+                            to {
+                                transform: translateY(0);
+                                opacity: 1;
+                            }
+                        }
+
+                        .detail-row:hover {
+                            background: #fff !important;
+                            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+                        }
+
+                        .close-modal:hover {
+                            color: #ff0000 !important;
+                        }
+
+                        .status-badge {
+                            display: inline-block;
+                            padding: 4px 8px;
+                            border-radius: 4px;
+                            font-size: 0.8rem;
+                            font-weight: 500;
+                        }
+
+                        .status-active {
+                            background-color: #e8f5e9;
+                            color: #388e3c;
+                        }
+
+                        .status-overdue {
+                            background-color: #ffebee;
+                            color: #d32f2f;
+                        }
+                    `;
+                    document.head.appendChild(style);
+                }
+
+                // Show modal
+                viewModal.style.display = 'block';
             } else {
-                showError(data.error || 'Error loading book details');
+                showError(data.message);
             }
         })
         .catch(error => {
-            showError('Failed to load book details');
+            showError('Error loading book details');
             console.error('Error:', error);
         });
 }
 
-function showBookDetails(book) {
-    const modal = document.createElement('div');
-    modal.className = 'modal';
-    modal.style.display = 'block';
-    
-    modal.innerHTML = `
-        <div class="modal-content">
-            <span class="close-modal" onclick="this.parentElement.parentElement.remove()">&times;</span>
-            <h2>Book Details</h2>
-            <div class="book-details">
-                <p><strong>Book ID:</strong> ${book.book_id}</p>
-                <p><strong>ISBN:</strong> ${book.isbn}</p>
-                <p><strong>Title:</strong> ${book.title}</p>
-                <p><strong>Author:</strong> ${book.author}</p>
-                <p><strong>Category:</strong> ${book.category_name}</p>
-                <p><strong>Available Copies:</strong> ${book.available_copies}</p>
-                <p><strong>Total Copies:</strong> ${book.total_copies}</p>
-            </div>
-        </div>
-    `;
-    
-    document.body.appendChild(modal);
+function closeBookViewModal() {
+    const viewModal = document.getElementById('view-book-modal');
+    if (viewModal) {
+        viewModal.style.display = 'none';
+    }
 }
+
+window.addEventListener('click', function(event) {
+    const viewModal = document.getElementById('view-book-modal');
+    if (event.target === viewModal) {
+        closeBookViewModal();
+    }
+});
 
 function editBook(bookId) {
     fetch(`books/get_book.php?book_id=${bookId}`)
