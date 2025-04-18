@@ -943,7 +943,7 @@ if (!isset($_SESSION['user_id'])) {
                 
                 <!-- Return Section -->
                 <div class="card">
-                    <h2>Return Books</h2>
+                    <h2>Active Loans</h2>
                     <div class="form-group">
                         <input type="text" id="return-search" placeholder="Search borrowed books by student or book title...">
                     </div>
@@ -960,59 +960,8 @@ if (!isset($_SESSION['user_id'])) {
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>B002</td>
-                                <td>To Kill a Mockingbird</td>
-                                <td>John Smith</td>
-                                <td>2023-06-15</td>
-                                <td>2023-06-29</td>
-                                <td><span class="status-badge status-active">Active</span></td>
-                                <td>
-                                    <button type="button" class="btn btn-primary" onclick="returnBook('${book.id}')">
-                                        <i class="fas fa-check"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>B004</td>
-                                <td>Pride and Prejudice</td>
-                                <td>Sarah Wilson</td>
-                                <td>2023-06-12</td>
-                                <td>2023-06-26</td>
-                                <td><span class="status-badge status-active">Active</span></td>
-                                <td>
-                                    <button type="button" class="btn btn-primary" onclick="returnBook('${book.id}')">
-                                        <i class="fas fa-check"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>B003</td>
-                                <td>1984</td>
-                                <td>David Lee</td>
-                                <td>2023-06-10</td>
-                                <td>2023-06-24</td>
-                                <td><span class="status-badge status-overdue">Overdue</span></td>
-                                <td>
-                                    <button type="button" class="btn btn-primary" onclick="returnBook('${book.id}')">
-                                        <i class="fas fa-check"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>B005</td>
-                                <td>The Hobbit</td>
-                                <td>Michael Brown</td>
-                                <td>2023-06-05</td>
-                                <td>2023-06-19</td>
-                                <td><span class="status-badge status-overdue">Overdue</span></td>
-                                <td>
-                                    <button type="button" class="btn btn-primary" onclick="returnBook('${book.id}')">
-                                        <i class="fas fa-check"></i>
-                                    </button>
-                                </td>
-                            </tr>
+                        <tbody id="active-loans-table">
+                            <!-- Active loans will be loaded dynamically via JavaScript -->
                         </tbody>
                     </table>
                 </div>
