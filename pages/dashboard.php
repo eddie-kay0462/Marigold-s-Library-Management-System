@@ -29,13 +29,13 @@ try {
     $totalStudents = $studentStmt->fetch(PDO::FETCH_ASSOC)['total_students'];
     
     // Count active loans
-    $activeLoansQuery = "SELECT COUNT(*) as active_loans FROM active_loans WHERE status = 'Active'";
+    $activeLoansQuery = "SELECT COUNT(*) as active_loans FROM active_loans WHERE status = 'Active' OR status != 'Returned'";
     $activeLoansStmt = $conn->prepare($activeLoansQuery);
     $activeLoansStmt->execute();
     $activeLoans = $activeLoansStmt->fetch(PDO::FETCH_ASSOC)['active_loans'];
     
     // Count overdue loans
-    $overdueLoansQuery = "SELECT COUNT(*) as overdue_loans FROM active_loans WHERE due_date < CURDATE() AND status = 'Active'";
+    $overdueLoansQuery = "SELECT COUNT(*) as overdue_loans FROM active_loans WHERE due_date <= CURDATE() AND status != 'Returned'";
     $overdueLoansStmt = $conn->prepare($overdueLoansQuery);
     $overdueLoansStmt->execute();
     $overdueLoans = $overdueLoansStmt->fetch(PDO::FETCH_ASSOC)['overdue_loans'];

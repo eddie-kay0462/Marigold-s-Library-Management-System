@@ -26,7 +26,7 @@ try {
             $active = $activeStmt->fetch(PDO::FETCH_ASSOC)['active'];
 
             // Get overdue loans
-            $overdueQuery = "SELECT COUNT(*) as overdue FROM active_loans WHERE due_date < CURDATE() AND status = 'Active'";
+            $overdueQuery = "SELECT COUNT(*) as overdue FROM active_loans WHERE due_date <= CURDATE() AND status != 'Returned'";
             $overdueStmt = $conn->query($overdueQuery);
             $overdue = $overdueStmt->fetch(PDO::FETCH_ASSOC)['overdue'];
 
@@ -56,7 +56,7 @@ try {
                         END as overdue_range,
                         COUNT(*) as count
                     FROM active_loans 
-                    WHERE due_date < CURDATE() AND status = 'Active'
+                    WHERE due_date <= CURDATE() AND status != 'Returned'
                     GROUP BY overdue_range";
             
             $stmt = $conn->query($query);

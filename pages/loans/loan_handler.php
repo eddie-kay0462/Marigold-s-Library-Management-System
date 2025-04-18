@@ -9,12 +9,14 @@ header('Content-Type: application/json');
 $response = array(
     'status' => 'error',
     'message' => '',
-    'data' => null
+    'data' => null,
+    'messageType' => 'error' // Add message type for frontend handling
 );
 
 // Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
     $response['message'] = 'Please login to continue';
+    $response['messageType'] = 'error';
     echo json_encode($response);
     exit();
 }
@@ -153,11 +155,21 @@ try {
             break;
 
         case 'get_active_loans':
+            // First, update status of overdue loans
+            $updateOverdueStmt = $pdo->prepare("
+                UPDATE active_loans 
+                SET status = 'Overdue'
+                WHERE due_date <= CURDATE() 
+                AND status != 'Returned'
+            ");
+            $updateOverdueStmt->execute();
+
+            // Then fetch all active and overdue loans
             $stmt = $pdo->query("
                 SELECT 
                     l.loan_id, 
                     l.book_id, 
-                    b.title,  /* Get title from books table */
+                    b.title,
                     l.loan_date, 
                     l.due_date, 
                     l.status, 
@@ -167,29 +179,11 @@ try {
                     s.last_name
                 FROM active_loans l
                 JOIN students s ON l.student_id = s.student_id
-                JOIN books b ON l.book_id = b.book_id  /* Add JOIN with books table */
-                WHERE l.status = 'Active' OR l.status = 'Overdue'
+                JOIN books b ON l.book_id = b.book_id
+                WHERE l.status IN ('Active', 'Overdue')
                 ORDER BY l.due_date ASC
             ");
             $loans = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-            // Update status for overdue loans
-            $today = date('Y-m-d');
-            foreach ($loans as &$loan) {
-                if ($loan['due_date'] < $today && $loan['status'] !== 'Returned') {
-                    $loan['status'] = 'Overdue';
-                    
-                    // Update status in database if needed
-                    if ($loan['status'] !== 'Overdue') {
-                        $updateStmt = $pdo->prepare("
-                            UPDATE active_loans 
-                            SET status = 'Overdue'
-                            WHERE loan_id = ?
-                        ");
-                        $updateStmt->execute([$loan['loan_id']]);
-                    }
-                }
-            }
 
             $response['status'] = 'success';
             $response['data'] = $loans;
@@ -286,10 +280,18 @@ try {
             throw new Exception('Invalid action');
     }
 } catch (PDOException $e) {
-    $response['message'] = 'Database error: ' . $e->getMessage();
+    $response = [
+        'status' => 'error',
+        'message' => 'Database error: ' . $e->getMessage(),
+        'messageType' => 'error'
+    ];
     error_log('Database error in loan_handler.php: ' . $e->getMessage());
 } catch (Exception $e) {
-    $response['message'] = $e->getMessage();
+    $response = [
+        'status' => 'error',
+        'message' => $e->getMessage(),
+        'messageType' => 'error'
+    ];
     error_log('Error in loan_handler.php: ' . $e->getMessage());
 }
 

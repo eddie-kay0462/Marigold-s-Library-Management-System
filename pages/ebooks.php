@@ -394,7 +394,7 @@
                 <h2>Academic Books</h2>
             </div>
             <div class="ebooks-grid">
-                <a href="https://drive.google.com/file/d/your-file-id/view" target="_blank" class="ebook-card">
+                <a href="https://drive.google.com/drive/folders/1-FWjN6ufLGJmZLlsUGbtQn1eaJMWt5JR?usp=sharing" target="_blank" class="ebook-card">
                     <div class="ebook-icon">
                         <i class="fas fa-graduation-cap"></i>
                     </div>
@@ -403,7 +403,7 @@
                     <span class="ebook-link">Access Book <i class="fas fa-external-link-alt"></i></span>
                 </a>
 
-                <a href="https://drive.google.com/file/d/your-file-id/view" target="_blank" class="ebook-card">
+                <a href="https://drive.google.com/drive/folders/1-FWjN6ufLGJmZLlsUGbtQn1eaJMWt5JR?usp=sharing" target="_blank" class="ebook-card">
                     <div class="ebook-icon">
                         <i class="fas fa-flask"></i>
                     </div>
@@ -412,7 +412,7 @@
                     <span class="ebook-link">Access Book <i class="fas fa-external-link-alt"></i></span>
                 </a>
 
-                <a href="https://drive.google.com/file/d/your-file-id/view" target="_blank" class="ebook-card">
+                <a href="https://drive.google.com/drive/folders/1-FWjN6ufLGJmZLlsUGbtQn1eaJMWt5JR?usp=sharing" target="_blank" class="ebook-card">
                     <div class="ebook-icon">
                         <i class="fas fa-calculator"></i>
                     </div>
@@ -429,7 +429,7 @@
                 <h2>Literature</h2>
             </div>
             <div class="ebooks-grid">
-                <a href="https://drive.google.com/file/d/your-file-id/view" target="_blank" class="ebook-card">
+                <a href="https://drive.google.com/drive/folders/1-FWjN6ufLGJmZLlsUGbtQn1eaJMWt5JR?usp=sharing" target="_blank" class="ebook-card">
                     <div class="ebook-icon">
                         <i class="fas fa-feather-alt"></i>
                     </div>
@@ -438,7 +438,7 @@
                     <span class="ebook-link">Access Book <i class="fas fa-external-link-alt"></i></span>
                 </a>
 
-                <a href="https://drive.google.com/file/d/your-file-id/view" target="_blank" class="ebook-card">
+                <a href="https://drive.google.com/drive/folders/1-FWjN6ufLGJmZLlsUGbtQn1eaJMWt5JR?usp=sharing" target="_blank" class="ebook-card">
                     <div class="ebook-icon">
                         <i class="fas fa-pen"></i>
                     </div>
@@ -447,7 +447,7 @@
                     <span class="ebook-link">Access Book <i class="fas fa-external-link-alt"></i></span>
                 </a>
 
-                <a href="https://drive.google.com/file/d/your-file-id/view" target="_blank" class="ebook-card">
+                <a href="https://drive.google.com/drive/folders/1-FWjN6ufLGJmZLlsUGbtQn1eaJMWt5JR?usp=sharing" target="_blank" class="ebook-card">
                     <div class="ebook-icon">
                         <i class="fas fa-theater-masks"></i>
                     </div>
@@ -464,7 +464,7 @@
                 <h2>Technology</h2>
             </div>
             <div class="ebooks-grid">
-                <a href="https://drive.google.com/file/d/your-file-id/view" target="_blank" class="ebook-card">
+                    <a href="https://drive.google.com/drive/folders/1-FWjN6ufLGJmZLlsUGbtQn1eaJMWt5JR?usp=sharing" target="_blank" class="ebook-card">
                     <div class="ebook-icon">
                         <i class="fas fa-code"></i>
                     </div>
@@ -473,7 +473,7 @@
                     <span class="ebook-link">Access Book <i class="fas fa-external-link-alt"></i></span>
                 </a>
 
-                <a href="https://drive.google.com/file/d/your-file-id/view" target="_blank" class="ebook-card">
+                <a href="https://drive.google.com/drive/folders/1-FWjN6ufLGJmZLlsUGbtQn1eaJMWt5JR?usp=sharing" target="_blank" class="ebook-card">
                     <div class="ebook-icon">
                         <i class="fas fa-mobile-alt"></i>
                     </div>
@@ -482,7 +482,7 @@
                     <span class="ebook-link">Access Book <i class="fas fa-external-link-alt"></i></span>
                 </a>
 
-                <a href="https://drive.google.com/file/d/your-file-id/view" target="_blank" class="ebook-card">
+                <a href="https://drive.google.com/drive/folders/1-FWjN6ufLGJmZLlsUGbtQn1eaJMWt5JR?usp=sharing" target="_blank" class="ebook-card">
                     <div class="ebook-icon">
                         <i class="fas fa-database"></i>
                     </div>

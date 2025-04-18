@@ -16,9 +16,7 @@
             <nav class="main-nav">
                 <ul>
                     <li><a href="#home">Home</a></li>
-                    <li><a href="#catalog">Catalog</a></li>
-                    <li><a href="#students">Students</a></li>
-                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="pages/ebooks.php">Catalog</a></li>
                 </ul>
             </nav>
         </div>
@@ -31,7 +29,7 @@
             <p>Discover a world of knowledge at your fingertips</p>
             <div class="cta-buttons">
                 <a href="pages/login.php" class="cta-button">Login to Library</a>
-                <a href="pages/about.php" class="cta-button secondary">Learn More</a>
+                <a href="pages/ebooks.php" class="cta-button secondary">Browse Catalog</a>
             </div>
         </div>
     </section>
@@ -59,7 +57,7 @@
 
         <div class="cta-section">
             <a href="pages/login.php" class="cta-button">Login to Library</a>
-            <a href="#" class="cta-button secondary">Browse Catalog</a>
+            <a href="pages/ebooks.php" class="cta-button secondary">Browse Catalog</a>
         </div>
 
         <footer class="footer">

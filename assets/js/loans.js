@@ -126,7 +126,7 @@ document.addEventListener("DOMContentLoaded", () => {
             showSuccess(data.message)
             resetBorrowForm()
             loadActiveLoans()
-                        } else {
+          } else {
             showError(data.message)
           }
         })
@@ -196,13 +196,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   
     // Function to load active loans
-function loadActiveLoans() {
+    function loadActiveLoans() {
       fetch("loans/loan_handler.php?action=get_active_loans")
         .then((response) => response.json())
         .then((data) => {
           if (data.status === "success") {
             displayActiveLoans(data.data)
-                } else {
+          } else {
             console.error("Error loading active loans:", data.message)
           }
         })
@@ -278,7 +278,7 @@ function loadActiveLoans() {
   
     // Add styles for the search results and selected items
     const style = document.createElement("style")
-style.textContent = `
+    style.textContent = `
     .search-container {
         position: relative;
     }
@@ -331,7 +331,7 @@ style.textContent = `
   })
   
   // Function to return a book
-  function returnBook(loanId) {
+  window.returnBook = function(loanId) {
     if (!confirm("Are you sure you want to return this book?")) {
       return
     }
@@ -348,10 +348,7 @@ style.textContent = `
       .then((data) => {
         if (data.status === "success") {
           showSuccess(data.message)
-          // Reload active loans to update the table
-          setTimeout(() => {
-            window.location.reload()
-          }, 1500)
+          loadActiveLoans()
         } else {
           showError(data.message)
         }
@@ -381,81 +378,71 @@ style.textContent = `
     }
   }
   
-  // Function to show error messages
+  // Function to display error messages
   function showError(message) {
-    // Create error message container if it doesn't exist
-    let errorContainer = document.querySelector(".error-message-container")
-    if (!errorContainer) {
-      errorContainer = document.createElement("div")
-      errorContainer.className = "error-message-container"
-      document.body.appendChild(errorContainer)
+    // Use the custom message display system
+    if (typeof showErrorMessage === 'function') {
+      showErrorMessage(message);
+    } else {
+      // Fallback to alert if custom function not available
+      alert(message);
     }
-  
-    // Create the error message element
-    const errorDiv = document.createElement("div")
-    errorDiv.className = "error-message"
-    errorDiv.innerHTML = `
-      <i class="fas fa-exclamation-circle"></i>
-      <span>${message}</span>
-    `
-  
-    // Add the message to the container
-    errorContainer.appendChild(errorDiv)
-  
-    // Add animation class
-    setTimeout(() => {
-      errorDiv.classList.add("show")
-    }, 10)
-  
-    // Remove the message after 3 seconds
-    setTimeout(() => {
-      errorDiv.classList.add("hide")
-      setTimeout(() => {
-        errorDiv.remove()
-        // Remove container if no more messages
-        if (errorContainer.children.length === 0) {
-          errorContainer.remove()
-        }
-      }, 300) // Wait for fade out animation
-    }, 3000)
   }
   
-  // Function to show success messages
+  // Function to display success messages
   function showSuccess(message) {
-    // Create success message container if it doesn't exist
-    let successContainer = document.querySelector(".success-message-container")
-    if (!successContainer) {
-      successContainer = document.createElement("div")
-      successContainer.className = "success-message-container"
-      document.body.appendChild(successContainer)
+    // Use the custom message display system
+    if (typeof showSuccessMessage === 'function') {
+      showSuccessMessage(message);
+    } else {
+      // Fallback to alert if custom function not available
+      alert(message);
     }
+  }
   
-    // Create the success message element
-    const successDiv = document.createElement("div")
-    successDiv.className = "success-message"
-    successDiv.innerHTML = `
-      <i class="fas fa-check-circle"></i>
-      <span>${message}</span>
-    `
-  
-    // Add the message to the container
-    successContainer.appendChild(successDiv)
-  
-    // Add animation class
-    setTimeout(() => {
-      successDiv.classList.add("show")
-    }, 10)
-  
-    // Remove the message after 3 seconds
-    setTimeout(() => {
-      successDiv.classList.add("hide")
-      setTimeout(() => {
-        successDiv.remove()
-        // Remove container if no more messages
-        if (successContainer.children.length === 0) {
-          successContainer.remove()
+  // Function to handle student search
+  function handleStudentSearch() {
+    const query = studentSearchInput.value.trim()
+    if (query.length < 2) {
+      studentSearchResults.style.display = "none"
+      return
+    }
+
+    fetch(`loans/loan_handler.php?action=search_students&query=${encodeURIComponent(query)}`)
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.status === "success") {
+          displayStudentResults(data.data)
+        } else {
+          showError(data.message)
         }
-      }, 300) // Wait for fade out animation
-    }, 3000)
+      })
+      .catch((error) => {
+        console.error("Error searching students:", error)
+        showError("An error occurred while searching students")
+      })
+  }
+
+  // Function to handle book search
+  function handleBookSearch() {
+    const query = bookSearchInput.value.trim()
+    if (query.length < 2) {
+      bookSearchResults.style.display = "none"
+      return
+    }
+
+    fetch(`loans/loan_handler.php?action=search_books&query=${encodeURIComponent(query)}`)
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.status === "success") {
+          displayBookResults(data.data)
+        } else {
+          showError(data.message)
+        }
+      })
+      .catch((error) => {
+        console.error("Error searching books:", error)
+        showError("An error occurred while searching books")
+      })
   }
   
