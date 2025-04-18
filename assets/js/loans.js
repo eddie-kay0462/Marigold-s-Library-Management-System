@@ -1,345 +1,187 @@
-document.addEventListener("DOMContentLoaded", () => {
-    // DOM Elements
-    const studentSearchInput = document.getElementById("borrow-student")
-    const studentSearchResults = document.getElementById("student-search-results")
-    const bookSearchInput = document.getElementById("borrow-book")
-    const bookSearchResults = document.getElementById("book-search-results")
-    const borrowForm = document.getElementById("borrow-form")
-    const dueDateInput = document.getElementById("due-date")
-    const confirmBorrowBtn = document.getElementById("confirm-borrow-btn")
-    const activeLoansTable = document.getElementById("active-loans-table")
-  
-    // Set default due date (14 days from today)
-    const defaultDueDate = new Date()
-    defaultDueDate.setDate(defaultDueDate.getDate() + 14)
-    dueDateInput.valueAsDate = defaultDueDate
-  
-    // Selected student and book data
-    let selectedStudent = null
-    let selectedBook = null
-  
-    // Load active loans when the page loads
-    loadActiveLoans()
-  
-    // Student search functionality
-    studentSearchInput.addEventListener(
-      "input",
-      debounce((e) => {
-        const searchTerm = e.target.value.trim()
-        if (searchTerm.length < 2) {
-          studentSearchResults.style.display = "none"
-          return
-        }
-  
-        fetch(`loans/loan_handler.php?action=search_students&query=${encodeURIComponent(searchTerm)}`)
-          .then((response) => response.json())
-          .then((data) => {
-            if (data.status === "success" && data.data.length > 0) {
-              displayStudentResults(data.data)
-            } else {
-              studentSearchResults.innerHTML = `<div class="search-result-item">No students found</div>`
-              studentSearchResults.style.display = "block"
-            }
-          })
-          .catch((error) => {
-            console.error("Error searching students:", error)
-            studentSearchResults.innerHTML = `<div class="search-result-item">Error searching students</div>`
-            studentSearchResults.style.display = "block"
-          })
-      }, 300),
-    )
-  
-    // Book search functionality
-    bookSearchInput.addEventListener(
-      "input",
-      debounce((e) => {
-        const searchTerm = e.target.value.trim()
-        if (searchTerm.length < 2) {
-          bookSearchResults.style.display = "none"
-          return
-        }
-  
-        fetch(`loans/loan_handler.php?action=search_books&query=${encodeURIComponent(searchTerm)}`)
-          .then((response) => response.json())
-          .then((data) => {
-            if (data.status === "success" && data.data.length > 0) {
-              displayBookResults(data.data)
-            } else {
-              bookSearchResults.innerHTML = `<div class="search-result-item">No books found</div>`
-              bookSearchResults.style.display = "block"
-            }
-          })
-          .catch((error) => {
-            console.error("Error searching books:", error)
-            bookSearchResults.innerHTML = `<div class="search-result-item">Error searching books</div>`
-            bookSearchResults.style.display = "block"
-          })
-      }, 300),
-    )
-  
-    // Hide search results when clicking outside
-    document.addEventListener("click", (e) => {
-      if (!studentSearchInput.contains(e.target) && !studentSearchResults.contains(e.target)) {
-        studentSearchResults.style.display = "none"
-      }
-      if (!bookSearchInput.contains(e.target) && !bookSearchResults.contains(e.target)) {
-        bookSearchResults.style.display = "none"
+// Function to load active loans
+function loadActiveLoans() {
+  fetch("loans/loan_handler.php?action=get_active_loans")
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.status === "success") {
+        displayActiveLoans(data.data)
+      } else {
+        console.error("Error loading active loans:", data.message)
       }
     })
-  
-    // Form submission
-    borrowForm.addEventListener("submit", (e) => {
-      e.preventDefault()
-  
-      if (!selectedStudent) {
-        showError("Please select a student")
-        return
-      }
-  
-      if (!selectedBook) {
-        showError("Please select a book")
-        return
-      }
-  
-      if (!dueDateInput.value) {
-        showError("Please select a due date")
-        return
-      }
-  
-      // Disable button to prevent multiple submissions
-      confirmBorrowBtn.disabled = true
-      confirmBorrowBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...'
-  
-      const formData = new FormData()
-      formData.append("action", "create_loan")
-      formData.append("student_id", selectedStudent.student_id)
-      formData.append("book_id", selectedBook.book_id)
-      formData.append("due_date", dueDateInput.value)
-  
-      fetch("loans/loan_handler.php", {
-        method: "POST",
-        body: formData,
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.status === "success") {
-            showSuccess(data.message)
-            resetBorrowForm()
-            loadActiveLoans()
-          } else {
-            showError(data.message)
-          }
-        })
-        .catch((error) => {
-          console.error("Error creating loan:", error)
-          showError("An error occurred while processing your request")
-        })
-        .finally(() => {
-          // Re-enable button
-          confirmBorrowBtn.disabled = false
-          confirmBorrowBtn.innerHTML = '<i class="fas fa-check"></i> Confirm Borrow'
-        })
+    .catch((error) => {
+      console.error("Error loading active loans:", error)
     })
-  
-    // Function to display student search results
-    function displayStudentResults(students) {
-      studentSearchResults.innerHTML = ""
-      students.forEach((student) => {
-        const resultItem = document.createElement("div")
-        resultItem.className = "search-result-item"
-        resultItem.innerHTML = `
-          <strong>${student.student_number}</strong> - ${student.first_name} ${student.last_name}
-        `
-        resultItem.addEventListener("click", () => {
-          selectedStudent = student
-          studentSearchInput.value = `${student.student_number} - ${student.first_name} ${student.last_name}`
-          studentSearchResults.style.display = "none"
-  
-          // Add visual indication that student is selected
-          studentSearchInput.classList.add("selected-item")
-        })
-        studentSearchResults.appendChild(resultItem)
-      })
-      studentSearchResults.style.display = "block"
-    }
-  
-    // Function to display book search results
-    function displayBookResults(books) {
-      bookSearchResults.innerHTML = ""
-      books.forEach((book) => {
-        // Only show books with available copies
-        if (book.available_copies > 0) {
-          const resultItem = document.createElement("div")
-          resultItem.className = "search-result-item"
-          resultItem.innerHTML = `
-            <strong>${book.title}</strong> - ${book.author} (ISBN: ${book.isbn})
-            <span class="availability-badge">Available: ${book.available_copies}</span>
-          `
-          resultItem.addEventListener("click", () => {
-            selectedBook = book
-            bookSearchInput.value = `${book.title} - ${book.author}`
-            bookSearchResults.style.display = "none"
-  
-            // Add visual indication that book is selected
-            bookSearchInput.classList.add("selected-item")
-          })
-          bookSearchResults.appendChild(resultItem)
-        }
-      })
-  
-      // If no books with available copies were found
-      if (bookSearchResults.children.length === 0) {
-        bookSearchResults.innerHTML = `<div class="search-result-item">No available books found</div>`
-      }
-  
-      bookSearchResults.style.display = "block"
-    }
-  
-    // Function to load active loans
-    function loadActiveLoans() {
-      fetch("loans/loan_handler.php?action=get_active_loans")
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.status === "success") {
-            displayActiveLoans(data.data)
-          } else {
-            console.error("Error loading active loans:", data.message)
-          }
-        })
-        .catch((error) => {
-          console.error("Error loading active loans:", error)
-        })
-    }
-  
-    // Function to display active loans
-    function displayActiveLoans(loans) {
-      if (!activeLoansTable) return
-  
-      activeLoansTable.innerHTML = ""
-  
-      if (loans.length === 0) {
-        activeLoansTable.innerHTML = `
-          <tr>
-            <td colspan="7" class="text-center">No active loans found</td>
-          </tr>
-        `
-        return
-      }
-  
-      loans.forEach((loan) => {
-        const row = document.createElement("tr")
-  
-        // Calculate if the loan is overdue
-        const dueDate = new Date(loan.due_date)
-        const today = new Date()
-        const isOverdue = today > dueDate && loan.status !== "Returned"
-  
-        // Format dates
-        const loanDateFormatted = formatDate(loan.loan_date)
-        const dueDateFormatted = formatDate(loan.due_date)
-  
-        row.innerHTML = `
-          <td>${loan.book_id}</td>
-          <td>${loan.title}</td>
-          <td>${loan.first_name} ${loan.last_name} (${loan.student_number})</td>
-          <td>${loanDateFormatted}</td>
-          <td>${dueDateFormatted}</td>
-          <td>
-            ${
-              isOverdue
-                ? '<span class="status-badge status-overdue">Overdue</span>'
-                : '<span class="status-badge status-active">Active</span>'
-            }
-          </td>
-          <td>
-            <button type="button" class="btn btn-primary" onclick="returnBook(${loan.loan_id})">
-              <i class="fas fa-undo-alt"></i> Return
-            </button>
-          </td>
-        `
-        activeLoansTable.appendChild(row)
-      })
-    }
-  
-    // Function to reset the borrow form
-    function resetBorrowForm() {
-      selectedStudent = null
-      selectedBook = null
-      studentSearchInput.value = ""
-      bookSearchInput.value = ""
-      studentSearchInput.classList.remove("selected-item")
-      bookSearchInput.classList.remove("selected-item")
-  
-      // Reset due date to default (14 days from today)
-      const defaultDueDate = new Date()
-      defaultDueDate.setDate(defaultDueDate.getDate() + 14)
-      dueDateInput.valueAsDate = defaultDueDate
-    }
-  
-    // Add styles for the search results and selected items
-    const style = document.createElement("style")
-    style.textContent = `
-    .search-container {
-        position: relative;
-    }
+}
 
-    .search-results {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        background-color: #fff;
-        border: 1px solid #ddd;
-        border-radius: 0 0 8px 8px;
-        max-height: 200px;
-        overflow-y: auto;
-        z-index: 100;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
+// Function to display active loans
+function displayActiveLoans(loans) {
+  const activeLoansTable = document.getElementById("active-loans-table")
+  if (!activeLoansTable) return
 
-    .search-result-item {
-        padding: 10px 15px;
-        cursor: pointer;
-        border-bottom: 1px solid #eee;
-        transition: background-color 0.2s ease;
-    }
+  activeLoansTable.innerHTML = ""
 
-    .search-result-item:last-child {
-        border-bottom: none;
-    }
-
-    .search-result-item:hover {
-        background-color: #f5f5f5;
-    }
-
-      .selected-item {
-        border-color: #4CAF50 !important;
-        background-color: #f1f8e9 !important;
-    }
-
-    .availability-badge {
-        float: right;
-        background-color: #e8f5e9;
-        color: #388e3c;
-        padding: 2px 6px;
-        border-radius: 4px;
-        font-size: 0.8rem;
-        font-weight: 500;
-      }
+  if (loans.length === 0) {
+    activeLoansTable.innerHTML = `
+      <tr>
+        <td colspan="7" class="text-center">No active loans found</td>
+      </tr>
     `
-    document.head.appendChild(style)
+    return
+  }
+
+  loans.forEach((loan) => {
+    const row = document.createElement("tr")
+
+    // Calculate if the loan is overdue
+    const dueDate = new Date(loan.due_date)
+    const today = new Date()
+    const isOverdue = today > dueDate && loan.status !== "Returned"
+
+    // Format dates
+    const loanDateFormatted = formatDate(loan.loan_date)
+    const dueDateFormatted = formatDate(loan.due_date)
+
+    row.innerHTML = `
+      <td>${loan.book_id}</td>
+      <td>${loan.title}</td>
+      <td>${loan.first_name} ${loan.last_name} (${loan.student_number})</td>
+      <td>${loanDateFormatted}</td>
+      <td>${dueDateFormatted}</td>
+      <td>
+        ${
+          isOverdue
+            ? '<span class="status-badge status-overdue">Overdue</span>'
+            : '<span class="status-badge status-active">Active</span>'
+        }
+      </td>
+      <td>
+        <button type="button" class="btn btn-primary" onclick="returnBook(${loan.loan_id})">
+          <i class="fas fa-undo-alt"></i> Return
+        </button>
+      </td>
+    `
+    activeLoansTable.appendChild(row)
   })
-  
-  // Function to return a book
-  window.returnBook = function(loanId) {
-    if (!confirm("Are you sure you want to return this book?")) {
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  // DOM Elements
+  const studentSearchInput = document.getElementById("borrow-student")
+  const studentSearchResults = document.getElementById("student-search-results")
+  const bookSearchInput = document.getElementById("borrow-book")
+  const bookSearchResults = document.getElementById("book-search-results")
+  const borrowForm = document.getElementById("borrow-form")
+  const dueDateInput = document.getElementById("due-date")
+  const confirmBorrowBtn = document.getElementById("confirm-borrow-btn")
+
+  // Set default due date (14 days from today)
+  const defaultDueDate = new Date()
+  defaultDueDate.setDate(defaultDueDate.getDate() + 14)
+  dueDateInput.valueAsDate = defaultDueDate
+
+  // Selected student and book data
+  let selectedStudent = null
+  let selectedBook = null
+
+  // Load active loans when the page loads
+  loadActiveLoans()
+
+  // Student search functionality
+  studentSearchInput.addEventListener(
+    "input",
+    debounce((e) => {
+      const searchTerm = e.target.value.trim()
+      if (searchTerm.length < 2) {
+        studentSearchResults.style.display = "none"
+        return
+      }
+
+      fetch(`loans/loan_handler.php?action=search_students&query=${encodeURIComponent(searchTerm)}`)
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.status === "success" && data.data.length > 0) {
+            displayStudentResults(data.data)
+          } else {
+            studentSearchResults.innerHTML = `<div class="search-result-item">No students found</div>`
+            studentSearchResults.style.display = "block"
+          }
+        })
+        .catch((error) => {
+          console.error("Error searching students:", error)
+          studentSearchResults.innerHTML = `<div class="search-result-item">Error searching students</div>`
+          studentSearchResults.style.display = "block"
+        })
+    }, 300),
+  )
+
+  // Book search functionality
+  bookSearchInput.addEventListener(
+    "input",
+    debounce((e) => {
+      const searchTerm = e.target.value.trim()
+      if (searchTerm.length < 2) {
+        bookSearchResults.style.display = "none"
+        return
+      }
+
+      fetch(`loans/loan_handler.php?action=search_books&query=${encodeURIComponent(searchTerm)}`)
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.status === "success" && data.data.length > 0) {
+            displayBookResults(data.data)
+          } else {
+            bookSearchResults.innerHTML = `<div class="search-result-item">No books found</div>`
+            bookSearchResults.style.display = "block"
+          }
+        })
+        .catch((error) => {
+          console.error("Error searching books:", error)
+          bookSearchResults.innerHTML = `<div class="search-result-item">Error searching books</div>`
+          bookSearchResults.style.display = "block"
+        })
+    }, 300),
+  )
+
+  // Hide search results when clicking outside
+  document.addEventListener("click", (e) => {
+    if (!studentSearchInput.contains(e.target) && !studentSearchResults.contains(e.target)) {
+      studentSearchResults.style.display = "none"
+    }
+    if (!bookSearchInput.contains(e.target) && !bookSearchResults.contains(e.target)) {
+      bookSearchResults.style.display = "none"
+    }
+  })
+
+  // Form submission
+  borrowForm.addEventListener("submit", (e) => {
+    e.preventDefault()
+
+    if (!selectedStudent) {
+      showError("Please select a student")
       return
     }
-  
+
+    if (!selectedBook) {
+      showError("Please select a book")
+      return
+    }
+
+    if (!dueDateInput.value) {
+      showError("Please select a due date")
+      return
+    }
+
+    // Disable button to prevent multiple submissions
+    confirmBorrowBtn.disabled = true
+    confirmBorrowBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...'
+
     const formData = new FormData()
-    formData.append("action", "return_book")
-    formData.append("loan_id", loanId)
-  
+    formData.append("action", "create_loan")
+    formData.append("student_id", selectedStudent.student_id)
+    formData.append("book_id", selectedBook.book_id)
+    formData.append("due_date", dueDateInput.value)
+
     fetch("loans/loan_handler.php", {
       method: "POST",
       body: formData,
@@ -348,101 +190,258 @@ document.addEventListener("DOMContentLoaded", () => {
       .then((data) => {
         if (data.status === "success") {
           showSuccess(data.message)
+          resetBorrowForm()
           loadActiveLoans()
         } else {
           showError(data.message)
         }
       })
       .catch((error) => {
-        console.error("Error returning book:", error)
+        console.error("Error creating loan:", error)
         showError("An error occurred while processing your request")
       })
+      .finally(() => {
+        // Re-enable button
+        confirmBorrowBtn.disabled = false
+        confirmBorrowBtn.innerHTML = '<i class="fas fa-check"></i> Confirm Borrow'
+      })
+  })
+
+  // Function to display student search results
+  function displayStudentResults(students) {
+    studentSearchResults.innerHTML = ""
+    students.forEach((student) => {
+      const resultItem = document.createElement("div")
+      resultItem.className = "search-result-item"
+      resultItem.innerHTML = `
+        <strong>${student.student_number}</strong> - ${student.first_name} ${student.last_name}
+      `
+      resultItem.addEventListener("click", () => {
+        selectedStudent = student
+        studentSearchInput.value = `${student.student_number} - ${student.first_name} ${student.last_name}`
+        studentSearchResults.style.display = "none"
+
+        // Add visual indication that student is selected
+        studentSearchInput.classList.add("selected-item")
+      })
+      studentSearchResults.appendChild(resultItem)
+    })
+    studentSearchResults.style.display = "block"
   }
-  
-  // Utility function for formatting dates
-  function formatDate(dateString) {
-    const options = { year: "numeric", month: "long", day: "numeric" }
-    return new Date(dateString).toLocaleDateString(undefined, options)
-  }
-  
-  // Utility function for debouncing
-  function debounce(func, wait) {
-    let timeout
-    return function executedFunction(...args) {
-      const later = () => {
-        clearTimeout(timeout)
-        func(...args)
+
+  // Function to display book search results
+  function displayBookResults(books) {
+    bookSearchResults.innerHTML = ""
+    books.forEach((book) => {
+      // Only show books with available copies
+      if (book.available_copies > 0) {
+        const resultItem = document.createElement("div")
+        resultItem.className = "search-result-item"
+        resultItem.innerHTML = `
+          <strong>${book.title}</strong> - ${book.author} (ISBN: ${book.isbn})
+          <span class="availability-badge">Available: ${book.available_copies}</span>
+        `
+        resultItem.addEventListener("click", () => {
+          selectedBook = book
+          bookSearchInput.value = `${book.title} - ${book.author}`
+          bookSearchResults.style.display = "none"
+
+          // Add visual indication that book is selected
+          bookSearchInput.classList.add("selected-item")
+        })
+        bookSearchResults.appendChild(resultItem)
       }
+    })
+
+    // If no books with available copies were found
+    if (bookSearchResults.children.length === 0) {
+      bookSearchResults.innerHTML = `<div class="search-result-item">No available books found</div>`
+    }
+
+    bookSearchResults.style.display = "block"
+  }
+
+  // Function to reset the borrow form
+  function resetBorrowForm() {
+    selectedStudent = null
+    selectedBook = null
+    studentSearchInput.value = ""
+    bookSearchInput.value = ""
+    studentSearchInput.classList.remove("selected-item")
+    bookSearchInput.classList.remove("selected-item")
+
+    // Reset due date to default (14 days from today)
+    const defaultDueDate = new Date()
+    defaultDueDate.setDate(defaultDueDate.getDate() + 14)
+    dueDateInput.valueAsDate = defaultDueDate
+  }
+
+  // Add styles for the search results and selected items
+  const style = document.createElement("style")
+  style.textContent = `
+  .search-container {
+      position: relative;
+  }
+
+  .search-results {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 0 0 8px 8px;
+      max-height: 200px;
+      overflow-y: auto;
+      z-index: 100;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+
+  .search-result-item {
+      padding: 10px 15px;
+      cursor: pointer;
+      border-bottom: 1px solid #eee;
+      transition: background-color 0.2s ease;
+  }
+
+  .search-result-item:last-child {
+      border-bottom: none;
+  }
+
+  .search-result-item:hover {
+      background-color: #f5f5f5;
+  }
+
+    .selected-item {
+      border-color: #4CAF50 !important;
+      background-color: #f1f8e9 !important;
+  }
+
+  .availability-badge {
+      float: right;
+      background-color: #e8f5e9;
+      color: #388e3c;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+  `
+  document.head.appendChild(style)
+})
+
+// Function to return a book
+window.returnBook = function(loanId) {
+  if (!confirm("Are you sure you want to return this book?")) {
+    return
+  }
+
+  const formData = new FormData()
+  formData.append("action", "return_book")
+  formData.append("loan_id", loanId)
+
+  fetch("loans/loan_handler.php", {
+    method: "POST",
+    body: formData,
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.status === "success") {
+        showSuccess(data.message)
+        loadActiveLoans()
+      } else {
+        showError(data.message)
+      }
+    })
+    .catch((error) => {
+      console.error("Error returning book:", error)
+      showError("An error occurred while processing your request")
+    })
+}
+
+// Utility function for formatting dates
+function formatDate(dateString) {
+  const options = { year: "numeric", month: "long", day: "numeric" }
+  return new Date(dateString).toLocaleDateString(undefined, options)
+}
+
+// Utility function for debouncing
+function debounce(func, wait) {
+  let timeout
+  return function executedFunction(...args) {
+    const later = () => {
       clearTimeout(timeout)
-      timeout = setTimeout(later, wait)
+      func(...args)
     }
+    clearTimeout(timeout)
+    timeout = setTimeout(later, wait)
   }
-  
-  // Function to display error messages
-  function showError(message) {
-    // Use the custom message display system
-    if (typeof showErrorMessage === 'function') {
-      showErrorMessage(message);
-    } else {
-      // Fallback to alert if custom function not available
-      alert(message);
-    }
-  }
-  
-  // Function to display success messages
-  function showSuccess(message) {
-    // Use the custom message display system
-    if (typeof showSuccessMessage === 'function') {
-      showSuccessMessage(message);
-    } else {
-      // Fallback to alert if custom function not available
-      alert(message);
-    }
-  }
-  
-  // Function to handle student search
-  function handleStudentSearch() {
-    const query = studentSearchInput.value.trim()
-    if (query.length < 2) {
-      studentSearchResults.style.display = "none"
-      return
-    }
+}
 
-    fetch(`loans/loan_handler.php?action=search_students&query=${encodeURIComponent(query)}`)
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.status === "success") {
-          displayStudentResults(data.data)
-        } else {
-          showError(data.message)
-        }
-      })
-      .catch((error) => {
-        console.error("Error searching students:", error)
-        showError("An error occurred while searching students")
-      })
+// Function to display error messages
+function showError(message) {
+  // Use the custom message display system
+  if (typeof showErrorMessage === 'function') {
+    showErrorMessage(message);
+  } else {
+    // Fallback to alert if custom function not available
+    alert(message);
+  }
+}
+
+// Function to display success messages
+function showSuccess(message) {
+  // Use the custom message display system
+  if (typeof showSuccessMessage === 'function') {
+    showSuccessMessage(message);
+  } else {
+    // Fallback to alert if custom function not available
+    alert(message);
+  }
+}
+
+// Function to handle student search
+function handleStudentSearch() {
+  const query = studentSearchInput.value.trim()
+  if (query.length < 2) {
+    studentSearchResults.style.display = "none"
+    return
   }
 
-  // Function to handle book search
-  function handleBookSearch() {
-    const query = bookSearchInput.value.trim()
-    if (query.length < 2) {
-      bookSearchResults.style.display = "none"
-      return
-    }
+  fetch(`loans/loan_handler.php?action=search_students&query=${encodeURIComponent(query)}`)
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.status === "success") {
+        displayStudentResults(data.data)
+      } else {
+        showError(data.message)
+      }
+    })
+    .catch((error) => {
+      console.error("Error searching students:", error)
+      showError("An error occurred while searching students")
+    })
+}
 
-    fetch(`loans/loan_handler.php?action=search_books&query=${encodeURIComponent(query)}`)
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.status === "success") {
-          displayBookResults(data.data)
-        } else {
-          showError(data.message)
-        }
-      })
-      .catch((error) => {
-        console.error("Error searching books:", error)
-        showError("An error occurred while searching books")
-      })
+// Function to handle book search
+function handleBookSearch() {
+  const query = bookSearchInput.value.trim()
+  if (query.length < 2) {
+    bookSearchResults.style.display = "none"
+    return
   }
-  
+
+  fetch(`loans/loan_handler.php?action=search_books&query=${encodeURIComponent(query)}`)
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.status === "success") {
+        displayBookResults(data.data)
+      } else {
+        showError(data.message)
+      }
+    })
+    .catch((error) => {
+      console.error("Error searching books:", error)
+      showError("An error occurred while searching books")
+    })
+}
