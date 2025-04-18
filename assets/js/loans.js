@@ -92,7 +92,7 @@ document.addEventListener("DOMContentLoaded", () => {
     "input",
     debounce((e) => {
       const searchTerm = e.target.value.trim()
-      if (searchTerm.length < 2) {
+            if (searchTerm.length < 2) {
         studentSearchResults.style.display = "none"
         return
       }
@@ -102,7 +102,7 @@ document.addEventListener("DOMContentLoaded", () => {
         .then((data) => {
           if (data.status === "success" && data.data.length > 0) {
             displayStudentResults(data.data)
-          } else {
+                        } else {
             studentSearchResults.innerHTML = `<div class="search-result-item">No students found</div>`
             studentSearchResults.style.display = "block"
           }
@@ -120,7 +120,7 @@ document.addEventListener("DOMContentLoaded", () => {
     "input",
     debounce((e) => {
       const searchTerm = e.target.value.trim()
-      if (searchTerm.length < 2) {
+            if (searchTerm.length < 2) {
         bookSearchResults.style.display = "none"
         return
       }
@@ -130,7 +130,7 @@ document.addEventListener("DOMContentLoaded", () => {
         .then((data) => {
           if (data.status === "success" && data.data.length > 0) {
             displayBookResults(data.data)
-          } else {
+                        } else {
             bookSearchResults.innerHTML = `<div class="search-result-item">No books found</div>`
             bookSearchResults.style.display = "block"
           }
@@ -208,7 +208,7 @@ document.addEventListener("DOMContentLoaded", () => {
   })
 
   // Function to display student search results
-  function displayStudentResults(students) {
+function displayStudentResults(students) {
     studentSearchResults.innerHTML = ""
     students.forEach((student) => {
       const resultItem = document.createElement("div")
@@ -278,53 +278,53 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Add styles for the search results and selected items
   const style = document.createElement("style")
-  style.textContent = `
-  .search-container {
-      position: relative;
-  }
+style.textContent = `
+    .search-container {
+        position: relative;
+    }
 
-  .search-results {
-      position: absolute;
-      top: 100%;
-      left: 0;
-      right: 0;
+    .search-results {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
       background-color: #fff;
-      border: 1px solid #ddd;
+        border: 1px solid #ddd;
       border-radius: 0 0 8px 8px;
-      max-height: 200px;
-      overflow-y: auto;
+        max-height: 200px;
+        overflow-y: auto;
       z-index: 100;
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  }
+    }
 
-  .search-result-item {
-      padding: 10px 15px;
-      cursor: pointer;
-      border-bottom: 1px solid #eee;
-      transition: background-color 0.2s ease;
-  }
+    .search-result-item {
+        padding: 10px 15px;
+        cursor: pointer;
+        border-bottom: 1px solid #eee;
+        transition: background-color 0.2s ease;
+    }
 
-  .search-result-item:last-child {
-      border-bottom: none;
-  }
+    .search-result-item:last-child {
+        border-bottom: none;
+    }
 
-  .search-result-item:hover {
-      background-color: #f5f5f5;
-  }
+    .search-result-item:hover {
+        background-color: #f5f5f5;
+    }
 
     .selected-item {
       border-color: #4CAF50 !important;
       background-color: #f1f8e9 !important;
-  }
+    }
 
-  .availability-badge {
+    .availability-badge {
       float: right;
       background-color: #e8f5e9;
       color: #388e3c;
-      padding: 2px 6px;
+        padding: 2px 6px;
       border-radius: 4px;
       font-size: 0.8rem;
-      font-weight: 500;
+        font-weight: 500;
     }
   `
   document.head.appendChild(style)
