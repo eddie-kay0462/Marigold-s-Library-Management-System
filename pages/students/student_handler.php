@@ -98,7 +98,7 @@ try {
                 }
 
                 // Check if student has any active loans
-                $stmt = $pdo->prepare("SELECT loan_id FROM loans WHERE student_id = ? AND return_date IS NULL");
+                $stmt = $pdo->prepare("SELECT loan_id FROM active_loans WHERE student_id = ? AND status = 'Active'");
                 $stmt->execute([$student_id]);
                 if ($stmt->fetch()) {
                     throw new Exception('Cannot delete student with active loans');
@@ -137,6 +137,32 @@ try {
 
             $response['status'] = 'success';
             $response['data'] = $students;
+            break;
+
+        case 'get_student_loans':
+            $student_id = filter_input(INPUT_GET, 'student_id', FILTER_VALIDATE_INT);
+            if (!$student_id) {
+                throw new Exception('Student ID is required');
+            }
+
+            $stmt = $pdo->prepare("
+                SELECT 
+                    l.loan_id,
+                    l.book_id,
+                    b.title,
+                    l.loan_date,
+                    l.due_date,
+                    l.status
+                FROM active_loans l
+                JOIN books b ON l.book_id = b.book_id
+                WHERE l.student_id = ?
+                ORDER BY l.loan_date DESC
+            ");
+            $stmt->execute([$student_id]);
+            $loans = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            $response['status'] = 'success';
+            $response['data'] = $loans;
             break;
 
         default:

@@ -1,3 +1,20 @@
+// Function to load students
+function loadStudents() {
+    fetch('../pages/students/student_handler.php?action=list')
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                displayStudents(data.data);
+            } else {
+                showError(data.message);
+            }
+        })
+        .catch(error => {
+            showError('Error loading students');
+            console.error('Error:', error);
+        });
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     // Get DOM elements
     const studentModal = document.getElementById('student-form-modal');
@@ -57,23 +74,6 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Error:', error);
         });
     });
-
-    // Function to load students
-    function loadStudents() {
-        fetch('../pages/students/student_handler.php?action=list')
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    displayStudents(data.data);
-                } else {
-                    showError(data.message);
-                }
-            })
-            .catch(error => {
-                showError('Error loading students');
-                console.error('Error:', error);
-            });
-    }
 
     // Function to display students in the table
     function displayStudents(students) {
