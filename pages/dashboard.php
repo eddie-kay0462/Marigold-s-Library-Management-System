@@ -22,7 +22,7 @@ if (!isset($_SESSION['user_id'])) {
         .dashboard-container {
             display: flex;
             min-height: calc(100vh - 80px);
-            margin-top: 80px;
+            margin-top: 0; /* Remove the margin-top */
             flex-direction: row;
             background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
         }
@@ -32,11 +32,11 @@ if (!isset($_SESSION['user_id'])) {
             background-color: #ffffff;
             padding: 20px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            position: sticky; /* Change from fixed to sticky */
-            top: 80px; /* Position it right below the header */
-            height: calc(100vh - 80px); /* Adjust height to account for header */
-            overflow-y: auto; /* Allow scrolling if content exceeds height */
-            transition: all 0.3s ease; /* Smooth transition for responsive changes */
+            position: sticky;
+            top: 80px;
+            height: calc(100vh - 80px);
+            overflow-y: auto;
+            transition: all 0.3s ease;
             border-radius: 0 10px 10px 0;
             border-right: 1px solid rgba(0, 0, 0, 0.05);
         }
