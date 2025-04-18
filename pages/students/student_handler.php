@@ -29,8 +29,13 @@ try {
                 $registration_date = filter_input(INPUT_POST, 'registration_date', FILTER_SANITIZE_STRING);
 
                 // Validate required fields
-                if (!$student_number || !$first_name || !$last_name || !$email || !$date_of_birth || !$registration_date) {
-                    throw new Exception('All fields are required');
+                if (!$student_number || trim($student_number) === '' || !$first_name || !$last_name || !$email || !$date_of_birth || !$registration_date) {
+                    throw new Exception('All fields are required. Student number cannot be empty.');
+                }
+
+                // Validate student number format (only allow alphanumeric characters and hyphens)
+                if (!preg_match('/^[A-Za-z0-9-]+$/', trim($student_number))) {
+                    throw new Exception('Student number can only contain letters, numbers, and hyphens');
                 }
 
                 // Check if student number already exists

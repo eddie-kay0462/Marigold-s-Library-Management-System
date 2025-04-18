@@ -123,10 +123,12 @@ try {
                 // Insert new loan
                 $loan_date = date('Y-m-d'); // Today's date
                 $stmt = $pdo->prepare("
-                    INSERT INTO active_loans (student_id, book_id, title, loan_date, due_date, status)
-                    VALUES (?, ?, ?, ?, ?, 'Active')
+                    INSERT INTO active_loans (student_id, book_id, title, loan_date, due_date, status, student_number)
+                    SELECT ?, ?, ?, ?, ?, 'Active', s.student_number
+                    FROM students s
+                    WHERE s.student_id = ?
                 ");
-                $stmt->execute([$student_id, $book_id, $book['title'], $loan_date, $due_date]);
+                $stmt->execute([$student_id, $book_id, $book['title'], $loan_date, $due_date, $student_id]);
                 $loan_id = $pdo->lastInsertId();
 
                 // Update book available copies
@@ -254,7 +256,13 @@ try {
                         loan_date, due_date, returned_date, status
                     )
                     SELECT 
-                        l.loan_id, l.student_id, s.student_number, l.book_id,
+                        l.loan_id, l.student_id, 
+                        CASE 
+                            WHEN s.student_number IS NULL OR TRIM(s.student_number) = '' 
+                            THEN CONCAT('TEMP-', l.student_id, '-', UNIX_TIMESTAMP()) 
+                            ELSE s.student_number 
+                        END as student_number,
+                        l.book_id,
                         l.loan_date, l.due_date, ?, ?
                     FROM active_loans l
                     JOIN students s ON l.student_id = s.student_id

@@ -1,11 +1,47 @@
 <?php
+// Include necessary files
+require_once '../config/database.php';
 session_start();
 
-// Check if user is not logged in
+// Basic session check
 if (!isset($_SESSION['user_id'])) {
     $_SESSION['error'] = "Please login to access the dashboard.";
     header("Location: login.php");
     exit();
+}
+
+// Initialize database connection
+$database = new Database();
+$conn = $database->getConnection();
+
+// Get counts for dashboard
+try {
+    // Count total books
+    $bookQuery = "SELECT COUNT(*) as total_books FROM books";
+    $bookStmt = $conn->prepare($bookQuery);
+    $bookStmt->execute();
+    $totalBooks = $bookStmt->fetch(PDO::FETCH_ASSOC)['total_books'];
+    
+    // Count total students
+    $studentQuery = "SELECT COUNT(*) as total_students FROM students";
+    $studentStmt = $conn->prepare($studentQuery);
+    $studentStmt->execute();
+    $totalStudents = $studentStmt->fetch(PDO::FETCH_ASSOC)['total_students'];
+    
+    // Count active loans
+    $activeLoansQuery = "SELECT COUNT(*) as active_loans FROM active_loans WHERE status = 'Active'";
+    $activeLoansStmt = $conn->prepare($activeLoansQuery);
+    $activeLoansStmt->execute();
+    $activeLoans = $activeLoansStmt->fetch(PDO::FETCH_ASSOC)['active_loans'];
+    
+    // Count overdue loans
+    $overdueLoansQuery = "SELECT COUNT(*) as overdue_loans FROM active_loans WHERE due_date < CURDATE() AND status = 'Active'";
+    $overdueLoansStmt = $conn->prepare($overdueLoansQuery);
+    $overdueLoansStmt->execute();
+    $overdueLoans = $overdueLoansStmt->fetch(PDO::FETCH_ASSOC)['overdue_loans'];
+    
+} catch (PDOException $e) {
+    echo "Error: " . $e->getMessage();
 }
 ?>
 <!DOCTYPE html>
@@ -701,6 +737,419 @@ if (!isset($_SESSION['user_id'])) {
         .main-nav .logout-link i {
             font-size: 1.1rem;
         }
+
+        /* Reports section specific styles */
+        .reports-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .chart-card {
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .chart-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .chart-card h3 {
+            color: #2c3e50;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .chart-card h3 i {
+            color: #4CAF50;
+        }
+        
+        .chart-container {
+            height: 250px;
+            position: relative;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-right: 5px;
+        }
+        
+        .badge-success {
+            background-color: #e8f5e9;
+            color: #388e3c;
+        }
+        
+        .badge-danger {
+            background-color: #ffebee;
+            color: #d32f2f;
+        }
+        
+        .badge-info {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        .filter-form {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+        }
+        
+        .filter-form .row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: -10px;
+        }
+        
+        .filter-form .col {
+            flex: 1;
+            padding: 10px;
+            min-width: 200px;
+        }
+        
+        .filter-form label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+        }
+        
+        .export-btn {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 8px 15px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(76, 175, 80, 0.2);
+        }
+        
+        .export-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(76, 175, 80, 0.3);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .card-header h3 {
+            margin: 0;
+            font-size: 1.2rem;
+            color: #2c3e50;
+        }
+        
+        .card-tools {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .info-box {
+            display: flex;
+            min-height: 80px;
+            background: #fff;
+            width: 100%;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .info-box-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 70px;
+            font-size: 1.8rem;
+            background: rgba(0,0,0,0.1);
+            color: #fff;
+        }
+        
+        .info-box-content {
+            padding: 15px;
+            flex: 1;
+        }
+        
+        .info-box-text {
+            display: block;
+            font-size: 1rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 5px;
+        }
+        
+        .info-box-number {
+            display: block;
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+        
+        .bg-info {
+            background-color: #17a2b8 !important;
+        }
+        
+        .bg-success {
+            background-color: #28a745 !important;
+        }
+        
+        .bg-warning {
+            background-color: #ffc107 !important;
+        }
+        
+        .bg-danger {
+            background-color: #dc3545 !important;
+        }
+        
+        .elevation-1 {
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+        }
+        
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            margin-right: -15px;
+            margin-left: -15px;
+        }
+        
+        .col-12 {
+            flex: 0 0 100%;
+            max-width: 100%;
+        }
+        
+        .col-md-3 {
+            flex: 0 0 25%;
+            max-width: 25%;
+        }
+        
+        .col-md-4 {
+            flex: 0 0 33.333333%;
+            max-width: 33.333333%;
+        }
+        
+        @media (max-width: 768px) {
+            .col-md-3, .col-md-4 {
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
+        }
+        
+        .mb-3 {
+            margin-bottom: 1rem !important;
+        }
+        
+        .mt-4 {
+            margin-top: 1.5rem !important;
+        }
+        
+        .mb-4 {
+            margin-bottom: 1.5rem !important;
+        }
+        
+        .table-responsive {
+            display: block;
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .table-bordered {
+            border: 1px solid #dee2e6;
+        }
+        
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: rgba(0,0,0,.05);
+        }
+        
+        .btn-sm {
+            padding: .25rem .5rem;
+            font-size: .875rem;
+            line-height: 1.5;
+            border-radius: .2rem;
+        }
+        
+        .btn-success {
+            color: #fff;
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+        
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+        
+        .form-control {
+            display: block;
+            width: 100%;
+            height: calc(1.5em + .75rem + 2px);
+            padding: .375rem .75rem;
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.5;
+            color: #495057;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid #ced4da;
+            border-radius: .25rem;
+            transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+        }
+        
+        .form-control:focus {
+            color: #495057;
+            background-color: #fff;
+            border-color: #80bdff;
+            outline: 0;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+        
+        /* Reports Section Styles */
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            margin-right: -15px;
+            margin-left: -15px;
+        }
+        
+        .col-md-4 {
+            flex: 0 0 33.333333%;
+            max-width: 33.333333%;
+            padding-right: 15px;
+            padding-left: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .card-header {
+            padding: 15px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            background: transparent;
+        }
+        
+        .card-title {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .card-body {
+            padding: 20px;
+        }
+        
+        .card-tools {
+            float: right;
+        }
+        
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .table {
+            width: 100%;
+            margin-bottom: 1rem;
+            color: #2c3e50;
+            border-collapse: collapse;
+        }
+        
+        .table th,
+        .table td {
+            padding: 12px;
+            vertical-align: top;
+            border-top: 1px solid #dee2e6;
+        }
+        
+        .table thead th {
+            vertical-align: bottom;
+            border-bottom: 2px solid #dee2e6;
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+        
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+        
+        .table-bordered {
+            border: 1px solid #dee2e6;
+        }
+        
+        .table-bordered th,
+        .table-bordered td {
+            border: 1px solid #dee2e6;
+        }
+        
+        .mt-4 {
+            margin-top: 2rem;
+        }
+        
+        .mb-4 {
+            margin-bottom: 2rem;
+        }
+        
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+        
+        .form-control {
+            display: block;
+            width: 100%;
+            padding: 0.375rem 0.75rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #495057;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+        
+        .form-control:focus {
+            color: #495057;
+            background-color: #fff;
+            border-color: #80bdff;
+            outline: 0;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+        
+        /* Chart container styles */
+        .chart-container {
+            position: relative;
+            margin: auto;
+            height: 250px;
+            width: 100%;
+        }
+        
+        canvas {
+            max-width: 100%;
+        }
     </style>
 </head>
 <body>
@@ -765,22 +1214,22 @@ if (!isset($_SESSION['user_id'])) {
                     <div class="stat-card">
                         <i class="fas fa-book-open fa-2x" style="color: #4CAF50; margin-bottom: 15px;"></i>
                         <h3>Total Books</h3>
-                        <div class="number">1,245</div>
+                        <div class="number"><?php echo $totalBooks; ?></div>
                     </div>
                     <div class="stat-card">
                         <i class="fas fa-users fa-2x" style="color: #2196F3; margin-bottom: 15px;"></i>
                         <h3>Active Members</h3>
-                        <div class="number">328</div>
+                        <div class="number"><?php echo $totalStudents; ?></div>
                     </div>
                     <div class="stat-card">
                         <i class="fas fa-hand-holding-book fa-2x" style="color: #FF9800; margin-bottom: 15px;"></i>
                         <h3>Books Loaned</h3>
-                        <div class="number">87</div>
+                        <div class="number"><?php echo $activeLoans; ?></div>
                     </div>
                     <div class="stat-card">
                         <i class="fas fa-exclamation-circle fa-2x" style="color: #f44336; margin-bottom: 15px;"></i>
                         <h3>Overdue</h3>
-                        <div class="number">12</div>
+                        <div class="number"><?php echo $overdueLoans; ?></div>
                     </div>
                 </div>
             </section>
@@ -912,7 +1361,7 @@ if (!isset($_SESSION['user_id'])) {
                 
                 <!-- Borrow Section -->
                 <div class="card">
-                    <h2>5️⃣ Borrow Books</h2>
+                    <h2><i class="fas fa-book-reader"></i> Borrow Books</h2>
                     <form id="borrow-form">
                         <div class="form-group">
                             <label for="borrow-student">Search Student</label>
@@ -943,7 +1392,7 @@ if (!isset($_SESSION['user_id'])) {
                 
                 <!-- Return Section -->
                 <div class="card">
-                    <h2>Active Loans</h2>
+                    <h2><i class="fas fa-exchange-alt"></i> Active Loans</h2>
                     <div class="form-group">
                         <input type="text" id="return-search" placeholder="Search borrowed books by student or book title...">
                     </div>
@@ -967,131 +1416,47 @@ if (!isset($_SESSION['user_id'])) {
                 </div>
             </section>
 
-            <!-- Returns Section -->
-            <section id="returns" class="dashboard-section">
-                <div class="dashboard-header">
-                    <h1>Return History</h1>
-                </div>
-                
-                <div class="card">
-                    <div class="form-group">
-                        <input type="text" id="return-history-search" placeholder="Search return history...">
-                    </div>
-                    
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Return ID</th>
-                                <th>Book</th>
-                                <th>Student</th>
-                                <th>Loan Date</th>
-                                <th>Return Date</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>R001</td>
-                                <td>To Kill a Mockingbird</td>
-                                <td>Emily Johnson</td>
-                                <td>2023-05-30</td>
-                                <td>2023-06-14</td>
-                                <td><span class="status-badge status-success">On Time</span></td>
-                            </tr>
-                            <tr>
-                                <td>R002</td>
-                                <td>The Catcher in the Rye</td>
-                                <td>David Lee</td>
-                                <td>2023-05-25</td>
-                                <td>2023-06-10</td>
-                                <td><span class="status-badge status-success">On Time</span></td>
-                            </tr>
-                            <tr>
-                                <td>R003</td>
-                                <td>Lord of the Flies</td>
-                                <td>Sarah Wilson</td>
-                                <td>2023-05-20</td>
-                                <td>2023-06-08</td>
-                                <td><span class="status-badge status-warning">Late</span></td>
-                            </tr>
-                            <tr>
-                                <td>R004</td>
-                                <td>Animal Farm</td>
-                                <td>John Smith</td>
-                                <td>2023-05-15</td>
-                                <td>2023-06-05</td>
-                                <td><span class="status-badge status-warning">Late</span></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-
             <!-- Reports Section -->
             <section id="reports" class="dashboard-section">
                 <div class="dashboard-header">
                     <h1>Reports</h1>
                 </div>
                 
-                <div class="stats-container">
-                    <div class="card">
-                        <h2><i class="fas fa-chart-pie" style="color: #4CAF50; margin-right: 10px;"></i>Books by Category</h2>
-                        <div style="height: 200px; background-color: #f5f5f5; display: flex; align-items: center; justify-content: center;">
-                            Chart Placeholder
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <h2><i class="fas fa-chart-line" style="color: #4CAF50; margin-right: 10px;"></i>Monthly Loans</h2>
-                        <div style="height: 200px; background-color: #f5f5f5; display: flex; align-items: center; justify-content: center;">
-                            Chart Placeholder
-                        </div>
-                    </div>
-                </div>
+                <!-- Loan Statistics Cards -->
+                <div id="loan-stats-container"></div>
                 
+                <!-- Charts Row -->
+                <div class="row">
+                    <div class="col-md-4">
+                    <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Overdue Loans</h3>
+                        </div>
+                            <div class="card-body">
+                                <canvas id="overdue-chart" height="250"></canvas>
+                    </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Monthly Loans</h3>
+                </div>
+                            <div class="card-body">
+                                <canvas id="monthly-loans-chart" height="250"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
                 <div class="card">
-                    <h2><i class="fas fa-star" style="color: #4CAF50; margin-right: 10px;"></i>Popular Books</h2>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Rank</th>
-                                <th>Book Title</th>
-                                <th>Author</th>
-                                <th>Times Borrowed</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>To Kill a Mockingbird</td>
-                                <td>Harper Lee</td>
-                                <td>32</td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>1984</td>
-                                <td>George Orwell</td>
-                                <td>28</td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>The Great Gatsby</td>
-                                <td>F. Scott Fitzgerald</td>
-                                <td>25</td>
-                            </tr>
-                            <tr>
-                                <td>4</td>
-                                <td>Pride and Prejudice</td>
-                                <td>Jane Austen</td>
-                                <td>23</td>
-                            </tr>
-                            <tr>
-                                <td>5</td>
-                                <td>The Hobbit</td>
-                                <td>J.R.R. Tolkien</td>
-                                <td>21</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                            <div class="card-header">
+                                <h3 class="card-title">Popular Books</h3>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="popular-books-chart" height="250"></canvas>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -1158,6 +1523,8 @@ if (!isset($_SESSION['user_id'])) {
         </div>
     </div>
 
+    <!-- Include Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="../assets/js/dashboard.js"></script>
     <script src="../assets/js/validation.js"></script>
     <script src="../assets/js/messages.js"></script>
@@ -1165,5 +1532,7 @@ if (!isset($_SESSION['user_id'])) {
     <script src="../assets/js/students.js"></script>
     <script src="../assets/js/loans.js"></script>
     <script src="../assets/js/users.js"></script>
+    <script src="../assets/js/reports.js"></script>
 </body>
 </html>
+

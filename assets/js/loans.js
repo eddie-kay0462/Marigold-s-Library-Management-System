@@ -126,7 +126,7 @@ document.addEventListener("DOMContentLoaded", () => {
             showSuccess(data.message)
             resetBorrowForm()
             loadActiveLoans()
-          } else {
+                        } else {
             showError(data.message)
           }
         })
@@ -196,13 +196,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   
     // Function to load active loans
-    function loadActiveLoans() {
+function loadActiveLoans() {
       fetch("loans/loan_handler.php?action=get_active_loans")
         .then((response) => response.json())
         .then((data) => {
           if (data.status === "success") {
             displayActiveLoans(data.data)
-          } else {
+                } else {
             console.error("Error loading active loans:", data.message)
           }
         })
@@ -278,12 +278,12 @@ document.addEventListener("DOMContentLoaded", () => {
   
     // Add styles for the search results and selected items
     const style = document.createElement("style")
-    style.textContent = `
-      .search-container {
+style.textContent = `
+    .search-container {
         position: relative;
-      }
-      
-      .search-results {
+    }
+
+    .search-results {
         position: absolute;
         top: 100%;
         left: 0;
@@ -295,29 +295,29 @@ document.addEventListener("DOMContentLoaded", () => {
         overflow-y: auto;
         z-index: 100;
         box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      }
-      
-      .search-result-item {
+    }
+
+    .search-result-item {
         padding: 10px 15px;
         cursor: pointer;
         border-bottom: 1px solid #eee;
         transition: background-color 0.2s ease;
-      }
-      
-      .search-result-item:last-child {
+    }
+
+    .search-result-item:last-child {
         border-bottom: none;
-      }
-      
-      .search-result-item:hover {
+    }
+
+    .search-result-item:hover {
         background-color: #f5f5f5;
-      }
-      
+    }
+
       .selected-item {
         border-color: #4CAF50 !important;
         background-color: #f1f8e9 !important;
-      }
-      
-      .availability-badge {
+    }
+
+    .availability-badge {
         float: right;
         background-color: #e8f5e9;
         color: #388e3c;

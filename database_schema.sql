@@ -67,6 +67,7 @@ CREATE TABLE active_loans (
     student_id INT NOT NULL,
     book_id INT NOT NULL,
     title VARCHAR(255) NOT NULL,
+    student_number VARCHAR(20) NOT NULL,
     loan_date DATE NOT NULL,
     due_date DATE NOT NULL,
     returned_date DATE NULL,
