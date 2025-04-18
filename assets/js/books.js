@@ -36,7 +36,7 @@ function displayBooks(books) {
     if (books.length === 0) {
         tableBody.innerHTML = `
             <tr>
-                <td colspan="7" class="text-center">No books found</td>
+                <td colspan="8" class="text-center">No books found</td>
             </tr>
         `;
         return;
@@ -44,14 +44,15 @@ function displayBooks(books) {
 
     books.forEach(book => {
         const row = document.createElement('tr');
+        row.setAttribute('data-book-id', book.book_id);
         row.innerHTML = `
             <td>${book.book_id}</td>
             <td>${book.isbn}</td>
             <td>${book.title}</td>
             <td>${book.author}</td>
             <td>${book.category_name}</td>
-            <td>${book.total_copies}</td>
             <td>${book.available_copies}</td>
+            <td>${book.total_copies}</td>
             <td>
                 <button type="button" class="btn btn-secondary" onclick="editBook('${book.book_id}')">
                     <i class="fas fa-edit"></i>
@@ -372,6 +373,12 @@ function updateBook(event, bookId) {
     const formData = new FormData(form);
     formData.append('book_id', bookId);
 
+    // Show loading state
+    const submitButton = form.querySelector('button[type="submit"]');
+    const originalButtonText = submitButton.innerHTML;
+    submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+    submitButton.disabled = true;
+
     fetch('books/update_book.php', {
         method: 'POST',
         body: formData
@@ -379,12 +386,24 @@ function updateBook(event, bookId) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
+            // Update the UI with the data returned from the server
+            const book = data.data;
+            const row = document.querySelector(`tr[data-book-id="${bookId}"]`);
+            if (row) {
+                // Match the column order from the table:
+                // Book ID | ISBN | Title | Author | Category | Available Copies | Total Copies | Actions
+                row.cells[0].textContent = book.book_id;
+                row.cells[1].textContent = book.isbn;
+                row.cells[2].textContent = book.title;
+                row.cells[3].textContent = book.author;
+                row.cells[4].textContent = book.category_name;
+                row.cells[5].textContent = book.available_copies;
+                row.cells[6].textContent = book.total_copies;
+            }
+            
+            // Close modal and show success message
             form.closest('.modal').remove();
             showSuccess('Book updated successfully');
-            // Delay the reload to allow the success message to be visible
-            setTimeout(() => {
-                loadBooks();
-            }, 3300); // Wait for success message (3000ms) plus animation (300ms)
         } else {
             showError(data.error || 'Error updating book');
         }
@@ -392,6 +411,11 @@ function updateBook(event, bookId) {
     .catch(error => {
         showError('Failed to update book');
         console.error('Error:', error);
+    })
+    .finally(() => {
+        // Reset button state
+        submitButton.innerHTML = originalButtonText;
+        submitButton.disabled = false;
     });
 }
 
@@ -411,10 +435,11 @@ function deleteBook(bookId) {
     .then(data => {
         if (data.success) {
             showSuccess('Book deleted successfully');
-            // Delay the reload to allow the success message to be visible
-            setTimeout(() => {
-                loadBooks();
-            }, 3300); // Wait for success message (3000ms) plus animation (300ms)
+            // Remove the row directly instead of reloading
+            const row = document.querySelector(`tr[data-book-id="${bookId}"]`);
+            if (row) {
+                row.remove();
+            }
         } else {
             showError(data.error || 'Error deleting book');
         }
