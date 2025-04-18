@@ -746,7 +746,6 @@ if (!isset($_SESSION['user_id'])) {
                 <li><a href="#students"><i class="fas fa-user-graduate"></i> Students</a></li>
                 <li><a href="#loans"><i class="fas fa-exchange-alt"></i> Loans</a></li>
                 <li><a href="#reports"><i class="fas fa-chart-bar"></i> Reports</a></li>
-                <li><a href="#settings"><i class="fas fa-cog"></i> Settings</a></li>
                 <li><a href="#users"><i class="fas fa-users"></i> Users</a></li>
             </ul>
         </div>
@@ -1147,211 +1146,61 @@ if (!isset($_SESSION['user_id'])) {
                 </div>
             </section>
 
-            <!-- Settings Section -->
-            <section id="settings" class="dashboard-section">
-                <div class="dashboard-header">
-                    <h1>Settings</h1>
-                </div>
-                
-                <div class="card">
-                    <h2>Library Information</h2>
-                    <form>
-                        <div class="form-group">
-                            <label for="library-name">Library Name</label>
-                            <input type="text" id="library-name" value="Marigold's Library">
-                        </div>
-                        <div class="form-group">
-                            <label for="library-address">Address</label>
-                            <input type="text" id="library-address" value="123 Book Street, Reading, CA 90210">
-                        </div>
-                        <div class="form-group">
-                            <label for="library-phone">Phone</label>
-                            <input type="text" id="library-phone" value="(555) 123-4567">
-                        </div>
-                        <div class="form-group">
-                            <label for="library-email">Email</label>
-                            <input type="email" id="library-email" value="contact@marigoldlibrary.com">
-                        </div>
-                        <button type="submit" class="btn">Save Changes</button>
-                    </form>
-                </div>
-                
-                <div class="card">
-                    <h2><i class="fas fa-cog" style="color: #4CAF50; margin-right: 10px;"></i>Loan Settings</h2>
-                    <form>
-                        <div class="form-group">
-                            <label for="loan-duration">Default Loan Duration (days)</label>
-                            <input type="number" id="loan-duration" value="14">
-                        </div>
-                        <div class="form-group">
-                            <label for="max-books">Maximum Books Per Member</label>
-                            <input type="number" id="max-books" value="5">
-                        </div>
-                        <div class="form-group">
-                            <label for="late-fee">Late Fee (per day)</label>
-                            <input type="text" id="late-fee" value="$0.50">
-                        </div>
-                        <button type="submit" class="btn btn-primary" style="margin-top: 20px;">
-                            <i class="fas fa-save" style="margin-right: 5px;"></i>Save Changes
-                        </button>
-                    </form>
-                </div>
-            </section>
-
-            <!-- Users Section (Admin Only) -->
+            <!-- Users Section -->
             <section id="users" class="dashboard-section">
                 <div class="dashboard-header">
                     <h1>User Management</h1>
-                    <div>
-                        <a href="#" class="btn btn-primary" id="add-user-btn"><i class="material-icons-round">add</i> Add New User</a>
-                    </div>
                 </div>
                 
                 <div class="card">
                     <div class="form-group">
-                        <input type="text" id="user-search" placeholder="Search users by name, email, or role...">
+                        <input type="text" id="user-search" placeholder="Search users by name or email...">
                     </div>
                     
                     <table>
                         <thead>
                             <tr>
-                                <th>👤 User ID</th>
-                                <th>👨‍💼 Name</th>
-                                <th>🔑 Role</th>
-                                <th>📧 Email</th>
-                                <th>⚙ Actions</th>
+                                <th><i class="fas fa-id-badge"></i> User ID</th>
+                                <th><i class="fas fa-user"></i> Name</th>
+                                <th><i class="fas fa-envelope"></i> Email</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>U001</td>
-                                <td>Admin User</td>
-                                <td>Administrator</td>
-                                <td>admin@marigoldlibrary.com</td>
-                                <td>
-                                    <button type="button" class="btn btn-secondary" onclick="editUser('${user.id}')">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-danger" onclick="deleteUser('${user.id}')">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-info" onclick="viewUser('${user.id}')">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                </td>       
-                            </tr>   
-                            <tr>
-                                <td>U002</td>
-                                <td>Jane Librarian</td>
-                                <td>Librarian</td>
-                                <td>jane@marigoldlibrary.com</td>
-                                <td>
-                                    <button type="button" class="btn btn-secondary" onclick="editUser('${user.id}')">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-danger" onclick="deleteUser('${user.id}')">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-info" onclick="viewUser('${user.id}')">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>U003</td>
-                                <td>John Assistant</td>
-                                <td>Assistant</td>
-                                <td>john@marigoldlibrary.com</td>
-                                <td>
-                                    <button type="button" class="btn btn-secondary" onclick="editUser('${user.id}')">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-danger" onclick="deleteUser('${user.id}')">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-info" onclick="viewUser('${user.id}')">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>U004</td>
-                                <td>Sarah Manager</td>
-                                <td>Manager</td>
-                                <td>sarah@marigoldlibrary.com</td>
-                                <td>
-                                    <button type="button" class="btn btn-secondary" onclick="editUser('${user.id}')">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-danger" onclick="deleteUser('${user.id}')">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-info" onclick="viewUser('${user.id}')">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>U005</td>
-                                <td>Michael Staff</td>
-                                <td>Staff</td>
-                                <td>michael@marigoldlibrary.com</td>
-                                <td>
-                                    <button type="button" class="btn btn-secondary" onclick="editUser('${user.id}')">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-danger" onclick="deleteUser('${user.id}')">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-info" onclick="viewUser('${user.id}')">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                </td>
-                            </tr>
+                        <tbody id="users-table-body">
+                            <!-- Users will be loaded dynamically via JavaScript -->
                         </tbody>
                     </table>
                 </div>
                 
-                <!-- User Form Modal (Hidden by default) -->
-                <div id="user-form-modal" class="modal" style="display: none;">
+                <!-- User Form Modal -->
+                <div id="user-modal" class="modal">
                     <div class="modal-content">
-                        <span class="close-modal">&times;</span>
-                        <h2 id="user-form-title">Add New User</h2>
+                        <span class="close">&times;</span>
+                        <h2 id="modal-title">User Details</h2>
                         <form id="user-form">
+                            <input type="hidden" id="user-id">
                             <div class="form-group">
-                                <label for="user-id">User ID</label>
-                                <input type="text" id="user-id" required>
+                                <label for="first_name">First Name</label>
+                                <input type="text" id="first_name" required>
                             </div>
                             <div class="form-group">
-                                <label for="user-name">Name</label>
-                                <input type="text" id="user-name" required>
+                                <label for="last_name">Last Name</label>
+                                <input type="text" id="last_name" required>
                             </div>
                             <div class="form-group">
-                                <label for="user-role">Role</label>
-                                <select id="user-role" required>
-                                    <option value="">Select Role</option>
-                                    <option value="Administrator">Administrator</option>
-                                    <option value="Librarian">Librarian</option>
-                                    <option value="Manager">Manager</option>
-                                    <option value="Assistant">Assistant</option>
-                                    <option value="Staff">Staff</option>
-                                </select>
+                                <label for="email">Email</label>
+                                <input type="email" id="email" required>
                             </div>
                             <div class="form-group">
-                                <label for="user-email">Email</label>
-                                <input type="email" id="user-email" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="user-password">Password</label>
-                                <input type="password" id="user-password">
+                                <label for="password">Password</label>
+                                <input type="password" id="password">
                                 <small>Leave blank to keep existing password when editing</small>
                             </div>
                             <div class="form-group">
-                                <label for="user-confirm-password">Confirm Password</label>
-                                <input type="password" id="user-confirm-password">
+                                <label for="confirm-password">Confirm Password</label>
+                                <input type="password" id="confirm-password">
                             </div>
                             <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save" style="margin-right: 5px;"></i>Save Changes
+                                <i class="fas fa-save"></i> Save Changes
                             </button>
                         </form>
                     </div>
@@ -1365,5 +1214,7 @@ if (!isset($_SESSION['user_id'])) {
     <script src="../assets/js/messages.js"></script>
     <script src="../assets/js/books.js"></script>
     <script src="../assets/js/students.js"></script>
+    <script src="../assets/js/loans.js"></script>
+    <script src="../assets/js/users.js"></script>
 </body>
 </html>

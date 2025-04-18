@@ -54,11 +54,8 @@ CREATE TABLE students (
     first_name VARCHAR(50) NOT NULL,
     last_name VARCHAR(50) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
-    phone VARCHAR(20),
-    address TEXT,
     date_of_birth DATE,
     registration_date DATE NOT NULL,
-    expiry_date DATE NOT NULL,
     is_active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -96,6 +93,19 @@ CREATE TABLE loan_history (
     FOREIGN KEY (student_id) REFERENCES students(student_id) ON DELETE RESTRICT,
     FOREIGN KEY (book_id) REFERENCES books(book_id) ON DELETE RESTRICT
 );
+
+-- Create loan_settings table
+CREATE TABLE IF NOT EXISTS loan_settings (
+    setting_id INT PRIMARY KEY AUTO_INCREMENT,
+    loan_duration INT NOT NULL DEFAULT 14,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Insert default loan duration (14 days)
+INSERT INTO loan_settings (loan_duration) 
+VALUES (14)
+ON DUPLICATE KEY UPDATE loan_duration = VALUES(loan_duration); 
 
 -- Create ebooks_categories table
 CREATE TABLE ebooks_categories (
