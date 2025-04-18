@@ -36,7 +36,7 @@ try {
             $stmt = $pdo->prepare("
                 SELECT user_id, first_name, last_name, email, created_at 
                 FROM users 
-                ORDER BY first_name ASC, last_name ASC
+                ORDER BY user_id ASC
             ");
             $stmt->execute();
             $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -57,7 +57,7 @@ try {
                 WHERE first_name LIKE :query 
                 OR last_name LIKE :query
                 OR email LIKE :query 
-                ORDER BY first_name ASC, last_name ASC
+                ORDER BY user_id ASC
             ");
             
             $searchQuery = "%$query%";
