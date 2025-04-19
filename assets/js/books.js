@@ -18,11 +18,11 @@ function loadBooks() {
       if (data.success) {
         displayBooks(data.data)
       } else {
-        showError(data.error || "Error loading books")
+        showErrorMessage(data.error || "Error loading books")
       }
     })
     .catch((error) => {
-      showError("Failed to load books. Please try again later.")
+      showErrorMessage("Failed to load books. Please try again later.")
       console.error("Error:", error)
     })
 }
@@ -209,11 +209,11 @@ function viewBook(bookId) {
         // Show modal
         viewModal.style.display = "block"
       } else {
-        showError(data.message)
+        showErrorMessage(data.message)
       }
     })
     .catch((error) => {
-      showError("Error loading book details")
+      showErrorMessage("Error loading book details")
       console.error("Error:", error)
     })
 }
@@ -248,19 +248,19 @@ function editBook(bookId) {
             if (categoryData.success) {
               showEditForm(data.data, categoryData.data)
             } else {
-              showError(categoryData.error || "Error loading categories")
+              showErrorMessage(categoryData.error || "Error loading categories")
             }
           })
           .catch((error) => {
-            showError("Failed to load categories")
+            showErrorMessage("Failed to load categories")
             console.error("Error:", error)
           })
       } else {
-        showError(data.message || "Error loading book details")
+        showErrorMessage(data.message || "Error loading book details")
       }
     })
     .catch((error) => {
-      showError("Failed to load book details")
+      showErrorMessage("Failed to load book details")
       console.error("Error:", error)
     })
 }
@@ -316,7 +316,7 @@ function showEditForm(book, categories) {
   document.body.appendChild(modal)
 }
 
-function showSuccess(message) {
+function showSuccessMessage(message) {
   // Create success message container if it doesn't exist
   let successContainer = document.querySelector(".success-message-container")
   if (!successContainer) {
@@ -421,13 +421,13 @@ function updateBook(event, bookId) {
 
         // Close modal and show success message
         form.closest(".modal").remove()
-        showSuccess("Book updated successfully")
+        showSuccessMessage("Book updated successfully")
       } else {
-        showError(data.message || "Error updating book")
+        showErrorMessage(data.message || "Error updating book")
       }
     })
     .catch((error) => {
-      showError("Failed to update book")
+      showErrorMessage("Failed to update book")
       console.error("Error:", error)
     })
     .finally(() => {
@@ -452,23 +452,23 @@ function deleteBook(bookId) {
     .then((response) => response.json())
     .then((data) => {
       if (data.success) {
-        showSuccess("Book deleted successfully")
+        showSuccessMessage("Book deleted successfully")
         // Remove the row directly instead of reloading
         const row = document.querySelector(`tr[data-book-id="${bookId}"]`)
         if (row) {
           row.remove()
         }
       } else {
-        showError(data.error || "Error deleting book")
+        showErrorMessage(data.error || "Error deleting book")
       }
     })
     .catch((error) => {
-      showError("Failed to delete book")
+      showErrorMessage("Failed to delete book")
       console.error("Error:", error)
     })
 }
 
-function showError(message) {
+function showErrorMessage(message) {
   const errorDiv = document.createElement("div")
   errorDiv.className = "alert alert-danger"
   errorDiv.textContent = message
@@ -477,6 +477,6 @@ function showError(message) {
   if (container) {
     container.insertBefore(errorDiv, container.firstChild)
 
-    setTimeout(() => errorDiv.remove(), 5000)
+    setTimeout(() => errorDiv.remove(), 3000)
   }
 }

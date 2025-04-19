@@ -24,6 +24,9 @@ if (!isset($_SESSION['user_id'])) {
 // Get the action from the request
 $action = isset($_GET['action']) ? $_GET['action'] : (isset($_POST['action']) ? $_POST['action'] : '');
 
+// Debug logging
+error_log("Loan handler called with action: " . $action);
+
 try {
     // Initialize database connection
     $database = new Database();
@@ -39,6 +42,8 @@ try {
             if (empty($query)) {
                 throw new Exception('Search query is required');
             }
+
+            error_log("Searching students with query: " . $query);
 
             $stmt = $pdo->prepare("
                 SELECT student_id, student_number, first_name, last_name, email 
@@ -56,6 +61,8 @@ try {
             $stmt->execute();
             
             $students = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            error_log("Found " . count($students) . " students");
+            
             $response['status'] = 'success';
             $response['data'] = $students;
             break;
@@ -65,6 +72,8 @@ try {
             if (empty($query)) {
                 throw new Exception('Search query is required');
             }
+
+            error_log("Searching books with query: " . $query);
 
             $stmt = $pdo->prepare("
                 SELECT b.book_id, b.isbn, b.title, b.author, b.available_copies, b.total_copies, c.category_name
@@ -82,6 +91,8 @@ try {
             $stmt->execute();
             
             $books = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            error_log("Found " . count($books) . " books");
+            
             $response['status'] = 'success';
             $response['data'] = $books;
             break;
@@ -95,12 +106,14 @@ try {
             $book_id = filter_input(INPUT_POST, 'book_id', FILTER_VALIDATE_INT);
             $due_date = filter_input(INPUT_POST, 'due_date', FILTER_SANITIZE_STRING);
 
+            error_log("Creating loan with student_id: $student_id, book_id: $book_id, due_date: $due_date");
+
             if (!$student_id || !$book_id || !$due_date) {
                 throw new Exception('All fields are required');
             }
 
             // Validate student exists
-            $stmt = $pdo->prepare("SELECT student_id, first_name, last_name FROM students WHERE student_id = ?");
+            $stmt = $pdo->prepare("SELECT student_id, first_name, last_name, student_number FROM students WHERE student_id = ?");
             $stmt->execute([$student_id]);
             $student = $stmt->fetch(PDO::FETCH_ASSOC);
             if (!$student) {
@@ -126,11 +139,9 @@ try {
                 $loan_date = date('Y-m-d'); // Today's date
                 $stmt = $pdo->prepare("
                     INSERT INTO active_loans (student_id, book_id, title, loan_date, due_date, status, student_number)
-                    SELECT ?, ?, ?, ?, ?, 'Active', s.student_number
-                    FROM students s
-                    WHERE s.student_id = ?
+                    VALUES (?, ?, ?, ?, ?, 'Active', ?)
                 ");
-                $stmt->execute([$student_id, $book_id, $book['title'], $loan_date, $due_date, $student_id]);
+                $stmt->execute([$student_id, $book_id, $book['title'], $loan_date, $due_date, $student['student_number']]);
                 $loan_id = $pdo->lastInsertId();
 
                 // Update book available copies
@@ -144,9 +155,12 @@ try {
                 // Commit transaction
                 $pdo->commit();
 
+                error_log("Loan created successfully with ID: $loan_id");
+
                 $response['status'] = 'success';
                 $response['message'] = "Book '{$book['title']}' has been loaned to {$student['first_name']} {$student['last_name']}";
                 $response['data'] = ['loan_id' => $loan_id];
+                $response['messageType'] = 'success';
             } catch (Exception $e) {
                 // Rollback transaction on error
                 $pdo->rollBack();
@@ -155,21 +169,24 @@ try {
             break;
 
         case 'get_active_loans':
+            error_log("Getting active loans");
+            
             // First, update status of overdue loans
             $updateOverdueStmt = $pdo->prepare("
                 UPDATE active_loans 
                 SET status = 'Overdue'
                 WHERE due_date <= CURDATE() 
-                AND status != 'Returned'
+                AND status = 'Active'
             ");
             $updateOverdueStmt->execute();
+            error_log("Updated overdue loans: " . $updateOverdueStmt->rowCount() . " rows affected");
 
             // Then fetch all active and overdue loans
             $stmt = $pdo->query("
                 SELECT 
                     l.loan_id, 
                     l.book_id, 
-                    b.title,
+                    l.title,
                     l.loan_date, 
                     l.due_date, 
                     l.status, 
@@ -179,11 +196,12 @@ try {
                     s.last_name
                 FROM active_loans l
                 JOIN students s ON l.student_id = s.student_id
-                JOIN books b ON l.book_id = b.book_id
                 WHERE l.status IN ('Active', 'Overdue')
                 ORDER BY l.due_date ASC
             ");
             $loans = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            error_log("Found " . count($loans) . " active loans");
 
             $response['status'] = 'success';
             $response['data'] = $loans;
@@ -199,6 +217,8 @@ try {
                 throw new Exception('Loan ID is required');
             }
 
+            error_log("Returning book with loan_id: $loan_id");
+
             // Start transaction
             $pdo->beginTransaction();
 
@@ -206,9 +226,8 @@ try {
                 // Get loan details
                 $stmt = $pdo->prepare("
                     SELECT l.loan_id, l.book_id, l.student_id, l.loan_date, l.due_date, l.status,
-                           b.title, s.first_name, s.last_name
+                           l.title, s.first_name, s.last_name
                     FROM active_loans l
-                    JOIN books b ON l.book_id = b.book_id
                     JOIN students s ON l.student_id = s.student_id
                     WHERE l.loan_id = ?
                 ");
@@ -241,7 +260,7 @@ try {
                 $stmt->execute([$loan['book_id']]);
 
                 // Determine if the book was returned on time or late
-                $return_status = ($returned_date <= $loan['due_date']) ? 'On Time' : 'Late';
+                $return_status = (strtotime($returned_date) <= strtotime($loan['due_date'])) ? 'On Time' : 'Late';
 
                 // Add to loan history
                 $stmt = $pdo->prepare("
@@ -250,16 +269,9 @@ try {
                         loan_date, due_date, returned_date, status
                     )
                     SELECT 
-                        l.loan_id, l.student_id, 
-                        CASE 
-                            WHEN s.student_number IS NULL OR TRIM(s.student_number) = '' 
-                            THEN CONCAT('TEMP-', l.student_id, '-', UNIX_TIMESTAMP()) 
-                            ELSE s.student_number 
-                        END as student_number,
-                        l.book_id,
+                        l.loan_id, l.student_id, l.student_number, l.book_id,
                         l.loan_date, l.due_date, ?, ?
                     FROM active_loans l
-                    JOIN students s ON l.student_id = s.student_id
                     WHERE l.loan_id = ?
                 ");
                 $stmt->execute([$returned_date, $return_status, $loan_id]);
@@ -267,8 +279,11 @@ try {
                 // Commit transaction
                 $pdo->commit();
 
+                error_log("Book returned successfully");
+
                 $response['status'] = 'success';
                 $response['message'] = "Book '{$loan['title']}' has been returned by {$loan['first_name']} {$loan['last_name']}";
+                $response['messageType'] = 'success';
             } catch (Exception $e) {
                 // Rollback transaction on error
                 $pdo->rollBack();

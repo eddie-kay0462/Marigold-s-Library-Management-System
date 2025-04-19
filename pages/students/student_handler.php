@@ -97,11 +97,13 @@ try {
                     throw new Exception('Invalid student ID');
                 }
 
-                // Check if student has any active loans
-                $stmt = $pdo->prepare("SELECT loan_id FROM active_loans WHERE student_id = ? AND status = 'Active'");
+                // Check if student has any loans at all (active or returned)
+                $stmt = $pdo->prepare("SELECT COUNT(*) as loan_count FROM active_loans WHERE student_id = ?");
                 $stmt->execute([$student_id]);
-                if ($stmt->fetch()) {
-                    throw new Exception('Cannot delete student with active loans');
+                $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                
+                if ($result['loan_count'] > 0) {
+                    throw new Exception('Cannot delete student: This student has loan records in the system');
                 }
 
                 $stmt = $pdo->prepare("DELETE FROM students WHERE student_id = ?");
@@ -165,6 +167,26 @@ try {
             $response['data'] = $loans;
             break;
 
+        case 'check_active_loans':
+            $student_id = filter_input(INPUT_GET, 'student_id', FILTER_VALIDATE_INT);
+            
+            if (!$student_id) {
+                throw new Exception('Invalid student ID');
+            }
+
+            // Check if student has ANY loans (active or returned)
+            $stmt = $pdo->prepare("
+                SELECT COUNT(*) as loan_count 
+                FROM active_loans 
+                WHERE student_id = ?
+            ");
+            $stmt->execute([$student_id]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            $response['status'] = 'success';
+            $response['has_active_loans'] = ($result['loan_count'] > 0);
+            break;
+
         default:
             throw new Exception('Invalid action');
     }
@@ -173,4 +195,4 @@ try {
     $response['message'] = $e->getMessage();
 }
 
-echo json_encode($response); 
+echo json_encode($response);
