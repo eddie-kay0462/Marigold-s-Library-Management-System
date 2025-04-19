@@ -29,6 +29,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             throw new Exception("Please fill in all required fields.");
         }
 
+        // Validate ISBN format using regex
+        $isbn_pattern = '/^(?:\d{3}-\d{1,5}-\d{1,7}-\d{1,7}-\d{1}|\d{13}|\d{3}-\d{10}|\d{10}|\d{9}[0-9X])$/';
+        if (!preg_match($isbn_pattern, $isbn)) {
+            throw new Exception("Invalid ISBN format. Please use a standard format like 123-4-567-89012-3 or 9781234567897.");
+        }
+
+        // Check if ISBN already exists
+        $stmt = $conn->prepare("SELECT COUNT(*) FROM books WHERE isbn = :isbn");
+        $stmt->execute(['isbn' => $isbn]);
+        if ($stmt->fetchColumn() > 0) {
+            throw new Exception("This ISBN already exists in the system. Please use a different ISBN.");
+        }
+
         // Insert new book
         $stmt = $conn->prepare("
             INSERT INTO books (isbn, title, author, category_id, available_copies, total_copies)
@@ -56,4 +69,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 } else {
     header("Location: add_book.php");
     exit();
-} 
+}

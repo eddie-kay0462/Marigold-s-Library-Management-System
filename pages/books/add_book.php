@@ -219,7 +219,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <form action="add_book_handler.php" method="POST">
                     <div class="form-group">
                         <label for="isbn">ISBN</label>
-                        <input type="text" id="isbn" name="isbn" required>
+                        <input type="text" id="isbn" name="isbn" pattern="(?:\d{3}-\d{1,5}-\d{1,7}-\d{1,7}-\d{1}|\d{13}|\d{3}-\d{10}|\d{10}|\d{9}[0-9X])" placeholder="e.g., 978-3-16-148410-0" required>
+                        <small class="form-text text-muted">Enter a valid ISBN format (e.g., 978-3-16-148410-0, 9781234567897, or 0-306-40615-2)</small>
                     </div>
                     <div class="form-group">
                         <label for="title">Title</label>
@@ -260,4 +261,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </main>
     </div>
 </body>
-</html> 
+</html>

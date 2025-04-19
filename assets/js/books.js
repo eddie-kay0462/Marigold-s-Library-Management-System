@@ -265,6 +265,19 @@ function editBook(bookId) {
     })
 }
 
+// Add this function to validate ISBN format
+function validateISBN(isbn) {
+  // Remove any hyphens or spaces
+  const cleanISBN = isbn.replace(/[-\s]/g, "")
+
+  // Check if it's a valid ISBN-10 or ISBN-13
+  const isbn10Pattern = /^(?:\d{9}[\dX])$/
+  const isbn13Pattern = /^\d{13}$/
+
+  return isbn10Pattern.test(cleanISBN) || isbn13Pattern.test(cleanISBN)
+}
+
+// Modify the showEditForm function to add ISBN validation
 function showEditForm(book, categories) {
   const modal = document.createElement("div")
   modal.className = "modal"
@@ -284,7 +297,8 @@ function showEditForm(book, categories) {
             <form id="edit-book-form" onsubmit="updateBook(event, '${book.book_id}')">
                 <div class="form-group">
                     <label for="isbn">ISBN</label>
-                    <input type="text" id="isbn" name="isbn" value="${book.isbn}" required>
+                    <input type="text" id="isbn" name="isbn" value="${book.isbn}" pattern="(?:\\d{3}-\\d{1,5}-\\d{1,7}-\\d{1,7}-\\d{1}|\\d{13}|\\d{3}-\\d{10}|\\d{10}|\\d{9}[0-9X])" required>
+                    <small class="form-text text-muted">Enter a valid ISBN format (e.g., 978-3-16-148410-0, 9781234567897, or 0-306-40615-2)</small>
                 </div>
                 <div class="form-group">
                     <label for="title">Title</label>
@@ -314,6 +328,16 @@ function showEditForm(book, categories) {
     `
 
   document.body.appendChild(modal)
+
+  // Add client-side validation for ISBN
+  const isbnInput = modal.querySelector("#isbn")
+  isbnInput.addEventListener("input", function () {
+    if (this.value && !validateISBN(this.value.replace(/-/g, ""))) {
+      this.setCustomValidity("Please enter a valid ISBN format")
+    } else {
+      this.setCustomValidity("")
+    }
+  })
 }
 
 function showSuccessMessage(message) {

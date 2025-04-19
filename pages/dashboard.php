@@ -1167,9 +1167,7 @@ try {
            <nav class="main-nav">
                <ul>
                    <li><a href="../index.php">Home</a></li>
-                   <li><a href="#catalog">Catalog</a></li>
-                   <li><a href="../pages/ebooks.php" class="ebook-link"><i class="fas fa-tablet-alt"></i> Access E-Books</a></li>
-                   <li><a href="../pages/contact.php">Contact</a></li>
+                   <li><a href="https://drive.google.com/drive/folders/1-FWjN6ufLGJmZLlsUGbtQn1eaJMWt5JR?usp=sharing" target="_blank" class="ebook-link"><i class="fas fa-tablet-alt"></i> Access E-Books</a></li>
                    <li><a href="auth/logout_handler.php" class="logout-link"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
                </ul>
            </nav>

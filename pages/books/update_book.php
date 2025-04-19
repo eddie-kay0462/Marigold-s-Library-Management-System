@@ -15,6 +15,13 @@ try {
         }
     }
 
+    // Validate ISBN format
+    $isbn = $_POST['isbn'];
+    $isbn_pattern = '/^(?:\d{3}-\d{1,5}-\d{1,7}-\d{1,7}-\d{1}|\d{13}|\d{3}-\d{10}|\d{10}|\d{9}[0-9X])$/';
+    if (!preg_match($isbn_pattern, $isbn)) {
+        throw new Exception("Invalid ISBN format. Please use a standard format like 123-4-567-89012-3 or 9781234567897.");
+    }
+
     // Validate copies
     if ($_POST['available_copies'] > $_POST['total_copies']) {
         throw new Exception('Available copies cannot be greater than total copies');
@@ -33,6 +40,13 @@ try {
         
         if (!$stmt->fetch()) {
             throw new Exception('Book not found');
+        }
+
+        // Check if ISBN already exists for another book
+        $stmt = $conn->prepare("SELECT book_id FROM books WHERE isbn = :isbn AND book_id != :book_id");
+        $stmt->execute(['isbn' => $_POST['isbn'], 'book_id' => $_POST['book_id']]);
+        if ($stmt->fetch()) {
+            throw new Exception('This ISBN already exists for another book. Please use a different ISBN.');
         }
 
         // Update the book

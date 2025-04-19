@@ -206,8 +206,6 @@ if(isset($_SESSION['user_id'])) {
                         <?php if(isset($_SESSION['user_id'])): ?>
                             <li><a href="../pages/dashboard.php">Dashboard</a></li>
                         <?php endif; ?>
-                        <li><a href="../pages/about.php">About</a></li>
-                        <li><a href="../pages/contact.php">Contact</a></li>
                     </ul>
                 </nav>
             </div>
