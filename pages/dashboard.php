@@ -1247,7 +1247,7 @@ try {
                 
                 <div class="card">
                     <div class="form-group">
-                        <input type="text" id="book-search" placeholder="Search books by title, author, or category...">
+                        <input type="text" id="book-search" class="search-input" placeholder="Search books by title, author, or category...">
                     </div>
                     
                     <table>
@@ -1283,7 +1283,7 @@ try {
                 
                 <div class="card">
                     <div class="form-group">
-                        <input type="text" id="student-search" placeholder="Search students by name, email, or student number...">
+                        <input type="text" id="student-search" class="search-input" placeholder="Search students by name, email, or student number...">
                     </div>
                     
                     <table>
@@ -1394,7 +1394,7 @@ try {
                 <div class="card">
                     <h2><i class="fas fa-exchange-alt"></i> Active Loans</h2>
                     <div class="form-group">
-                        <input type="text" id="return-search" placeholder="Search borrowed books by student or book title...">
+                        <input type="text" id="return-search" class="search-input" placeholder="Search borrowed books by student or book title...">
                     </div>
                     
                     <table>
@@ -1468,7 +1468,7 @@ try {
                 
                 <div class="card">
                     <div class="form-group">
-                        <input type="text" id="user-search" placeholder="Search users by name or email...">
+                        <input type="text" id="user-search" class="search-input" placeholder="Search users by name or email...">
                     </div>
                     
                     <table>

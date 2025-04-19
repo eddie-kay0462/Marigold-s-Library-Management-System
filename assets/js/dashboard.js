@@ -53,15 +53,20 @@ window.onclick = function(event) {
 
 // Search functionality
 document.addEventListener('DOMContentLoaded', function() {
-    const searchInputs = document.querySelectorAll('input[type="text"]');
+    // Only select search inputs that are meant for filtering tables
+    const searchInputs = document.querySelectorAll('input[type="text"].search-input');
     
     searchInputs.forEach(input => {
         input.addEventListener('input', function() {
             const searchTerm = this.value.toLowerCase();
-            const table = this.closest('.card').querySelector('table');
+            const card = this.closest('.card');
+            if (!card) return;
+            
+            const table = card.querySelector('table');
             if (!table) return;
             
             const rows = table.querySelectorAll('tbody tr');
+            if (!rows.length) return;
             
             rows.forEach(row => {
                 const text = row.textContent.toLowerCase();
