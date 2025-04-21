@@ -14,6 +14,7 @@ if(isset($_SESSION['user_id'])) {
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/styles.css">
     <style>
+        /* Update the body styling to add proper padding-top */
         html, body {
             height: 100%;
             margin: 0;
@@ -26,12 +27,19 @@ if(isset($_SESSION['user_id'])) {
             min-height: 100%;
             display: flex;
             flex-direction: column;
+            padding-top: 80px; /* Add padding to account for fixed header height */
         }
 
         .header {
             background-color: rgba(255, 255, 255, 0.98);
             padding: 1rem 2rem;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: fixed; /* Keep header fixed */
+            top: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            z-index: 1000; /* Ensure header stays on top */
         }
 
         .nav-container {
@@ -61,12 +69,14 @@ if(isset($_SESSION['user_id'])) {
             font-weight: 500;
         }
 
+        /* Update main-content to ensure proper spacing */
         .main-content {
             flex: 1;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 2rem;
+            margin-top: 1rem; /* Add some margin at the top */
         }
 
         .auth-box {
@@ -173,7 +183,12 @@ if(isset($_SESSION['user_id'])) {
             border-top: 1px solid #dee2e6;
         }
 
+        /* Add responsive adjustments */
         @media (max-width: 768px) {
+            .page-wrapper {
+                padding-top: 120px; /* Increase padding on mobile for the stacked header */
+            }
+            
             .nav-container {
                 flex-direction: column;
                 gap: 1rem;
@@ -187,6 +202,16 @@ if(isset($_SESSION['user_id'])) {
 
             .main-content {
                 padding: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page-wrapper {
+                padding-top: 140px; /* Even more padding for smaller screens */
+            }
+            
+            .auth-box {
+                padding: 1.5rem;
             }
         }
     </style>
@@ -348,4 +373,4 @@ if(isset($_SESSION['user_id'])) {
     </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </body>
-</html> 
+</html>

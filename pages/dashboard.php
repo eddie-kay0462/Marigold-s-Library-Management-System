@@ -150,18 +150,27 @@ try {
            transition: transform 0.3s ease;
        }
        
-       .sidebar-menu a:hover, .sidebar-menu a.active {
-           background-color: rgba(76, 175, 80, 0.08);
-           color: #4CAF50;
+       .sidebar-menu a.active {
+           background-color: rgba(255, 131, 3, 0.15);
+           color: #FF8303;
+           font-weight: 600;
            padding-left: 18px;
        }
-       
-       .sidebar-menu a:hover:before, .sidebar-menu a.active:before {
+
+       .sidebar-menu a.active:before {
            transform: scaleY(1);
+           background-color: #FF8303;
        }
-       
-       .sidebar-menu a.active {
-           font-weight: 600;
+
+       .sidebar-menu a:hover {
+           background-color: rgba(255, 131, 3, 0.08);
+           color: #FF8303;
+           padding-left: 18px;
+       }
+
+       .sidebar-menu a:hover:before {
+           transform: scaleY(1);
+           background-color: #FF8303;
        }
        
        .content-area {
