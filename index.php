@@ -16,9 +16,7 @@
             <nav class="main-nav">
                 <ul>
                     <li><a href="#home">Home</a></li>
-                    <li><a href="#catalog">Catalog</a></li>
-                    <li><a href="#students">Students</a></li>
-                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="pages/login.php">Login</a></li>
                 </ul>
             </nav>
         </div>
@@ -27,10 +25,12 @@
     <section class="hero">
         <div class="hero-overlay"></div>
         <div class="hero-content">
-            <h1>Margold Montessori School</h1>
-            <h2>Library Management System</h2>
-            <p class="tagline">Nurturing Minds Through Literature</p>
-            <a href="#" class="cta-button">Explore Books</a>
+            <h1>Welcome to Marigold's Library</h1>
+            <p>Discover a world of knowledge at your fingertips</p>
+            <div class="cta-buttons">
+                <a href="pages/login.php" class="cta-button">Login to Library</a>
+                <a href="https://drive.google.com/drive/folders/1-FWjN6ufLGJmZLlsUGbtQn1eaJMWt5JR?usp=sharing" target="_blank" class="cta-button secondary">Access E-Books</a>
+            </div>
         </div>
     </section>
 
@@ -56,8 +56,8 @@
         </div>
 
         <div class="cta-section">
-            <a href="../pages/login.html" class="cta-button">Login to Library</a>
-            <a href="#" class="cta-button secondary">Browse Catalog</a>
+            <a href="pages/login.php" class="cta-button">Login to Library</a>
+            <a href="https://drive.google.com/drive/folders/1-FWjN6ufLGJmZLlsUGbtQn1eaJMWt5JR?usp=sharing" target="_blank" class="cta-button secondary">Access E-Books</a>
         </div>
 
         <footer class="footer">
@@ -66,5 +66,3 @@
     </div>
 </body>
 </html>
-
-

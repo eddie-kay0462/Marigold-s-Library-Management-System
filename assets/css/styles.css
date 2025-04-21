@@ -23,6 +23,17 @@ body {
     line-height: 1.6;
     color: var(--text-dark);
     background-color: var(--gray-light);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding-top: 80px; /* Account for fixed header */
+    margin: 0;
+}
+
+.main-content {
+    flex: 1 0 auto;
+    display: flex;
+    flex-direction: column;
 }
 
 /* Enhanced header styles */
@@ -242,4 +253,14 @@ body {
     .features {
         grid-template-columns: 1fr;
     }
+}
+
+/* Layout styles */
+.page-footer {
+    flex-shrink: 0;
+    background-color: var(--white);
+    padding: 1rem 0;
+    text-align: center;
+    border-top: 1px solid var(--gray-medium);
+    width: 100%;
 } 
