@@ -212,12 +212,17 @@ try {
                 throw new Exception('Invalid request method');
             }
 
-            $loan_id = filter_input(INPUT_POST, 'loan_id', FILTER_VALIDATE_INT);
+            // Debug logging
+            error_log("Return book request received. POST data: " . print_r($_POST, true));
+            
+            $loan_id = isset($_POST['loan_id']) ? filter_var($_POST['loan_id'], FILTER_VALIDATE_INT) : null;
+            
             if (!$loan_id) {
+                error_log("Missing or invalid loan_id: " . (isset($_POST['loan_id']) ? $_POST['loan_id'] : 'not set'));
                 throw new Exception('Loan ID is required');
             }
 
-            error_log("Returning book with loan_id: $loan_id");
+            error_log("Processing return for loan_id: $loan_id");
 
             // Start transaction
             $pdo->beginTransaction();
@@ -279,7 +284,7 @@ try {
                 // Commit transaction
                 $pdo->commit();
 
-                error_log("Book returned successfully");
+                error_log("Book returned successfully for loan_id: $loan_id");
 
                 $response['status'] = 'success';
                 $response['message'] = "Book '{$loan['title']}' has been returned by {$loan['first_name']} {$loan['last_name']}";

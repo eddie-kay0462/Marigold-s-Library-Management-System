@@ -417,15 +417,29 @@ window.returnBook = (loanId) => {
 
   console.log("Returning book with loan ID:", loanId)
 
+  if (!loanId) {
+    showErrorMessage("Loan ID is missing")
+    return
+  }
+
   const formData = new FormData()
   formData.append("action", "return_book")
   formData.append("loan_id", loanId)
+
+  // Debug output to console
+  console.log("Form data being sent:", {
+    action: "return_book",
+    loan_id: loanId,
+  })
 
   fetch("../pages/loans/loan_handler.php", {
     method: "POST",
     body: formData,
   })
-    .then((response) => response.json())
+    .then((response) => {
+      console.log("Raw response:", response)
+      return response.json()
+    })
     .then((data) => {
       console.log("Return book response:", data)
       if (data.status === "success") {

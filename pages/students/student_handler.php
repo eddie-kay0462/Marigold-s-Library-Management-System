@@ -97,20 +97,41 @@ try {
                     throw new Exception('Invalid student ID');
                 }
 
-                // Check if student has any loans at all (active or returned)
-                $stmt = $pdo->prepare("SELECT COUNT(*) as loan_count FROM active_loans WHERE student_id = ?");
+                // Check if student has any active (non-returned) loans
+                $stmt = $pdo->prepare("SELECT COUNT(*) as loan_count FROM active_loans WHERE student_id = ? AND status != 'Returned'");
                 $stmt->execute([$student_id]);
                 $result = $stmt->fetch(PDO::FETCH_ASSOC);
-                
+
                 if ($result['loan_count'] > 0) {
-                    throw new Exception('Cannot delete student: This student has loan records in the system');
+                    throw new Exception('Cannot delete student: This student has active loans. All books must be returned before deletion.');
                 }
 
-                $stmt = $pdo->prepare("DELETE FROM students WHERE student_id = ?");
-                $stmt->execute([$student_id]);
-
-                $response['status'] = 'success';
-                $response['message'] = 'Student deleted successfully';
+                // Start a transaction
+                $pdo->beginTransaction();
+                
+                try {
+                    // First, delete all loan history records for this student
+                    $stmt = $pdo->prepare("DELETE FROM loan_history WHERE student_id = ?");
+                    $stmt->execute([$student_id]);
+                    
+                    // Then, delete all returned loans from active_loans table
+                    $stmt = $pdo->prepare("DELETE FROM active_loans WHERE student_id = ? AND status = 'Returned'");
+                    $stmt->execute([$student_id]);
+                    
+                    // Finally, delete the student
+                    $stmt = $pdo->prepare("DELETE FROM students WHERE student_id = ?");
+                    $stmt->execute([$student_id]);
+                    
+                    // Commit the transaction
+                    $pdo->commit();
+                    
+                    $response['status'] = 'success';
+                    $response['message'] = 'Student deleted successfully';
+                } catch (Exception $e) {
+                    // Rollback the transaction if any query fails
+                    $pdo->rollBack();
+                    throw new Exception('Error deleting student: ' . $e->getMessage());
+                }
             }
             break;
 
@@ -174,11 +195,11 @@ try {
                 throw new Exception('Invalid student ID');
             }
 
-            // Check if student has ANY loans (active or returned)
+            // Check if student has any active (non-returned) loans
             $stmt = $pdo->prepare("
                 SELECT COUNT(*) as loan_count 
                 FROM active_loans 
-                WHERE student_id = ?
+                WHERE student_id = ? AND status != 'Returned'
             ");
             $stmt->execute([$student_id]);
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
